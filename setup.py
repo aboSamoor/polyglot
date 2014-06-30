@@ -15,7 +15,6 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
-    # TODO: put package requirements here
 ]
 
 test_requirements = [
@@ -30,20 +29,17 @@ setup(
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
     url='https://github.com/aboSamoor/polyglot',
-    packages=[
-        'polyglot',
-    ],
-    package_dir={'polyglot':
-                 'polyglot'},
+    packages = ['polyglot', 'polyglot.detect'],
+    scripts=['polyglot/polyglot'],
     include_package_data=True,
     install_requires=requirements,
-    license="BSD",
+    license="GPLv3",
     zip_safe=False,
     keywords='polyglot',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: GPLv3 License',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
         'Programming Language :: Python :: 2.6',
@@ -53,5 +49,5 @@ setup(
         'Programming Language :: Python :: 3.4',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
 )
