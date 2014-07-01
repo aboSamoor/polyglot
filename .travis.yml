@@ -8,7 +8,9 @@ python:
 #  - "pypy"
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -r requirements.txt
+install:
+  - sudo apt-get install libicu-dev 
+  - pip install -r requirements.txt
 
 # command to run tests, e.g. python setup.py test
 script: nosetests
