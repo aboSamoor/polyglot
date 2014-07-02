@@ -1,3 +1,4 @@
-wheel==0.23.0
+wheel>=0.23.0
 PyICU>=1.8
 -e git+https://github.com/aboSamoor/pycld2.git#egg=pycld2
+six>=1.7.3
