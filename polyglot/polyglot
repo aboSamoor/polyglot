@@ -1,0 +1,42 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+from argparse import ArgumentParser, FileType
+
+from polyglot.detect import Detector
+
+def detect(args):
+  for l in args.stdin:
+    print Detector().detect(l)
+
+
+if __name__ == "__main__":
+  parser = ArgumentParser("polyglot")
+  subparsers = parser.add_subparsers(title='tools',
+                                     description='multilingual tools for all languages',
+                                     help='try them')
+
+  # Language detector
+  detector = subparsers.add_parser('detect')
+  detector.add_argument('stdin', nargs='?', type=FileType('r'),
+                        default=sys.stdin)
+  detector.add_argument('--fine', action='store_true', default=False,
+                        dest='fine_grain')
+  detector.set_defaults(func=detect)
+
+  # Morphological Analyzer
+  morph = subparsers.add_parser('morph')
+  morph.set_defaults(func=morph)
+
+  # Tokenizer
+  subparsers.add_parser('tokenize')
+
+  # Named Entity Chunker
+  subparsers.add_parser('ner')
+
+  # Sentiment Analysis
+  subparsers.add_parser('sentiment')
+
+  args = parser.parse_args()
+  args.func(args)
