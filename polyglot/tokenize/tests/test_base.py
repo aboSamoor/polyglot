@@ -48,7 +48,6 @@ class BaseTest(unittest.TestCase):
     self.assertEqual(2, len(self.ar_sents))
     self.assertEqual(1, len(self.ja_sents))
 
-
   def test_redundant_idx(self):
     """ Test if there are redundant indices."""
 
@@ -59,7 +58,6 @@ class BaseTest(unittest.TestCase):
     self.assertEqual(len(self.en_words.idx), len(set(self.en_words.idx)))
     self.assertEqual(len(self.ar_words.idx), len(set(self.ar_words.idx)))
     self.assertEqual(len(self.ja_words.idx), len(set(self.ja_words.idx)))
- 
 
   def test_boundaries(self):
     """ Sentence boundaries should be also word boundaries."""
@@ -68,7 +66,21 @@ class BaseTest(unittest.TestCase):
     self.assertTrue(set(self.ar_sents.idx).issubset(set(self.ar_words.idx)))
     self.assertTrue(set(self.ja_sents.idx).issubset(set(self.ja_words.idx)))
     
+  def test_transformations_equal(self):
+    """ Word toeknization over text is equal to over sentences."""
+  
+    idx1 = self.en_words.idx
+    idx2 = self.en_word.transform(self.en_sents).idx
+    self.assertListEqual(idx1, idx2)
     
+    idx1 = self.ar_words.idx
+    idx2 = self.ar_word.transform(self.ar_sents).idx
+    self.assertListEqual(idx1, idx2)
+    
+    idx1 = self.ja_words.idx
+    idx2 = self.ja_word.transform(self.ja_sents).idx
+    self.assertListEqual(idx1, idx2)
+
 
 if __name__ == "__main__":
   unittest.main()
