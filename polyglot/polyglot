@@ -64,7 +64,7 @@ if __name__ == "__main__":
   parser.add_argument('--workers', default=1, type=int,
                       help='Number of parallel processes.')
   parser.add_argument('--input', nargs='?', type=TextFile,
-                        default=sys.stdin)
+                      default=TextFile(sys.stdin.fileno()))
   #parser.set_defaults(func=cat)
 
   # Language detector
