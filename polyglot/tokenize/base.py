@@ -4,7 +4,7 @@
 """ Basic text segmenters."""
 
 from icu import Locale, BreakIterator
-from ..base import Sequence
+from polyglot.base import Sequence
 
 class Breaker(object):
   """ Base class to segment text."""

@@ -2,13 +2,59 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from io import open
 from argparse import ArgumentParser, FileType
 
-from polyglot.detect import Detector
+from base import Sequence
+from detect import Detector
+from tokenize import SentenceTokenizer, WordTokenizer
+
 
 def detect(args):
-  for l in args.stdin:
-    print Detector().detect(l)
+  for l in args.input:
+    print(Detector().detect(l))
+
+
+def cat(args):
+  """ Concatenate the content of the input file."""
+  for l in args.input:
+    print(l.strip())
+
+
+def segment(args):
+  if args.lang != 'detect':
+    lang  = args.lang
+  else:
+    raise NotImplementedError("TODO: detect language")
+
+  if args.word:
+    w_tokenizer = WordTokenizer(locale=lang)
+
+  if args.sent:
+    s_tokenizer = SentenceTokenizer(locale=lang)
+
+  # TODO(rmyeid): remove word tokenization from the loop.
+  if args.sent and args.word:
+    for l in args.input:
+      seq = Sequence(l)
+      sents = s_tokenizer.transform(seq)
+      for sent in sents:
+       words = [x.strip() for x  in w_tokenizer.transform(Sequence(sent.strip()))]
+       print(u' '.join(words))
+
+  if args.sent and not args.word:
+    for l in args.input:
+      seq = Sequence(l)
+      sents = s_tokenizer.transform(seq)
+      for sent in sents:
+       print(sent.strip())
+  
+  if not args.sent and args.word:
+    for l in args.input:
+      seq = Sequence(l)
+      words = [x.strip() for x  in w_tokenizer.transform(seq)]
+      print(u' '.join(words))
+  
 
 
 if __name__ == "__main__":
@@ -16,11 +62,16 @@ if __name__ == "__main__":
   subparsers = parser.add_subparsers(title='tools',
                                      description='multilingual tools for all languages',
                                      help='try them')
+  parser.add_argument('--lang', default='detect', help='Language to be processed')
+  parser.add_argument('--format', default='text', help='File format')
+  parser.add_argument('--workers', default=1, type=int,
+                      help='Number of parallel processes.')
+  parser.add_argument('--input', nargs='?', type=open,
+                        default=sys.stdin)
+  #parser.set_defaults(func=cat)
 
   # Language detector
   detector = subparsers.add_parser('detect')
-  detector.add_argument('stdin', nargs='?', type=FileType('r'),
-                        default=sys.stdin)
   detector.add_argument('--fine', action='store_true', default=False,
                         dest='fine_grain')
   detector.set_defaults(func=detect)
@@ -30,7 +81,10 @@ if __name__ == "__main__":
   morph.set_defaults(func=morph)
 
   # Tokenizer
-  subparsers.add_parser('tokenize')
+  tokenizer = subparsers.add_parser('tokenize')
+  tokenizer.add_argument("--sent", default=False, action="store_true")
+  tokenizer.add_argument("--word", default=False, action="store_true")
+  tokenizer.set_defaults(func=segment)
 
   # Named Entity Chunker
   subparsers.add_parser('ner')
