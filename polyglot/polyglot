@@ -5,7 +5,9 @@ import sys
 from io import open
 from argparse import ArgumentParser, FileType
 
-from base import Sequence
+from six import text_type as unicode
+
+from base import Sequence, TextFile
 from detect import Detector
 from tokenize import SentenceTokenizer, WordTokenizer
 
@@ -27,34 +29,27 @@ def segment(args):
   else:
     raise NotImplementedError("TODO: detect language")
 
-  if args.word:
-    w_tokenizer = WordTokenizer(locale=lang)
+  w_tokenizer = WordTokenizer(locale=lang)
+  s_tokenizer = SentenceTokenizer(locale=lang)
 
-  if args.sent:
-    s_tokenizer = SentenceTokenizer(locale=lang)
+  if args.only_sent:
+    for l in args.input:
+      seq = Sequence(l)
+      if not seq.empty(): print(s_tokenizer.transform(seq))
 
-  # TODO(rmyeid): remove word tokenization from the loop.
-  if args.sent and args.word:
+  elif args.only_word:
+    for l in args.input:
+      seq = Sequence(l)
+      if not seq.empty(): print(w_tokenizer.transform(seq))
+
+  else:
     for l in args.input:
       seq = Sequence(l)
       sents = s_tokenizer.transform(seq)
-      for sent in sents:
-       words = [x.strip() for x  in w_tokenizer.transform(Sequence(sent.strip()))]
-       print(u' '.join(words))
-
-  if args.sent and not args.word:
-    for l in args.input:
-      seq = Sequence(l)
-      sents = s_tokenizer.transform(seq)
-      for sent in sents:
-       print(sent.strip())
-  
-  if not args.sent and args.word:
-    for l in args.input:
-      seq = Sequence(l)
-      words = [x.strip() for x  in w_tokenizer.transform(seq)]
-      print(u' '.join(words))
-  
+      words = w_tokenizer.transform(seq)
+      for tokenized_sent in words.split(sents):
+        if not tokenized_sent.empty():
+          print(u' '.join(tokenized_sent.tokens()))
 
 
 if __name__ == "__main__":
@@ -64,9 +59,11 @@ if __name__ == "__main__":
                                      help='try them')
   parser.add_argument('--lang', default='detect', help='Language to be processed')
   parser.add_argument('--format', default='text', help='File format')
+  parser.add_argument('--delimiter', default=u'\n', help='Delimiter that '
+                      'seperates documents, records or even sentences.')
   parser.add_argument('--workers', default=1, type=int,
                       help='Number of parallel processes.')
-  parser.add_argument('--input', nargs='?', type=open,
+  parser.add_argument('--input', nargs='?', type=TextFile,
                         default=sys.stdin)
   #parser.set_defaults(func=cat)
 
@@ -82,8 +79,8 @@ if __name__ == "__main__":
 
   # Tokenizer
   tokenizer = subparsers.add_parser('tokenize')
-  tokenizer.add_argument("--sent", default=False, action="store_true")
-  tokenizer.add_argument("--word", default=False, action="store_true")
+  tokenizer.add_argument("--only-sent", default=False, action="store_true")
+  tokenizer.add_argument("--only-word", default=False, action="store_true")
   tokenizer.set_defaults(func=segment)
 
   # Named Entity Chunker
@@ -93,4 +90,7 @@ if __name__ == "__main__":
   subparsers.add_parser('sentiment')
 
   args = parser.parse_args()
+
+  args.delimiter = unicode(args.delimiter.decode('unicode-escape'))
+  args.input.delimiter = args.delimiter
   args.func(args)
