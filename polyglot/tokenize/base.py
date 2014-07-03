@@ -6,6 +6,7 @@
 from icu import Locale, BreakIterator
 from polyglot.base import Sequence
 
+
 class Breaker(object):
   """ Base class to segment text."""
 
