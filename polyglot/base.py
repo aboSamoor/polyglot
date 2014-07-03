@@ -36,7 +36,7 @@ class Sequence(object):
     return [x.strip() for x in self if x.strip()]
 
   def __str__(self):
-    return u'\n'.join(self.tokens())
+    return u'\n'.join(self.tokens()).encode('utf8')
 
   def split(self, sequence):
     """ Split into subsequences according to `sequence`."""
