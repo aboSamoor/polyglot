@@ -53,10 +53,10 @@ def segment(args):
 
 
 if __name__ == "__main__":
-  parser = ArgumentParser("polyglot")
+  parser = ArgumentParser("polyglot",
+                          conflict_handler='resolve')
   subparsers = parser.add_subparsers(title='tools',
-                                     description='multilingual tools for all languages',
-                                     help='try them')
+                                     description='multilingual tools for all languages')
   parser.add_argument('--lang', default='detect', help='Language to be processed')
   parser.add_argument('--format', default='text', help='File format')
   parser.add_argument('--delimiter', default=u'\n', help='Delimiter that '
@@ -68,7 +68,8 @@ if __name__ == "__main__":
   #parser.set_defaults(func=cat)
 
   # Language detector
-  detector = subparsers.add_parser('detect')
+  detector = subparsers.add_parser('detect',
+                                   help="Detect languages")
   detector.add_argument('--fine', action='store_true', default=False,
                         dest='fine_grain')
   detector.set_defaults(func=detect)
@@ -79,8 +80,11 @@ if __name__ == "__main__":
 
   # Tokenizer
   tokenizer = subparsers.add_parser('tokenize')
-  tokenizer.add_argument("--only-sent", default=False, action="store_true")
-  tokenizer.add_argument("--only-word", default=False, action="store_true")
+  group1= tokenizer.add_mutually_exclusive_group()
+  group1.add_argument("--only-sent", default=False, action="store_true",
+                      help="Segment sentences without word tokenization")
+  group1.add_argument("--only-word", default=False, action="store_true",
+                      help="Tokenize words without sentence segmentation")
   tokenizer.set_defaults(func=segment)
 
   # Named Entity Chunker
