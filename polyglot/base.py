@@ -162,8 +162,7 @@ class Vocabulary(object):
     self.id_word = {i:w for w,i in iteritems(self.word_id)}
 
   @staticmethod
-  def from_textfile(textfile, min_count=None, workers=1, job_size=1000,
-                    most_frequent=None):
+  def from_textfile(textfile, workers=1, job_size=1000):
     """ Count the set of words appeared in a text file.
 
     Args:
