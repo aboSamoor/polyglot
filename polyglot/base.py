@@ -155,7 +155,7 @@ class Vocabulary(object):
     if word_count is not None:
       if isinstance(word_count, dict):
         word_count = iteritems(word_count)
-      sorted_counts = sorted(word_count, key=lambda (x,y): y, reverse=True)
+      sorted_counts = sorted(word_count, key=lambda wc: wc[1], reverse=True)
       self.word_id = {w:i for i,(w,c) in enumerate(sorted_counts)}
       self.word_count = {w:c for (w,c) in sorted_counts}
 
@@ -194,9 +194,10 @@ class Vocabulary(object):
   def words(self):
     if self.word_count:
       return [w for w,c in
-              sorted(iteritems(self.word_count), key=lambda (x,y): y, reverse=True)]
+              sorted(iteritems(self.word_count), key=lambda wc: wc[1], reverse=True)]
     else:
-      return [w for w,id_ in sorted(iteritems(self.word_id), key=lambda (x,y): y)]
+      return [w for w,id_ in 
+              sorted(iteritems(self.word_id), key=lambda wc: wc[1])]
 
   def most_frequent(self, k):
     """ Returns a vocabulary with the most frequent `k` words.
@@ -208,7 +209,7 @@ class Vocabulary(object):
       raise ValueError("This vocabulary object does not contain word count "
                         "information.")
     wc = iteritems(self.word_count)
-    word_count = list(sorted(wc, key=lambda (x,y): y, reverse=True))
+    word_count = list(sorted(wc, key=lambda wc: wc[1], reverse=True))
     word_count = dict(word_count[:k])
     return Vocabulary(word_count=word_count)
 
