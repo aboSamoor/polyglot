@@ -6,14 +6,19 @@ from io import open
 from argparse import ArgumentParser, FileType
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
+import logging
 
 from six import text_type as unicode
 from six import iteritems
+
+from icu import Locale
 
 from base import Sequence, TextFile, Vocabulary
 from detect import Detector
 from tokenize import SentenceTokenizer, WordTokenizer
 
+logger = logging.getLogger(__name__)
+LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
 def vocab_counter(args):
   """Calculate the vocabulary."""
@@ -78,7 +83,9 @@ if __name__ == "__main__":
                       help='Number of parallel processes.')
   parser.add_argument('--input', nargs='?', type=TextFile,
                       default=TextFile(sys.stdin.fileno()))
-  #parser.set_defaults(func=cat)
+  parser.add_argument("-l", "--log", dest="log", help="log verbosity level",
+                      default="INFO")
+
 
   # Language detector
   detector = subparsers.add_parser('detect',
@@ -120,6 +127,17 @@ if __name__ == "__main__":
   subparsers.add_parser('sentiment')
 
   args = parser.parse_args()
+  numeric_level = getattr(logging, args.log.upper(), None)
+  logging.basicConfig(format=LOGFORMAT)
+  logger.setLevel(numeric_level)
+
+  #parser.set_defaults(func=cat)
+
+  if args.lang == 'detect':
+    text = args.input.peek(4096)
+    lang = Detector().detect(text)
+    args.lang = lang.code
+    logger.info("Language {} is detected".format(lang.name))
 
   args.delimiter = unicode(args.delimiter.decode('unicode-escape'))
   args.input.delimiter = args.delimiter
