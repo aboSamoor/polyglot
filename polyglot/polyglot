@@ -4,12 +4,25 @@
 import sys
 from io import open
 from argparse import ArgumentParser, FileType
+from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
 
 from six import text_type as unicode
+from six import iteritems
 
-from base import Sequence, TextFile
+from base import Sequence, TextFile, Vocabulary
 from detect import Detector
 from tokenize import SentenceTokenizer, WordTokenizer
+
+
+def vocab_counter(args):
+  """Calculate the vocabulary."""
+  v = Vocabulary.from_textfile(textfile=args.input)
+  if args.min_count > 1: 
+    v = v.min_count(args.min_count)
+  if args.most_freq > 0:
+    v = v.most_frequent(args.most_freq)
+  print(v)
 
 
 def detect(args):
@@ -86,6 +99,15 @@ if __name__ == "__main__":
   group1.add_argument("--only-word", default=False, action="store_true",
                       help="Tokenize words without sentence segmentation")
   tokenizer.set_defaults(func=segment)
+
+  # Vocabulary Counter
+  counter = subparsers.add_parser('count')
+  group1= counter.add_mutually_exclusive_group()
+  group1.add_argument("--min-count", type=int, default=1,
+                      help="Ignore all words that appear <= min_freq.")
+  group1.add_argument("--most-freq", type=int, default=-1,
+                      help="Consider only the most frequent k words.")
+  counter.set_defaults(func=vocab_counter)
 
   # Named Entity Chunker
   subparsers.add_parser('ner')
