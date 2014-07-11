@@ -109,6 +109,10 @@ if __name__ == "__main__":
                       help="Consider only the most frequent k words.")
   counter.set_defaults(func=vocab_counter)
 
+  # Concatenate the input file
+  catter = subparsers.add_parser('cat')
+  catter.set_defaults(func=cat)
+
   # Named Entity Chunker
   subparsers.add_parser('ner')
 
