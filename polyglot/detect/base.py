@@ -8,8 +8,15 @@ from icu import Locale
 import pycld2 as cld2
 
 class Detector(object):
-  def __init__(self):
-    pass
+  """ Detect the language used in a snippet of text.
+  """
+  def __init__(self, text):
+    """ Detector of the language used in `text`.
+
+    Args:
+      text (string): unicode string.
+    """
+    self.detect(text)
 
   @property
   def name(self):
@@ -25,4 +32,5 @@ class Detector(object):
     basic_name, code, confidence, bytesize = top_choice
     self.locale = Locale(code)
     self.confidence = float(confidence)
+    self.read_bytes = int(bytesize)
     return self

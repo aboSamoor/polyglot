@@ -13,7 +13,8 @@ from six import iteritems
 
 from icu import Locale
 
-from base import Sequence, TextFile, Vocabulary
+from base import Sequence, TextFile
+from mapping import CountedVocabulary
 from detect import Detector
 from tokenize import SentenceTokenizer, WordTokenizer
 
@@ -22,7 +23,7 @@ LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
 def vocab_counter(args):
   """Calculate the vocabulary."""
-  v = Vocabulary.from_textfile(textfile=args.input)
+  v = CountedVocabulary.from_textfile(textfile=args.input)
   if args.min_count > 1: 
     v = v.min_count(args.min_count)
   if args.most_freq > 0:
@@ -32,7 +33,8 @@ def vocab_counter(args):
 
 def detect(args):
   for l in args.input:
-    print(Detector().detect(l))
+    if l.strip():
+      print(Detector(l).name)
 
 
 def cat(args):
@@ -134,10 +136,12 @@ if __name__ == "__main__":
   #parser.set_defaults(func=cat)
 
   if args.lang == 'detect':
-    text = args.input.peek(4096)
-    lang = Detector().detect(text)
+    header = 4096
+    text = args.input.peek(header)
+    lang = Detector(text)
     args.lang = lang.code
-    logger.info("Language {} is detected".format(lang.name))
+    logger.info("Language {} is detected while reading the first {} bytes"
+                ".".format(lang.name, lang.read_bytes))
 
   args.delimiter = unicode(args.delimiter.decode('unicode-escape'))
   args.input.delimiter = args.delimiter
