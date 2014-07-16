@@ -87,6 +87,21 @@ if __name__ == "__main__":
                       help="Tokenize words without sentence segmentation")
   tokenizer.set_defaults(func=segment)
 
+  # Package downloader
+  downloader = subparsers.add_parser('download')
+  downloader.add_argument("--dir", dest="dir",
+    help="download package to directory DIR", metavar="DIR")
+  downloader.add_argument("--quiet", dest="quiet", action="store_true",
+    default=False, help="work quietly")
+  downloader.add_argument("--force", dest="force", action="store_true",
+    default=False, help="download even if already installed")
+  downloader.add_argument("--exit-on-error", dest="halt_on_error", action="store_true",
+    default=False, help="exit if an error occurs")
+  downloader.add_argument("--url", dest="server_index_url",
+    default=None, help="download server index url")
+  downloader.set_defaults(func=download)
+
+
   # Named Entity Chunker
   subparsers.add_parser('ner')
 

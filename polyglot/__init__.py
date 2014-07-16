@@ -7,3 +7,5 @@ __version__ = '14.11'
 from .base import Sequence
 
 __all__ = ['Sequence']
+
+data_path = '~/'
