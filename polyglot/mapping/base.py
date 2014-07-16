@@ -1,0 +1,181 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" Supports word embeddings."""
+
+from io import open, StringIO
+from collections import Counter
+import os
+
+from six.moves import zip
+from six import iteritems
+from six import text_type as unicode
+
+
+def count(lines):
+  """ Counts the word frequences in a list of sentences.
+
+  Note:
+    This is a helper function for parallel execution of `Vocabulary.from_text`
+    method.
+  """
+  words = [w for l in lines for w in l.strip().split()]
+  return Counter(words)
+
+
+class VocabularyBase(object):
+  """ A set of words/tokens that have consistent IDs.
+
+  Note:
+    Words will be sorted according to their lexicographic order.
+
+  Attributes:
+    word_id (dictionary): Mapping from words to IDs.
+    id_word (dictionary): A reverse map of `word_id`.
+  """
+
+  def __init__(self, words=None):
+    """ Build attributes word_id and id_word from input.
+
+    Args:
+      words (list/set): list or set of words.
+    """
+
+    self.word_id = {w:i for i, w in enumerate(sorted(words))}
+    self.id_word = {i:w for w,i in iteritems(self.word_id)}
+
+  @property
+  def words(self):
+    """ Ordered list of words according to their IDs."""
+    return [w for w,i in sorted(iteritems(self.word_id), key=lambda wc: wc[1])]
+  
+  def __str__(self):
+    return u"\n".join(self.words)
+  
+  def __getitem__(self, key):
+    return self.word_id[key]
+
+  @staticmethod
+  def from_vocabfile(self, filename):
+    """ Construct a CountedVocabulary out of a vocabulary file.
+
+    Note:
+      File has the following format word1
+                                    word2
+    """
+    words = [x.strip() for x in open(filename, 'r').read().splitlines()]
+    return VocabularyBase(words=words)
+
+
+class OrderedVocabulary(VocabularyBase):
+  """ An ordered list of words/tokens according to their frequency.
+
+  Note:
+    The words order is assumed to be sorted according to the word frequency.
+    Most frequent words appear first in the list.
+
+  Attributes:
+    word_id (dictionary): Mapping from words to IDs.
+    id_word (dictionary): A reverse map of `word_id`.
+  """
+
+  def __init__(self, words=None):
+    """ Build attributes word_id and id_word from input.
+
+    Args:
+      words (list): list of sorted words according to frequency.
+    """
+
+    self.word_id = {w:i for i, w in enumerate(words)}
+    self.id_word = {i:w for w,i in iteritems(self.word_id)}
+
+
+  def most_frequent(self, k):
+    """ Returns a vocabulary with the most frequent `k` words.
+
+    Args:
+      k (integer): specifies the top k most frequent words to be returned.
+    """
+    return OrderedVocabulary(words=self.words[:k])
+
+
+class CountedVocabulary(OrderedVocabulary):
+  """ List of words and counts sorted according to word count.
+  """
+
+  def __init__(self, word_count=None):
+    """ Build attributes word_id and id_word from input.
+
+    Args:
+      word_count (dictionary): A dictionary of the type word:count or
+                               list of tuples of the type (word, count).
+    """
+
+    if isinstance(word_count, dict):
+      word_count = iteritems(word_count)
+    sorted_counts = list(sorted(word_count, key=lambda wc: wc[1], reverse=True))
+    words = [w for w,c in sorted_counts]
+    super(CountedVocabulary, self).__init__(words=words)
+    self.word_count = dict(sorted_counts)
+
+  @staticmethod
+  def from_textfile(textfile, workers=1, job_size=1000):
+    """ Count the set of words appeared in a text file.
+
+    Args:
+      textfile (string): The name of the text file or `TextFile` object.
+      min_count (integer): Minimum number of times a word/token appeared in the document
+                 to be considered part of the vocabulary.
+      workers (integer): Number of parallel workers to read the file simulatenously.
+      job_size (integer): Size of the batch send to each worker.
+      most_frequent (integer): if no min_count is specified, consider the most frequent k words for the vocabulary.
+
+    Returns:
+      A vocabulary of the most frequent words appeared in the document.
+    """
+
+    c = Counter()
+    if isinstance(textfile, unicode):
+      textfile = TextFile(textfile)
+    if workers == 1:
+      for lines in textfile.iter_chunks(job_size):
+        c.update(count(lines))
+    else:
+      with ProcessPoolExecutor(max_workers=workers) as executor:
+        for counter_ in executor.map(count, textfile.iter_chunks(job_size)):
+          c.update(counter_)
+
+    return CountedVocabulary(word_count=c)
+
+  def most_frequent(self, k):
+    """ Returns a vocabulary with the most frequent `k` words.
+
+    Args:
+      k (integer): specifies the top k most frequent words to be returned.
+    """
+    word_count = {w: self.word_count[w] for w in self.words[:k]}
+    return CountedVocabulary(word_count=word_count)
+
+  def min_count(self, n=1):
+    """ Returns a vocabulary after eliminating the words that appear < `n`.
+
+    Args:
+      n (integer): specifies the minimum word frequency allowed.
+    """
+    word_count = {w:c for w,c in iteritems(self.word_count) if c >= n}
+    return Vocabulary(word_count=word_count)
+
+  def __str__(self):
+    return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words])
+  
+  @staticmethod
+  def from_vocabfile(self, filename):
+    """ Construct a CountedVocabulary out of a vocabulary file.
+
+    Note:
+      File has the following format word1 count1
+                                    word2 count2
+    """
+    word_count = [x.strip().split() for x in open(filename, 'r').read().splitlines()]
+    word_count = {w:int(c) for w,c in word_count}
+    return CountedVocabulary(word_count=word_count)

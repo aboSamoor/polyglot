@@ -3,10 +3,13 @@
 
 """Basic data types."""
 
-from io import open
+from io import open, StringIO
+from collections import Counter
+import os
 
 from six.moves import zip
 from six import text_type as unicode
+from six import iteritems
 
 
 class Sequence(object):
@@ -56,30 +59,40 @@ class Sequence(object):
   def empty(self):
     return not self.text.strip()
 
+
 class TextFile(object):
   """ Wrapper around text files.
 
       It uses io.open to guarantee reading text files with unicode encoding.
       It has an iterator that supports arbitrary delimiter instead of only
       new lines.
+
+  Attributes:
+    delimiter (string): A string that defines the limit of each chunk.
+    file (string): A path to a file.
+    buf (StringIO): a buffer to store the results of peeking into the file.
   """
 
   def __init__(self, file, delimiter=u'\n'):
     self.delimiter = delimiter
     self.open_file = open(file, 'r')
+    self.buf = StringIO()
 
-  def iter_delimiter(self, chunk_size=8192):
+  def iter_delimiter(self, byte_size=8192):
     """ Generalization of the default iter file delimited by '\n'.
+    Note:
+      The newline string can be arbitrarily long; it need not be restricted to a
+      single character. You can also set the read size and control whether or not
+      the newline string is left on the end of the iterated lines.  Setting
+      newline to '\0' is particularly good for use with an input file created with
+      something like "os.popen('find -print0')".
 
-       The newline string can be arbitrarily long; it need not be restricted to a
-       single character. You can also set the read size and control whether or not
-       the newline string is left on the end of the iterated lines.  Setting
-       newline to '\0' is particularly good for use with an input file created with
-       something like "os.popen('find -print0')".
+    Args:
+      byte_size (integer): Number of bytes to be read at each time.
     """
     partial = u''
     while True:
-      read_chars = self.open_file.read(chunk_size)
+      read_chars = self.read(byte_size)
       if not read_chars: break
       partial += read_chars
       lines = partial.split(self.delimiter)
@@ -92,9 +105,43 @@ class TextFile(object):
       yield partial
 
   def __iter__(self):
-    if self.delimiter == u'\n':
-      for l in self.open_file:
-        yield l
-    else:
-      for l in self.iter_delimiter():
-        yield l
+    for l in self.iter_delimiter():
+      yield l
+
+  def iter_chunks(self, chunksize):
+    chunk = []
+    for i, l in enumerate(self):
+      chunk.append(l)
+      if i % chunksize == chunksize -1:
+        yield chunk
+        chunk = []
+    if chunk:
+      yield chunk
+
+  def _append_to_buf(self, contents):
+    oldpos = self.buf.tell()
+    self.buf.seek(0, os.SEEK_END)
+    self.buf.write(contents)
+    self.buf.seek(oldpos)
+
+  def peek(self, size):
+    contents = self.open_file.read(size)
+    self._append_to_buf(contents)
+    return contents
+
+  def read(self, size=None):
+    """ Read `size` of bytes."""
+    if size is None:
+      return self.buf.read() + self.open_file.read()
+    contents = self.buf.read(size)
+    if len(contents) < size:
+      contents += self.open_file.read(size - len(contents))
+    return contents
+
+  def readline(self):
+    line = self.buf.readline()
+    if not line.endswith('\n'):
+      line += self.open_file.readline()
+    return line
+
+

@@ -4,17 +4,37 @@
 import sys
 from io import open
 from argparse import ArgumentParser, FileType
+from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
+import logging
 
 from six import text_type as unicode
+from six import iteritems
+
+from icu import Locale
 
 from base import Sequence, TextFile
+from mapping import CountedVocabulary
 from detect import Detector
 from tokenize import SentenceTokenizer, WordTokenizer
+
+logger = logging.getLogger(__name__)
+LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
+
+def vocab_counter(args):
+  """Calculate the vocabulary."""
+  v = CountedVocabulary.from_textfile(textfile=args.input)
+  if args.min_count > 1: 
+    v = v.min_count(args.min_count)
+  if args.most_freq > 0:
+    v = v.most_frequent(args.most_freq)
+  print(v)
 
 
 def detect(args):
   for l in args.input:
-    print(Detector().detect(l))
+    if l.strip():
+      print(Detector(l).name)
 
 
 def cat(args):
@@ -65,7 +85,9 @@ if __name__ == "__main__":
                       help='Number of parallel processes.')
   parser.add_argument('--input', nargs='?', type=TextFile,
                       default=TextFile(sys.stdin.fileno()))
-  #parser.set_defaults(func=cat)
+  parser.add_argument("-l", "--log", dest="log", help="log verbosity level",
+                      default="INFO")
+
 
   # Language detector
   detector = subparsers.add_parser('detect',
@@ -101,6 +123,18 @@ if __name__ == "__main__":
     default=None, help="download server index url")
   downloader.set_defaults(func=download)
 
+  # Vocabulary Counter
+  counter = subparsers.add_parser('count')
+  group1= counter.add_mutually_exclusive_group()
+  group1.add_argument("--min-count", type=int, default=1,
+                      help="Ignore all words that appear <= min_freq.")
+  group1.add_argument("--most-freq", type=int, default=-1,
+                      help="Consider only the most frequent k words.")
+  counter.set_defaults(func=vocab_counter)
+
+  # Concatenate the input file
+  catter = subparsers.add_parser('cat')
+  catter.set_defaults(func=cat)
 
   # Named Entity Chunker
   subparsers.add_parser('ner')
@@ -109,6 +143,19 @@ if __name__ == "__main__":
   subparsers.add_parser('sentiment')
 
   args = parser.parse_args()
+  numeric_level = getattr(logging, args.log.upper(), None)
+  logging.basicConfig(format=LOGFORMAT)
+  logger.setLevel(numeric_level)
+
+  #parser.set_defaults(func=cat)
+
+  if args.lang == 'detect':
+    header = 4096
+    text = args.input.peek(header)
+    lang = Detector(text)
+    args.lang = lang.code
+    logger.info("Language {} is detected while reading the first {} bytes"
+                ".".format(lang.name, lang.read_bytes))
 
   args.delimiter = unicode(args.delimiter.decode('unicode-escape'))
   args.input.delimiter = args.delimiter
