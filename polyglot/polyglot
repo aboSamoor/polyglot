@@ -17,12 +17,15 @@ from base import Sequence, TextFile
 from mapping import CountedVocabulary
 from detect import Detector
 from tokenize import SentenceTokenizer, WordTokenizer
+from downloader import Downloader
 
 logger = logging.getLogger(__name__)
 LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
+
 def vocab_counter(args):
   """Calculate the vocabulary."""
+
   v = CountedVocabulary.from_textfile(textfile=args.input)
   if args.min_count > 1: 
     v = v.min_count(args.min_count)
@@ -32,6 +35,7 @@ def vocab_counter(args):
 
 
 def detect(args):
+  """ Detect the language of each line."""
   for l in args.input:
     if l.strip():
       print(Detector(l).name)
@@ -39,16 +43,29 @@ def detect(args):
 
 def cat(args):
   """ Concatenate the content of the input file."""
+
   for l in args.input:
     print(l.strip())
 
 
-def segment(args):
-  if args.lang != 'detect':
-    lang  = args.lang
-  else:
-    raise NotImplementedError("TODO: detect language")
+def download(args):
+  """ Download polyglot packages and models."""
 
+  downloader = Downloader(server_index_url = args.server_index_url)
+  if args.packages:
+    for pkg_id in args.packages:
+      rv = downloader.download(info_or_id=unicode(pkg_id), download_dir=args.dir,
+                               quiet=args.quiet, force=args.force,
+                               halt_on_error=args.halt_on_error)
+      if rv == False and args.halt_on_error:
+        break
+  else:
+    downloader.download(download_dir=args.dir, quiet=args.quiet, force=args.force,
+                        halt_on_error=args.halt_on_error)
+
+
+def segment(args):
+  lang  = args.lang
   w_tokenizer = WordTokenizer(locale=lang)
   s_tokenizer = SentenceTokenizer(locale=lang)
 
@@ -72,6 +89,17 @@ def segment(args):
           print(u' '.join(tokenized_sent.tokens()))
 
 
+def debug(type_, value, tb):
+  if hasattr(sys, 'ps1') or not sys.stderr.isatty():
+    sys.__excepthook__(type_, value, tb)
+  else:
+    import traceback
+    import pdb
+    traceback.print_exception(type_, value, tb)
+    print(u"\n")
+    pdb.pm()
+
+
 if __name__ == "__main__":
   parser = ArgumentParser("polyglot",
                           conflict_handler='resolve')
@@ -87,6 +115,8 @@ if __name__ == "__main__":
                       default=TextFile(sys.stdin.fileno()))
   parser.add_argument("-l", "--log", dest="log", help="log verbosity level",
                       default="INFO")
+  parser.add_argument("--debug", dest="debug", action='store_true', default=False,
+                      help="drop a debugger if an exception is raised.")
 
 
   # Language detector
@@ -111,16 +141,18 @@ if __name__ == "__main__":
 
   # Package downloader
   downloader = subparsers.add_parser('download')
+  downloader.add_argument("packages", nargs='*',
+                          help="packages to be downloaded")
   downloader.add_argument("--dir", dest="dir",
-    help="download package to directory DIR", metavar="DIR")
+                          help="download package to directory DIR", metavar="DIR")
   downloader.add_argument("--quiet", dest="quiet", action="store_true",
-    default=False, help="work quietly")
+                          default=False, help="work quietly")
   downloader.add_argument("--force", dest="force", action="store_true",
-    default=False, help="download even if already installed")
+                          default=False, help="download even if already installed")
   downloader.add_argument("--exit-on-error", dest="halt_on_error", action="store_true",
-    default=False, help="exit if an error occurs")
+                          default=False, help="exit if an error occurs")
   downloader.add_argument("--url", dest="server_index_url",
-    default=None, help="download server index url")
+                          default=None, help="download server index url")
   downloader.set_defaults(func=download)
 
   # Vocabulary Counter
@@ -147,9 +179,12 @@ if __name__ == "__main__":
   logging.basicConfig(format=LOGFORMAT)
   logger.setLevel(numeric_level)
 
+  if args.debug:
+   sys.excepthook = debug 
+    
   #parser.set_defaults(func=cat)
 
-  if args.lang == 'detect':
+  if args.lang == 'detect' and args.func != download:
     header = 4096
     text = args.input.peek(header)
     lang = Detector(text)
