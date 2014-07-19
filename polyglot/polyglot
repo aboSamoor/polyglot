@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
   # Language detector
   detector = subparsers.add_parser('detect',
-                                   help="Detect languages")
+                                   help="Detect the language(s) used in text.")
   detector.add_argument('--fine', action='store_true', default=False,
                         dest='fine_grain')
   detector.set_defaults(func=detect)
@@ -131,7 +131,8 @@ if __name__ == "__main__":
   morph.set_defaults(func=morph)
 
   # Tokenizer
-  tokenizer = subparsers.add_parser('tokenize')
+  tokenizer = subparsers.add_parser('tokenize',
+                                    help="Tokenize text into sentences and words.")
   group1= tokenizer.add_mutually_exclusive_group()
   group1.add_argument("--only-sent", default=False, action="store_true",
                       help="Segment sentences without word tokenization")
@@ -140,7 +141,8 @@ if __name__ == "__main__":
   tokenizer.set_defaults(func=segment)
 
   # Package downloader
-  downloader = subparsers.add_parser('download')
+  downloader = subparsers.add_parser('download',
+                                     help="Download polyglot resources and models.")
   downloader.add_argument("packages", nargs='*',
                           help="packages to be downloaded")
   downloader.add_argument("--dir", dest="dir",
@@ -156,7 +158,8 @@ if __name__ == "__main__":
   downloader.set_defaults(func=download)
 
   # Vocabulary Counter
-  counter = subparsers.add_parser('count')
+  counter = subparsers.add_parser('count',
+                                  help="Count words frequency in a corpus.")
   group1= counter.add_mutually_exclusive_group()
   group1.add_argument("--min-count", type=int, default=1,
                       help="Ignore all words that appear <= min_freq.")
@@ -165,14 +168,17 @@ if __name__ == "__main__":
   counter.set_defaults(func=vocab_counter)
 
   # Concatenate the input file
-  catter = subparsers.add_parser('cat')
+  catter = subparsers.add_parser('cat',
+                                 help="Print the contents of the input file to the screen.")
   catter.set_defaults(func=cat)
 
   # Named Entity Chunker
-  subparsers.add_parser('ner')
+  subparsers.add_parser('ner',
+                        help="Named entity recognition chunking.")
 
   # Sentiment Analysis
-  subparsers.add_parser('sentiment')
+  subparsers.add_parser('sentiment',
+                        help="Classify text to positive and negative polarity.")
 
   args = parser.parse_args()
   numeric_level = getattr(logging, args.log.upper(), None)
