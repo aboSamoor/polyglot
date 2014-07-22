@@ -106,7 +106,6 @@ if __name__ == "__main__":
   subparsers = parser.add_subparsers(title='tools',
                                      description='multilingual tools for all languages')
   parser.add_argument('--lang', default='detect', help='Language to be processed')
-  parser.add_argument('--format', default='text', help='File format')
   parser.add_argument('--delimiter', default=u'\n', help='Delimiter that '
                       'seperates documents, records or even sentences.')
   parser.add_argument('--workers', default=1, type=int,
