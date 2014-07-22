@@ -165,7 +165,10 @@ default: unzip or not?
 import time, os, zipfile, sys, textwrap, threading, itertools
 from hashlib import md5
 from io import open
+from collections import defaultdict
 from polyglot import data_path
+
+from gslib import cs_api_map
 
 try:
   TKINTER = True
@@ -176,9 +179,7 @@ except:
   TKINTER = False
   TclError = ValueError
 
-from xml.etree import ElementTree
 import stat
-
 from six import text_type as unicode
 from six.moves import input
 from six.moves.urllib.request import urlopen
@@ -226,114 +227,6 @@ def _path_from(parent, child):
   return path
 
 
-class ElementWrapper(object):
-  """
-  A wrapper around ElementTree Element objects whose main purpose is
-  to provide nicer __repr__ and __str__ methods. In addition, any
-  of the wrapped Element's methods that return other Element objects
-  are overridden to wrap those values before returning them.
-
-  This makes Elements more convenient to work with in
-  interactive sessions and doctests, at the expense of some
-  efficiency.
-  """
-
-  # Prevent double-wrapping:
-  def __new__(cls, etree):
-    """
-    Create and return a wrapper around a given Element object.
-    If ``etree`` is an ``ElementWrapper``, then ``etree`` is
-    returned as-is.
-    """
-    if isinstance(etree, ElementWrapper):
-        return etree
-    else:
-        return object.__new__(ElementWrapper)
-
-  def __init__(self, etree):
-    r"""
-    Initialize a new Element wrapper for ``etree``.
-
-    If ``etree`` is a string, then it will be converted to an
-    Element object using ``ElementTree.fromstring()`` first:
-
-    >>> ElementWrapper("<test></test>")
-    <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
-
-    """
-    if isinstance(etree, unicode):
-        etree = ElementTree.fromstring(etree)
-    self.__dict__['_etree'] = etree
-
-  def unwrap(self):
-    """ Return the Element object wrapped by this wrapper."""
-    return self._etree
-
-
-  def __repr__(self):
-    s = ElementTree.tostring(self._etree, encoding='utf8').decode('utf8')
-    if len(s) > 60:
-        e = s.rfind('<')
-        if (len(s)-e) > 30: e = -20
-        s = '%s...%s' % (s[:30], s[e:])
-    return '<Element %r>' % s
-
-  def __str__(self):
-    """
-    :return: the result of applying ``ElementTree.tostring()`` to
-    the wrapped Element object.
-    """
-    return ElementTree.tostring(self._etree, encoding='utf8').decode('utf8').rstrip()
-
-
-  def __getattr__(self, attrib):
-    return getattr(self._etree, attrib)
-
-  def __setattr__(self, attr, value):
-    return setattr(self._etree, attr, value)
-
-  def __delattr__(self, attr):
-    return delattr(self._etree, attr)
-
-  def __setitem__(self, index, element):
-    self._etree[index] = element
-
-  def __delitem__(self, index):
-    del self._etree[index]
-
-  def __setslice__(self, start, stop, elements):
-    self._etree[start:stop] = elements
-
-  def __delslice__(self, start, stop):
-    del self._etree[start:stop]
-
-  def __len__(self):
-    return len(self._etree)
-
-  def __getitem__(self, index):
-    return ElementWrapper(self._etree[index])
-
-  def __getslice__(self, start, stop):
-    return [ElementWrapper(elt) for elt in self._etree[start:stop]]
-
-  def getchildren(self):
-    return [ElementWrapper(elt) for elt in self._etree]
-
-  def getiterator(self, tag=None):
-    return (ElementWrapper(elt) for elt in self._etree.getiterator(tag))
-
-  def makeelement(self, tag, attrib):
-    return ElementWrapper(self._etree.makeelement(tag, attrib))
-
-  def find(self, path):
-    elt = self._etree.find(path)
-    if elt is None: return elt
-    else: return ElementWrapper(elt)
-
-  def findall(self, path):
-    return [ElementWrapper(elt) for elt in self._etree.findall(path)]
-
-
 class Package(object):
   """
   A directory entry for a downloadable package.  These entries are
@@ -364,49 +257,48 @@ class Package(object):
     self.size = int(size)
     """The filesize (in bytes) of the package file."""
 
-    self.unzipped_size = int(unzipped_size)
-    """The total filesize of the files contained in the package's
-       zipfile."""
-
     self.checksum = checksum
     """The MD-5 checksum of the package file."""
 
-    self.svn_revision = svn_revision
-    """A subversion revision number for this package."""
-
-    self.copyright = copyright
-    """Copyright holder for this package."""
-
-    self.contact = contact
-    """Name & email of the person who should be contacted with
-       questions about this package."""
-
-    self.license = license
-    """License information for this package."""
-
-    self.author = author
-    """Author of this package."""
-
-    ext = os.path.splitext(url.split('/')[-1])[1]
-    self.filename = os.path.join(subdir, id+ext)
+    self.filename = filename
     """The filename that should be used for this package's file.  It
        is formed by joining ``self.subdir`` with ``self.id``, and
        using the same extension as ``url``."""
 
-    self.unzip = bool(int(unzip)) # '0' or '1'
-    """A flag indicating whether this corpus should be unzipped by
-       default."""
+    self.updated = updated
+    """Datetime object of the last the package modified."""
+
+    self.version = version
+    """Generation number that tag this specific version of the package."""
+
+    self.task = task
+    """The task this package is serving."""
+
+    self.language = language
+    """The langauge code this package belongs to."""
+
+    self.attrs = attrs
+    """Extra attributes generated by Google Cloud Storage."""
 
     # Include any other attributes provided by the XML file.
     self.__dict__.update(kw)
 
   @staticmethod
-  def fromxml(xml):
-    if isinstance(xml, unicode):
-      xml = ElementTree.parse(xml)
-    for key in xml.attrib:
-      xml.attrib[key] = unicode(xml.attrib[key])
-    return Package(**xml.attrib)
+  def fromcsobj(csobj):
+    attrs = csobj.data
+    id = attrs.id
+    name = attrs.name.replace(path.sep, '.')
+    subdir = path.dirname(attrs.name)
+    url = attrs.mediaLink
+    size = attrs.size
+    checksum = attrs.md5Hash
+    filename = attrs.name
+    updated = attrs.updated
+    task = subdir.split(path.sep)[0] 
+    language = subdir.split(path.sep)[1]
+    attrs = attrs
+    version = attrs.generation
+    return Packages(**locals())
 
   def __lt__(self, other):
     return self.id < other.id
@@ -437,15 +329,6 @@ class Collection(object):
 
     # Include any other attributes provided by the XML file.
     self.__dict__.update(kw)
-
-  @staticmethod
-  def fromxml(xml):
-    if isinstance(xml, unicode):
-      xml = ElementTree.parse(xml)
-    for key in xml.attrib:
-      xml.attrib[key] = unicode(xml.attrib[key])
-    children = [child.get('ref') for child in xml.findall('item')]
-    return Collection(children=children, **xml.attrib)
 
   def __lt__(self, other):
     return self.id < other.id
@@ -548,7 +431,7 @@ class Downloader(object):
      re-downloaded."""
 
   # DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/polyglot_data/index.xml'
-  DEFAULT_URL = 'http://nltk.github.com/nltk_data/'
+  DEFAULT_URL = 'polyglot-models'
   """The default URL for the NLTK data server's index.  An
      alternative URL can be specified when creating a new
      ``Downloader`` object."""
@@ -992,17 +875,39 @@ class Downloader(object):
     self._url = url or self._url
 
     # Download the index file.
-    self._index = ElementWrapper(ElementTree.parse(urlopen(self._url)).getroot())
+    gs = cs_api_map.GcsJsonApi(self._url, logger=logger_)
+    objs = list(gs.ListObjects(self._url))
+
     self._index_timestamp = time.time()
 
     # Build a dictionary of packages.
-    packages = [Package.fromxml(p) for p in
-          self._index.findall('packages/package')]
+    packages = [Package.fromcsobj(p) for p in objs]
     self._packages = dict((p.id, p) for p in packages)
 
-    # Build a dictionary of collections.
-    collections = [Collection.fromxml(c) for c in
-             self._index.findall('collections/collection')]
+    # Build language collections.
+    langs = defaultdict(lambda: [])
+    for k in self.packages:
+      package = self.packages[k]
+      langs[package.language].append(package)
+   
+    tasks = defaultdict(lambda: [])
+    for k in self.packages:
+      package = self.packages[k]
+      tasks[package.task].append(package)
+
+    collections = []
+
+    for lang in langs:
+      children = langs[lang]
+      c = collection(id=lang, name=lang, children=children)
+      collections.append(c)
+ 
+    for task in tasks:
+      children = tasks[task]
+      c = collection(id=task, name=task, children=children)
+      collections.append(c)  
+     
+
     self._collections = dict((c.id, c) for c in collections)
 
     # Replace identifiers with actual children in collection.children.
@@ -1062,6 +967,7 @@ class Downloader(object):
   def _get_url(self):
     """The URL for the data server's index file."""
     return self._url
+
   def _set_url(self, url):
     """
     Set a new URL for the data server. If we're unable to contact
