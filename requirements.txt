@@ -3,4 +3,3 @@ PyICU>=1.8
 -e git+https://github.com/aboSamoor/pycld2.git#egg=pycld2
 six>=1.7.3
 futures>=2.1.6
-cffi>=0.8.6

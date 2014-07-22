@@ -162,10 +162,19 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, os, zipfile, sys, textwrap, threading, itertools
+import time
+import os
+import zipfile
+import sys
+import textwrap
+import threading
+import itertools
 from hashlib import md5
 from io import open
 from collections import defaultdict
+import logging
+from os import path
+
 from polyglot import data_path
 
 from gslib import cs_api_map
@@ -184,6 +193,8 @@ from six import text_type as unicode
 from six.moves import input
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.error import HTTPError, URLError
+
+logger = logging.getLogger(__name__)
 
 ######################################################################
 # Directory entry objects (from the data server's index file)
@@ -236,11 +247,9 @@ class Package(object):
   when the package is installed.
   """
   def __init__(self, id, url, name=None, subdir='',
-               size=None, unzipped_size=None,
-               checksum=None, svn_revision=None,
-               copyright='Unknown', contact='Unknown',
-               license='Unknown', author='Unknown', unzip=True,
-               **kw):
+               size=None, checksum=None, filename='',
+               updated='', version=0, task='', language='',
+               attrs=None, **kw):
     self.id = id
     """A unique identifier for this package."""
 
@@ -261,9 +270,7 @@ class Package(object):
     """The MD-5 checksum of the package file."""
 
     self.filename = filename
-    """The filename that should be used for this package's file.  It
-       is formed by joining ``self.subdir`` with ``self.id``, and
-       using the same extension as ``url``."""
+    """The filename that should be used for this package's file."""
 
     self.updated = updated
     """Datetime object of the last the package modified."""
@@ -294,11 +301,14 @@ class Package(object):
     checksum = attrs.md5Hash
     filename = attrs.name
     updated = attrs.updated
-    task = subdir.split(path.sep)[0] 
-    language = subdir.split(path.sep)[1]
+    try:
+      task = subdir.split(path.sep)[0] 
+      language = subdir.split(path.sep)[1]
+    except:
+      pass
     attrs = attrs
     version = attrs.generation
-    return Packages(**locals())
+    return Package(**locals())
 
   def __lt__(self, other):
     return self.id < other.id
@@ -875,36 +885,39 @@ class Downloader(object):
     self._url = url or self._url
 
     # Download the index file.
-    gs = cs_api_map.GcsJsonApi(self._url, logger=logger_)
+    gs = cs_api_map.GcsJsonApi(self._url, logger=logger)
     objs = list(gs.ListObjects(self._url))
 
     self._index_timestamp = time.time()
 
     # Build a dictionary of packages.
-    packages = [Package.fromcsobj(p) for p in objs]
+    packages = []
+    for p in objs:
+      P = Package.fromcsobj(p)
+      packages.append(P)
     self._packages = dict((p.id, p) for p in packages)
 
     # Build language collections.
     langs = defaultdict(lambda: [])
-    for k in self.packages:
-      package = self.packages[k]
+    for k in self._packages:
+      package = self._packages[k]
       langs[package.language].append(package)
    
     tasks = defaultdict(lambda: [])
-    for k in self.packages:
-      package = self.packages[k]
+    for k in self._packages:
+      package = self._packages[k]
       tasks[package.task].append(package)
 
     collections = []
 
     for lang in langs:
       children = langs[lang]
-      c = collection(id=lang, name=lang, children=children)
+      c = Collection(id=lang, name=lang, children=children)
       collections.append(c)
  
     for task in tasks:
       children = tasks[task]
-      c = collection(id=task, name=task, children=children)
+      c = Collection(id=task, name=task, children=children)
       collections.append(c)  
      
 
