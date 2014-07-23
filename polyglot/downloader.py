@@ -835,9 +835,6 @@ class Downloader(object):
     if filestat.st_size != int(info.size):
       return self.STALE
 
-    # Check if the file's checksum matches
-    if md5_hexdigest(filepath) != info.checksum:
-      return self.STALE
 
     # If it's a zipfile, and it's been at least partially
     # unzipped, then check if it's been fully unzipped.
@@ -925,6 +922,7 @@ class Downloader(object):
       else:
         name = lang
 
+      name = "{:<20} packages and models".format(name)
       c = Collection(id=lang, name=name, children=children)
       collections.append(c)
 
@@ -970,8 +968,12 @@ class Downloader(object):
   def info(self, id):
     """Return the ``Package`` or ``Collection`` record for the
        given item."""
-    #self._update_index() # This is commented because it leads to 
+    #self._update_index() # This is commented because it leads to
                           # excessive network load
+    if id in self._packages: return self._packages[id]
+    if id in self._collections: return self._collections[id]
+    self._update_index() # If package is not found, most probably we did not
+                         # warm up the cache
     if id in self._packages: return self._packages[id]
     if id in self._collections: return self._collections[id]
     raise ValueError('Package %r not found in index' % id)
@@ -2049,26 +2051,6 @@ class DownloaderGUI(object):
 ######################################################################
 # Helper Functions
 ######################################################################
-# [xx] It may make sense to move these to nltk.internals.
-
-def md5_hexdigest(file):
-  """
-  Calculate and return the MD5 checksum for a given file.
-  ``file`` may either be a filename or an open stream.
-  """
-  if isinstance(file, unicode):
-    with open(file, 'rb') as infile:
-      return _md5_hexdigest(infile)
-  return _md5_hexdigest(file)
-
-def _md5_hexdigest(fp):
-  md5_digest = md5()
-  while True:
-    block = fp.read(1024*16)  # 16k blocks
-    if not block: break
-    md5_digest.update(block)
-  return md5_digest.hexdigest()
-
 
 # change this to periodically yield progress messages?
 # [xx] get rid of topdir parameter -- we should be checking
@@ -2181,7 +2163,7 @@ def build_index(root, base_url):
     # Fill in several fields of the package xml with calculated values.
     pkg_xml.set('unzipped_size', '%s' % unzipped_size)
     pkg_xml.set('size', '%s' % zipstat.st_size)
-    pkg_xml.set('checksum', '%s' % md5_hexdigest(zf.filename))
+    #pkg_xml.set('checksum', '%s' % md5_hexdigest(zf.filename))
     pkg_xml.set('subdir', subdir)
     #pkg_xml.set('svn_revision', _svn_revision(zf.filename))
     pkg_xml.set('url', url)
