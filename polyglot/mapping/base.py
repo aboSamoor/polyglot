@@ -55,6 +55,9 @@ class VocabularyBase(object):
   def __getitem__(self, key):
     return self.word_id[key]
 
+  def __len__(self):
+    return len(self.word_id)
+
   @staticmethod
   def from_vocabfile(self, filename):
     """ Construct a CountedVocabulary out of a vocabulary file.
