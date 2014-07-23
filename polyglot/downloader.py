@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Natural Language Toolkit: Corpus & Model Downloader
+# Polyglot Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2014 NLTK Project
-# Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# Copyright (C) 2014 Polyglot Project
+# Author: Rami Al-Rfou' <rmyeid@gmail.com>
+# URL: <http://bit.ly/polyglot/>
 # For license information, see LICENSE.TXT
 
 """
-The NLTK corpus and module downloader.  This module defines several
+The Polyglot corpus and module downloader.  This module defines several
 interfaces which can be used to download corpora, models, and other
 data packages that can be used with NLTK.
 
-Downloading Packages
+DownloadingPackages
 ====================
 If called with no arguments, ``download()`` will display an interactive
 interface which can be used to download and install new packages.
@@ -176,7 +176,8 @@ import logging
 from os import path
 
 from polyglot import data_path
-
+from detect.langids import isoLangs
+from icu import Locale
 from gslib import cs_api_map
 
 try:
@@ -293,7 +294,9 @@ class Package(object):
   @staticmethod
   def fromcsobj(csobj):
     attrs = csobj.data
-    id = attrs.id
+    id_ = attrs.id
+    id_ = id_.split(path.sep)
+    id = ".".join(id_[1:3])
     name = attrs.name.replace(path.sep, '.')
     subdir = path.dirname(attrs.name)
     url = attrs.mediaLink
@@ -301,11 +304,8 @@ class Package(object):
     checksum = attrs.md5Hash
     filename = attrs.name
     updated = attrs.updated
-    try:
-      task = subdir.split(path.sep)[0] 
-      language = subdir.split(path.sep)[1]
-    except:
-      pass
+    task = subdir.split(path.sep)[0] 
+    language = subdir.split(path.sep)[1]
     attrs = attrs
     version = attrs.generation
     return Package(**locals())
@@ -664,10 +664,8 @@ class Downloader(object):
       os.remove(filepath)
 
     # Ensure the download_dir exists
-    if not os.path.exists(download_dir):
-      os.mkdir(download_dir)
-    if not os.path.exists(os.path.join(download_dir, info.subdir)):
-      os.mkdir(os.path.join(download_dir, info.subdir))
+    if not path.exists(path.join(download_dir, info.subdir)):
+      os.makedirs(path.join(download_dir, info.subdir))
 
     # Download the file.  This will raise an IOError if the url
     # is not found.
@@ -902,7 +900,7 @@ class Downloader(object):
     for k in self._packages:
       package = self._packages[k]
       langs[package.language].append(package)
-   
+
     tasks = defaultdict(lambda: [])
     for k in self._packages:
       package = self._packages[k]
@@ -912,14 +910,29 @@ class Downloader(object):
 
     for lang in langs:
       children = langs[lang]
-      c = Collection(id=lang, name=lang, children=children)
+
+      name1 = Locale(lang).getDisplayLanguage()
+
+      try:
+        name2 = isoLangs[lang]['name']
+      except:
+        name2 = None
+
+      if name1 and name1 != lang:
+        name = name1
+      elif name2:
+        name = name2
+      else:
+        name = lang
+
+      c = Collection(id=lang, name=name, children=children)
       collections.append(c)
- 
+
     for task in tasks:
       children = tasks[task]
       c = Collection(id=task, name=task, children=children)
-      collections.append(c)  
-     
+      collections.append(c)
+
 
     self._collections = dict((c.id, c) for c in collections)
 
@@ -957,7 +970,8 @@ class Downloader(object):
   def info(self, id):
     """Return the ``Package`` or ``Collection`` record for the
        given item."""
-    self._update_index()
+    #self._update_index() # This is commented because it leads to 
+                          # excessive network load
     if id in self._packages: return self._packages[id]
     if id in self._collections: return self._collections[id]
     raise ValueError('Package %r not found in index' % id)
@@ -1596,7 +1610,7 @@ class DownloaderGUI(object):
       showerror('Error connecting to server', e.reason)
 
   _tab = 'collections'
-  #_tab = 'corpora'
+  _tab = 'corpora'
   _rows = None
   def _fill_table(self):
     selected_row = self._table.selected_row()
