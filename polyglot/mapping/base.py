@@ -6,6 +6,7 @@
 from io import open, StringIO
 from collections import Counter
 import os
+from concurrent.futures import ProcessPoolExecutor
 
 from six.moves import zip
 from six import iteritems

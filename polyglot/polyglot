@@ -5,7 +5,6 @@ import sys
 from io import open
 from argparse import ArgumentParser, FileType
 from collections import Counter
-from concurrent.futures import ProcessPoolExecutor
 import logging
 
 from six import text_type as unicode
@@ -30,7 +29,7 @@ LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 def vocab_counter(args):
   """Calculate the vocabulary."""
 
-  v = CountedVocabulary.from_textfile(textfile=args.input)
+  v = CountedVocabulary.from_textfile(textfile=args.input, workers=args.workers)
   if args.min_count > 1: 
     v = v.min_count(args.min_count)
   if args.most_freq > 0:
