@@ -11,6 +11,7 @@ from numpy import float32
 
 from six import text_type as unicode
 from six import iteritems
+from six.moves import map
 
 from .base import CountedVocabulary, OrderedVocabulary
 
@@ -101,7 +102,7 @@ class Embedding(object):
     with _open(fname, 'rb') as fin:
       words = []
       header = unicode(fin.readline())
-      vocab_size, layer1_size = map(int, header.split()) # throws for invalid file format
+      vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
       vectors = np.zeros((vocab_size, layer1_size), dtype=float32)
       binary_len = np.dtype(float32).itemsize * layer1_size
       for line_no in xrange(vocab_size):
@@ -124,13 +125,13 @@ class Embedding(object):
     with _open(fname) as fin:
       words = []
       header = unicode(fin.readline())
-      vocab_size, layer1_size = map(int, header.split()) # throws for invalid file format
+      vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
       vectors = np.zeros((vocab_size, layer1_size), dtype=float32)
       for line_no, line in enumerate(fin):
         parts = unicode(line).split()
         if len(parts) != layer1_size + 1:
           raise ValueError("invalid vector on line %s (is this really the text format?)" % (line_no))
-        word, weights = parts[0], map(float32, parts[1:])
+        word, weights = parts[0], list(map(float32, parts[1:]))
         index = line_no
         words.append(word)
         vectors[index,:] = weights
