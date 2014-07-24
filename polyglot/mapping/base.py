@@ -55,7 +55,7 @@ class VocabularyBase(object):
     return list(self)
 
   def __str__(self):
-    return u"\n".join(self.words)
+    return u"\n".join(self.words).encode("utf-8")
 
   def __getitem__(self, key):
     return self.word_id[key]
@@ -188,7 +188,7 @@ class CountedVocabulary(OrderedVocabulary):
     return Vocabulary(word_count=word_count)
 
   def __str__(self):
-    return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words])
+    return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words]).encode("utf-8")
 
   def __delitem__(self, key):
     super(CountedVocabulary, self).__delitem__(key)

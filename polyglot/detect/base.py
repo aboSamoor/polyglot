@@ -27,7 +27,7 @@ class Detector(object):
     return self.locale.getName()
 
   def detect(self, text):
-    flag, index, top_3_choices = cld2.detect(text)
+    flag, index, top_3_choices = cld2.detect(text.encode("utf-8"))
     top_choice, second_choice, third_choice = top_3_choices
     basic_name, code, confidence, bytesize = top_choice
     self.locale = Locale(code)
