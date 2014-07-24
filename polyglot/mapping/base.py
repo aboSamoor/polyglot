@@ -44,16 +44,35 @@ class VocabularyBase(object):
     self.word_id = {w:i for i, w in enumerate(sorted(words))}
     self.id_word = {i:w for w,i in iteritems(self.word_id)}
 
+  def __iter__(self):
+    """Iterate over the words in a vocabulary."""
+    for w,i in sorted(iteritems(self.word_id), key=lambda wc: wc[1]):
+      yield w
+
   @property
   def words(self):
     """ Ordered list of words according to their IDs."""
-    return [w for w,i in sorted(iteritems(self.word_id), key=lambda wc: wc[1])]
-  
+    return list(self)
+
   def __str__(self):
     return u"\n".join(self.words)
-  
+
   def __getitem__(self, key):
     return self.word_id[key]
+
+  def __contains__(self, key):
+    return key in self.word_id
+
+  def __delitem__(self, key):
+    """Delete a word from vocabulary.
+
+    Note:
+     To maintain consecutive IDs, this operation implemented
+     with a complexity of \\theta(n).
+    """
+    del self.word_id[key]
+    self.id_word = dict(enumerate(self.words))
+    self.word_id = {w:i for i,w in iteritems(self.id_word)}
 
   def __len__(self):
     return len(self.word_id)
@@ -156,7 +175,7 @@ class CountedVocabulary(OrderedVocabulary):
     Args:
       k (integer): specifies the top k most frequent words to be returned.
     """
-    word_count = {w: self.word_count[w] for w in self.words[:k]}
+    word_count = {w:self.word_count[w] for w in self.words[:k]}
     return CountedVocabulary(word_count=word_count)
 
   def min_count(self, n=1):
@@ -170,7 +189,11 @@ class CountedVocabulary(OrderedVocabulary):
 
   def __str__(self):
     return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words])
-  
+
+  def __delitem__(self, key):
+    super(CountedVocabulary, self).__delitem__(key)
+    self.word_count = {w:self.word_count[w] for w in self}
+
   @staticmethod
   def from_vocabfile(self, filename):
     """ Construct a CountedVocabulary out of a vocabulary file.
