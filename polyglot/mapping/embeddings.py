@@ -12,7 +12,7 @@ from numpy import float32
 from six import text_type as unicode
 from six import iteritems
 
-from base import CountedVocabulary, OrderedVocabulary
+from .base import CountedVocabulary, OrderedVocabulary
 
 
 logger = logging.getLogger(__name__)
