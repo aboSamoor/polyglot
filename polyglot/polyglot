@@ -16,11 +16,7 @@ from polyglot.base import Sequence, TextFile
 from polyglot.mapping import CountedVocabulary
 from polyglot.detect import Detector
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
-
-try:
-  from polyglot.downloader import Downloader
-except ImportError:
-  pass
+from polyglot.downloader import Downloader
 
 logger = logging.getLogger(__name__)
 LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"

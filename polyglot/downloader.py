@@ -13,7 +13,7 @@ The Polyglot corpus and module downloader.  This module defines several
 interfaces which can be used to download corpora, models, and other
 data packages that can be used with NLTK.
 
-DownloadingPackages
+Downloading Packages
 ====================
 If called with no arguments, ``download()`` will display an interactive
 interface which can be used to download and install new packages.
@@ -174,11 +174,11 @@ from io import open
 from collections import defaultdict
 import logging
 from os import path
+from json import loads
 
 from polyglot import data_path
 from detect.langids import isoLangs
 from icu import Locale
-from gslib import cs_api_map
 
 try:
   TKINTER = True
@@ -194,6 +194,8 @@ from six import text_type as unicode
 from six.moves import input
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.error import HTTPError, URLError
+from six.moves.http_client import HTTPSConnection
+
 
 logger = logging.getLogger(__name__)
 
@@ -293,21 +295,21 @@ class Package(object):
 
   @staticmethod
   def fromcsobj(csobj):
-    attrs = csobj.data
-    id_ = attrs.id
+    attrs = csobj
+    id_ = attrs["id"]
     id_ = id_.split(path.sep)
     id = ".".join(id_[1:3])
-    name = attrs.name.replace(path.sep, '.')
-    subdir = path.dirname(attrs.name)
-    url = attrs.mediaLink
-    size = attrs.size
-    checksum = attrs.md5Hash
-    filename = attrs.name
-    updated = attrs.updated
-    task = subdir.split(path.sep)[0] 
+    name = attrs["name"].replace(path.sep, '.')
+    subdir = path.dirname(attrs["name"])
+    url = attrs["mediaLink"]
+    size = attrs["size"]
+    checksum = attrs["md5Hash"]
+    filename = attrs["name"]
+    updated = attrs["updated"]
+    task = subdir.split(path.sep)[0]
     language = subdir.split(path.sep)[1]
     attrs = attrs
-    version = attrs.generation
+    version = attrs["generation"]
     return Package(**locals())
 
   def __lt__(self, other):
@@ -880,8 +882,13 @@ class Downloader(object):
     self._url = url or self._url
 
     # Download the index file.
-    gs = cs_api_map.GcsJsonApi(self._url, logger=logger)
-    objs = list(gs.ListObjects(self._url))
+    host = "www.googleapis.com"
+    conn = HTTPSConnection(host)
+    conn.request("GET", "/storage/v1/b/{}/o".format(self._url))
+    r1 = conn.getresponse()
+    data = r1.read()
+    data = loads(data)
+    objs = data["items"]
 
     self._index_timestamp = time.time()
 
