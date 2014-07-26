@@ -55,8 +55,8 @@ class VocabularyBase(object):
     """
     _words = []
     for w in words:
-      if isinstance(w, string_types):
-        _words.append(w.decode("utf-8"))
+      if isinstance(w, string_types) and not isinstance(w, unicode):
+        _words.append(unicode(w, encoding="utf-8"))
       else:
         _words.append(w)
     return _words
@@ -75,8 +75,8 @@ class VocabularyBase(object):
     return u"\n".join(self.words)
 
   def __getitem__(self, key):
-    if isinstance(key, string_types):
-      key = key.decode("utf-8")
+    if isinstance(key, string_types) and not isinstance(key, unicode):
+      key = unicode(key, encoding="utf-8")
     return self.word_id[key]
 
   def __contains__(self, key):

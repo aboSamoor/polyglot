@@ -81,6 +81,13 @@ class Embedding(object):
   def nearest_neighbors(self, word, top_k=10):
     """Return the nearest k words to the given `word`.
 
+    Args:
+      word (string): single word.
+      top_k (integer): decides how many neighbors to report.
+
+    Returns:
+      A list of words sorted by the distances. The closest is the first.
+
     Note:
       L2 metric is used to calculate distances.
     """
@@ -93,6 +100,13 @@ class Embedding(object):
 
   def distances(self, word, words):
     """Calculate eucledean pairwise distances between `word` and `words`.
+
+    Args:
+      word (string): single word.
+      words (list): list of strings.
+
+    Returns:
+      numpy array of the distances.
 
     Note:
       L2 metric is used to calculate distances.
@@ -155,7 +169,7 @@ class Embedding(object):
       vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
       vectors = np.zeros((vocab_size, layer1_size), dtype=float32)
       for line_no, line in enumerate(fin):
-        parts = line.decode("utf-8").strip().split()
+        parts = unicode(line).strip().split()
         # We differ from Gensim implementation.
         # Our assumption that a difference of one happens because of having a
         # space in the word.
