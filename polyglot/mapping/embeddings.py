@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""template.py: Description of what the module does."""
+"""Defines classes related to mapping vocabulary to n-dimensional points."""
 
 from io import open
 import logging
@@ -78,6 +78,32 @@ class Embedding(object):
       return self
     return Embedding(vectors=vectors, vocabulary=vocabulary)
 
+  def nearest_neighbors(self, word, top_k=10):
+    """Return the nearest k words to the given `word`.
+
+    Note:
+      L2 metric is used to calculate distances.
+    """
+    #TODO(rmyeid): Use scikit ball tree, if scikit is available
+    point = self[word]
+    diff = self.vectors - point
+    distances = np.linalg.norm(diff, axis=1)
+    top_ids = distances.argsort()[1:top_k+1]
+    return [self.vocabulary.id_word[i] for i in top_ids]
+
+  def distances(self, word, words):
+    """Calculate eucledean pairwise distances between `word` and `words`.
+
+    Note:
+      L2 metric is used to calculate distances.
+    """
+
+    point = self[word]
+    vectors = np.asarray([self[w] for w in words])
+    diff = vectors - point
+    distances = np.linalg.norm(diff, axis=1)
+    return distances
+
   @staticmethod
   def from_gensim(model):
     word_counts = {}
@@ -129,10 +155,17 @@ class Embedding(object):
       vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
       vectors = np.zeros((vocab_size, layer1_size), dtype=float32)
       for line_no, line in enumerate(fin):
-        parts = unicode(line).split()
-        if len(parts) != layer1_size + 1:
+        parts = line.decode("utf-8").strip().split()
+        # We differ from Gensim implementation.
+        # Our assumption that a difference of one happens because of having a
+        # space in the word.
+        if len(parts) == layer1_size + 1:
+          word, weights = parts[0], list(map(float32, parts[1:]))
+        elif len(parts) == layer1_size + 2:
+          word, weights = parts[:2], list(map(float32, parts[2:]))
+          word = u" ".join(word)
+        else:
           raise ValueError("invalid vector on line %s (is this really the text format?)" % (line_no))
-        word, weights = parts[0], list(map(float32, parts[1:]))
         index = line_no
         words.append(word)
         vectors[index,:] = weights

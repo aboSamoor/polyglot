@@ -75,6 +75,8 @@ class VocabularyBase(object):
     return u"\n".join(self.words)
 
   def __getitem__(self, key):
+    if isinstance(key, string_types):
+      key = key.decode("utf-8")
     return self.word_id[key]
 
   def __contains__(self, key):

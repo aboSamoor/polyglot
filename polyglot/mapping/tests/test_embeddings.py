@@ -48,6 +48,12 @@ class EmbeddingTest(unittest.TestCase):
     self.assertEqual(self.model.shape, (8, 5))
     self.assertEqual(self.model.words, self.words[:5]+self.words[6:])
     self.assertFalse(self.words[5] in self.model)
+
+  def test_word_with_space(self):
+    new_dump = word2vec_dump.replace("9", "10") + u"\na b 1.0 2.0 3.0 4.0 5.0"
+    fname = StringIO(new_dump)
+    model = Embedding.from_word2vec(fname, binary=0, fvocab=None)
+    self.assertEqual(model.words[-1], u"a b")
     
 
 if __name__ == "__main__":
