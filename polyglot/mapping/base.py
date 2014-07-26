@@ -11,6 +11,7 @@ from concurrent.futures import ProcessPoolExecutor
 from six.moves import zip
 from six import iteritems
 from six import text_type as unicode
+from six import string_types
 
 
 def count(lines):
@@ -41,9 +42,24 @@ class VocabularyBase(object):
     Args:
       words (list/set): list or set of words.
     """
-
+    words = self.sanitize_words(words)
     self.word_id = {w:i for i, w in enumerate(sorted(words))}
     self.id_word = {i:w for w,i in iteritems(self.word_id)}
+
+  def sanitize_words(self, words):
+    """Guarantees that all textual symbols are unicode.
+
+    Note:
+      We do not convert numbers, only strings to unicode.
+      We assume that the strings are encoded in utf-8.
+    """
+    _words = []
+    for w in words:
+      if isinstance(w, string_types):
+        _words.append(w.decode("utf-8"))
+      else:
+        _words.append(w)
+    return _words
 
   def __iter__(self):
     """Iterate over the words in a vocabulary."""
@@ -56,7 +72,7 @@ class VocabularyBase(object):
     return list(self)
 
   def __str__(self):
-    return u"\n".join(self.words).encode("utf-8")
+    return u"\n".join(self.words)
 
   def __getitem__(self, key):
     return self.word_id[key]
@@ -109,6 +125,7 @@ class OrderedVocabulary(VocabularyBase):
       words (list): list of sorted words according to frequency.
     """
 
+    words = self.sanitize_words(words)
     self.word_id = {w:i for i, w in enumerate(words)}
     self.id_word = {i:w for w,i in iteritems(self.word_id)}
 
@@ -189,7 +206,7 @@ class CountedVocabulary(OrderedVocabulary):
     return Vocabulary(word_count=word_count)
 
   def __str__(self):
-    return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words]).encode("utf-8")
+    return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words])
 
   def __delitem__(self, key):
     super(CountedVocabulary, self).__delitem__(key)

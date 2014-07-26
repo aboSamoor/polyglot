@@ -12,6 +12,7 @@ from numpy import float32
 from six import text_type as unicode
 from six import iteritems
 from six.moves import map
+from six import string_types
 
 from .base import CountedVocabulary, OrderedVocabulary
 
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def _open(file_, mode='r'):
-  if isinstance(file_, unicode):
+  if isinstance(file_, string_types):
     return open(file_, mode)
   return file_
 
@@ -114,7 +115,7 @@ class Embedding(object):
             break
           if ch != b'\n': # ignore newlines in front of words (some binary files have newline, some don't)
             word.append(ch)
-        word = unicode(b''.join(word))
+        word = b''.join(word)
         index = line_no
         words.append(word)
         vectors[index, :] = np.fromstring(fin.read(binary_len), dtype=float32)
