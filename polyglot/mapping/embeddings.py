@@ -78,6 +78,20 @@ class Embedding(object):
       return self
     return Embedding(vectors=vectors, vocabulary=vocabulary)
 
+  def normalize_words(self, ord=2, inplace=False):
+    """Normalize embeddings matrix row-wise.
+
+    Args:
+      ord: normalization order. Possible values {1, 2, 'inf', '-inf'}
+    """
+    if ord == 2:
+      ord = None # numpy uses this flag to indicate l2.
+    vectors = self.vectors.T / np.linalg.norm(self.vectors, ord, axis=1)
+    if inplace:
+      self.vectors = vectors.T
+      return self
+    return Embedding(vectors=vectors.T, vocabulary=self.vocabulary)
+
   def nearest_neighbors(self, word, top_k=10):
     """Return the nearest k words to the given `word`.
 
@@ -130,7 +144,7 @@ class Embedding(object):
     return Embedding(vocabulary=vocab, vectors=vectors)
 
   @staticmethod
-  def _from_word2vec_vocab(fvocab):
+  def from_word2vec_vocab(fvocab):
     counts = {}
     with _open(fvocab) as fin:
       for line in fin:
@@ -201,7 +215,7 @@ class Embedding(object):
     vocabulary = None
     if fvocab is not None:
       logger.info("loading word counts from %s" % (fvocab))
-      vocabulary = Embedding._from_word2vec_vocab(fvocab)
+      vocabulary = Embedding.from_word2vec_vocab(fvocab)
 
     logger.info("loading projection weights from %s" % (fname))
     if binary:

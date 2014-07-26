@@ -54,6 +54,11 @@ class EmbeddingTest(unittest.TestCase):
     fname = StringIO(new_dump)
     model = Embedding.from_word2vec(fname, binary=0, fvocab=None)
     self.assertEqual(model.words[-1], u"a b")
+
+  def test_norm(self):
+    model = self.model.normalize_words()
+    norms = (model.vectors ** 2).sum(axis=1)
+    _ = [self.assertAlmostEqual(x,y, places=6) for x,y in zip(norms, [1.]*model.shape[0])]
     
 
 if __name__ == "__main__":
