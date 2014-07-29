@@ -177,13 +177,20 @@ class Embedding(object):
 
   @staticmethod
   def _from_word2vec_text(fname):
-    with _open(fname) as fin:
+    with _open(fname, 'rb') as fin:
       words = []
       header = unicode(fin.readline())
       vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
-      vectors = np.zeros((vocab_size, layer1_size), dtype=float32)
+      vectors = []
       for line_no, line in enumerate(fin):
-        parts = unicode(line).strip().split()
+        try:
+          parts = unicode(line, encoding="utf-8").strip().split()
+        except TypeError as e:
+          parts = line.strip().split()
+        except Exception as e:
+          logger.warning("We ignored line number {} because of erros in parsing"
+                          "\n{}".format(line_no, e))
+          continue
         # We differ from Gensim implementation.
         # Our assumption that a difference of one happens because of having a
         # space in the word.
@@ -193,10 +200,13 @@ class Embedding(object):
           word, weights = parts[:2], list(map(float32, parts[2:]))
           word = u" ".join(word)
         else:
-          raise ValueError("invalid vector on line %s (is this really the text format?)" % (line_no))
+          logger.warning("We ignored line number {} because of unrecognized "
+                          "number of columns {}".format(line_no, parts[:-layer1_size]))
+          continue
         index = line_no
         words.append(word)
-        vectors[index,:] = weights
+        vectors.append(weights)
+      vectors = np.asarray(vectors, dtype=np.float32)
       return words, vectors
 
   @staticmethod
