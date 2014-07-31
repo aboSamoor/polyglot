@@ -4,8 +4,8 @@ __author__ = 'Rami Al-Rfou'
 __email__ = 'rmyeid@gmail.com'
 __version__ = '14.11'
 
-from .base import Sequence
+from .base import Sequence, TokenSequence
 
-__all__ = ['Sequence']
+__all__ = ['Sequence', 'TokenSequence']
 
 data_path = '~/'

@@ -68,6 +68,12 @@ class Embedding(object):
   def shape(self):
     return self.vectors.shape
 
+  def get(self, k, default=None):
+    try:
+      return self[k]
+    except KeyError as e:
+      return default
+
   def most_frequent(self, k, inplace=False):
     """Only most frequent k words to be included in the embeddings."""
     vocabulary = self.vocabulary.most_frequent(k)

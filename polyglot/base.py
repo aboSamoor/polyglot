@@ -6,6 +6,7 @@
 from io import open, StringIO
 from collections import Counter
 import os
+from itertools import izip, islice
 
 from six.moves import zip
 from six import text_type as unicode
@@ -28,7 +29,7 @@ class Sequence(object):
   @property
   def text(self):
     return self.__text
-    
+
   def __iter__(self):
     for start, end in zip(self.idx[:-1], self.idx[1:]):
       yield self.text[start: end]
@@ -39,7 +40,7 @@ class Sequence(object):
     return [x.strip() for x in self if x.strip()]
 
   def __str__(self):
-    return u'\n'.join(self.tokens()).encode('utf8')
+    return u'\n'.join(self.tokens())
 
   def split(self, sequence):
     """ Split into subsequences according to `sequence`."""
@@ -58,6 +59,23 @@ class Sequence(object):
 
   def empty(self):
     return not self.text.strip()
+
+
+class TokenSequence(list):
+  """A list of tokens.
+
+  Args:
+   tokens (list): list of symbols.
+  """
+
+  def sliding_window(self, width=2, padding=None):
+    seq = self
+    if padding:
+      pad = [padding for x in range(width/2)]
+      seq = pad + self + pad
+    args = [islice(seq, i, None)  for i in range(width)]
+    for x in izip(*args):
+      yield x
 
 
 class TextFile(object):

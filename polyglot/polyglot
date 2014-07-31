@@ -30,21 +30,21 @@ def vocab_counter(args):
     v = v.min_count(args.min_count)
   if args.most_freq > 0:
     v = v.most_frequent(args.most_freq)
-  print(v)
+  print(v.encode("utf-8"))
 
 
 def detect(args):
   """ Detect the language of each line."""
   for l in args.input:
     if l.strip():
-      print(Detector(l).name)
+      print(Detector(l).name.encode("utf-8"))
 
 
 def cat(args):
   """ Concatenate the content of the input file."""
 
   for l in args.input:
-    print(l.strip())
+    print(l.strip().encode("utf-8"))
 
 
 def download(args):
@@ -71,12 +71,12 @@ def segment(args):
   if args.only_sent:
     for l in args.input:
       seq = Sequence(l)
-      if not seq.empty(): print(s_tokenizer.transform(seq))
+      if not seq.empty(): print(s_tokenizer.transform(seq).encode("utf-8"))
 
   elif args.only_word:
     for l in args.input:
       seq = Sequence(l)
-      if not seq.empty(): print(w_tokenizer.transform(seq))
+      if not seq.empty(): print(w_tokenizer.transform(seq).encode("utf-8"))
 
   else:
     for l in args.input:
@@ -85,7 +85,7 @@ def segment(args):
       words = w_tokenizer.transform(seq)
       for tokenized_sent in words.split(sents):
         if not tokenized_sent.empty():
-          print(u' '.join(tokenized_sent.tokens()))
+          print(u' '.join(tokenized_sent.tokens()).encode("utf-8"))
 
 
 def debug(type_, value, tb):
