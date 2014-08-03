@@ -6,7 +6,7 @@
 from io import open, StringIO
 from collections import Counter
 import os
-from itertools import izip, islice
+from itertools import islice
 
 from six.moves import zip
 from six import text_type as unicode
@@ -74,7 +74,7 @@ class TokenSequence(list):
       pad = [padding for x in range(width/2)]
       seq = pad + self + pad
     args = [islice(seq, i, None)  for i in range(width)]
-    for x in izip(*args):
+    for x in zip(*args):
       yield x
 
 
