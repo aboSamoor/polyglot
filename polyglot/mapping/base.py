@@ -96,6 +96,9 @@ class VocabularyBase(object):
   def __len__(self):
     return len(self.word_id)
 
+  def getstate(self):
+    return list(self.words)
+
   @staticmethod
   def from_vocabfile(self, filename):
     """ Construct a CountedVocabulary out of a vocabulary file.
@@ -213,6 +216,11 @@ class CountedVocabulary(OrderedVocabulary):
   def __delitem__(self, key):
     super(CountedVocabulary, self).__delitem__(key)
     self.word_count = {w:self.word_count[w] for w in self}
+
+  def getstate(self):
+    words = list(self.words)
+    counts = [self.word_count[w] for w in words]
+    return (words, counts)
 
   @staticmethod
   def from_vocabfile(self, filename):
