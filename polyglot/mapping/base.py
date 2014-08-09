@@ -96,6 +96,12 @@ class VocabularyBase(object):
   def __len__(self):
     return len(self.word_id)
 
+  def get(self, k, default=None):
+    try:
+      return self[k]
+    except KeyError as e:
+      return default
+
   def getstate(self):
     return list(self.words)
 
