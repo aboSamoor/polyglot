@@ -18,21 +18,10 @@ from six import string_types
 from six.moves import cPickle as pickle
 
 from .base import CountedVocabulary, OrderedVocabulary
+from ..utils import _open
 
 
 logger = logging.getLogger(__name__)
-
-
-def _open(file_, mode='r'):
-
-  if isinstance(file_, string_types):
-    _, ext = path.splitext(file_)
-    if ext in {'.bz2', '.gz'}:
-      s = tarfile.open(file_)
-      return s.extractfile(s.next())
-    else:
-      return open(file_, mode)
-  return file_
 
 
 class Embedding(object):

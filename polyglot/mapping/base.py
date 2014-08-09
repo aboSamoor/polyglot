@@ -13,6 +13,7 @@ from six import iteritems
 from six import text_type as unicode
 from six import string_types
 
+from ..utils import _open
 
 def count(lines):
   """ Counts the word frequences in a list of sentences.
@@ -105,16 +106,16 @@ class VocabularyBase(object):
   def getstate(self):
     return list(self.words)
 
-  @staticmethod
-  def from_vocabfile(self, filename):
+  @classmethod
+  def from_vocabfile(cls, filename):
     """ Construct a CountedVocabulary out of a vocabulary file.
 
     Note:
       File has the following format word1
                                     word2
     """
-    words = [x.strip() for x in open(filename, 'r').read().splitlines()]
-    return VocabularyBase(words=words)
+    words = [x.strip() for x in _open(filename, 'r').read().splitlines()]
+    return cls(words=words)
 
 
 class OrderedVocabulary(VocabularyBase):
