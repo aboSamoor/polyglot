@@ -161,5 +161,3 @@ class TextFile(object):
     if not line.endswith('\n'):
       line += self.open_file.readline()
     return line
-
-
