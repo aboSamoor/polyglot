@@ -177,7 +177,7 @@ from os import path
 from json import loads
 
 from polyglot import data_path
-from detect.langids import isoLangs
+from polyglot.detect.langids import isoLangs
 from icu import Locale
 
 try:
