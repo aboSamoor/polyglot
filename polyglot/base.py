@@ -40,6 +40,10 @@ class Sequence(object):
     return [x.strip() for x in self if x.strip()]
 
   def __str__(self):
+    s = self.__unicode__()
+    return s.encode("utf-8")
+
+  def __unicode__(self):
     return u'\n'.join(self.tokens())
 
   def split(self, sequence):

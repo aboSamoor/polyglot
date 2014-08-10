@@ -72,8 +72,12 @@ class VocabularyBase(object):
     """ Ordered list of words according to their IDs."""
     return list(self)
 
-  def __str__(self):
+  def __unicode__(self):
     return u"\n".join(self.words)
+
+  def __str__(self):
+    s = self.__unicode__()
+    return s.encode("utf-8")
 
   def __getitem__(self, key):
     if isinstance(key, string_types) and not isinstance(key, unicode):
@@ -217,7 +221,7 @@ class CountedVocabulary(OrderedVocabulary):
     word_count = {w:c for w,c in iteritems(self.word_count) if c >= n}
     return Vocabulary(word_count=word_count)
 
-  def __str__(self):
+  def __unicode__(self):
     return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words])
 
   def __delitem__(self, key):
