@@ -177,6 +177,18 @@ class CountedVocabulary(OrderedVocabulary):
     self.word_count = dict(sorted_counts)
 
   @staticmethod
+  def from_textfiles(files, workers=1, job_size=1000):
+    c = Counter()
+    if workers == 1:
+      for lines in files.iter_chunks(job_size):
+        c.update(count(lines))
+    else:
+      with ProcessPoolExecutor(max_workers=workers) as executor:
+        for counter_ in executor.map(CountedVocabulary.from_textfile, files.names):
+          c.update(Counter(counter_.word_count))
+    return CountedVocabulary(word_count=c)
+
+  @staticmethod
   def from_textfile(textfile, workers=1, job_size=1000):
     """ Count the set of words appeared in a text file.
 

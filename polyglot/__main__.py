@@ -15,7 +15,7 @@ from six import iteritems
 
 from icu import Locale
 
-from polyglot.base import Sequence, TextFile
+from polyglot.base import Sequence, TextFile, TextFiles
 from polyglot.mapping import CountedVocabulary
 from polyglot.detect import Detector
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
@@ -30,8 +30,10 @@ LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
 def vocab_counter(args):
   """Calculate the vocabulary."""
-
-  v = CountedVocabulary.from_textfile(textfile=args.input, workers=args.workers)
+  if isinstance(args.input, TextFiles):
+    v = CountedVocabulary.from_textfiles(args.input, workers=args.workers)
+  else:
+    v = CountedVocabulary.from_textfile(args.input, workers=args.workers)
   if args.min_count > 1: 
     v = v.min_count(args.min_count)
   if args.most_freq > 0:
@@ -48,7 +50,6 @@ def detect(args):
 
 def cat(args):
   """ Concatenate the content of the input file."""
-
   for l in args.input:
     _print(l.strip())
 
@@ -120,28 +121,31 @@ def main():
                       'seperates documents, records or even sentences.')
   parser.add_argument('--workers', default=1, type=int,
                       help='Number of parallel processes.')
-  parser.add_argument('--input', nargs='?', type=TextFile,
-                      default=TextFile(sys.stdin.fileno()))
   parser.add_argument("-l", "--log", dest="log", help="log verbosity level",
                       default="INFO")
   parser.add_argument("--debug", dest="debug", action='store_true', default=False,
                       help="drop a debugger if an exception is raised.")
-
 
   # Language detector
   detector = subparsers.add_parser('detect',
                                    help="Detect the language(s) used in text.")
   detector.add_argument('--fine', action='store_true', default=False,
                         dest='fine_grain')
+  detector.add_argument('--input', nargs='*', type=TextFile,
+                        default=TextFile(sys.stdin.fileno()))
   detector.set_defaults(func=detect)
 
   # Morphological Analyzer
   morph = subparsers.add_parser('morph')
+  morph.add_argument('--input', nargs='*', type=TextFile,
+                     default=TextFile(sys.stdin.fileno()))
   morph.set_defaults(func=morph)
 
   # Tokenizer
   tokenizer = subparsers.add_parser('tokenize',
                                     help="Tokenize text into sentences and words.")
+  tokenizer.add_argument('--input', nargs='*', type=TextFile,
+                         default=TextFile(sys.stdin.fileno()))
   group1= tokenizer.add_mutually_exclusive_group()
   group1.add_argument("--only-sent", default=False, action="store_true",
                       help="Segment sentences without word tokenization")
@@ -169,6 +173,8 @@ def main():
   # Vocabulary Counter
   counter = subparsers.add_parser('count',
                                   help="Count words frequency in a corpus.")
+  counter.add_argument('--input', nargs='*', type=TextFile,
+                        default=TextFile(sys.stdin.fileno()))
   group1= counter.add_mutually_exclusive_group()
   group1.add_argument("--min-count", type=int, default=1,
                       help="Ignore all words that appear <= min_freq.")
@@ -179,15 +185,22 @@ def main():
   # Concatenate the input file
   catter = subparsers.add_parser('cat',
                                  help="Print the contents of the input file to the screen.")
+  catter.add_argument('--input', nargs='*', type=TextFile,
+                      default=TextFile(sys.stdin.fileno()))
   catter.set_defaults(func=cat)
 
   # Named Entity Chunker
-  subparsers.add_parser('ner',
-                        help="Named entity recognition chunking.")
+  ner = subparsers.add_parser('ner',
+                              help="Named entity recognition chunking.")
+  ner.add_argument('--input', nargs='*', type=TextFile,
+                   default=TextFile(sys.stdin.fileno()))
 
   # Sentiment Analysis
-  subparsers.add_parser('sentiment',
-                        help="Classify text to positive and negative polarity.")
+  senti = subparsers.add_parser('sentiment',
+                                help="Classify text to positive and negative polarity.")
+
+  senti.add_argument('--input', nargs='*', type=TextFile,
+                     default=TextFile(sys.stdin.fileno()))
 
   args = parser.parse_args()
   numeric_level = getattr(logging, args.log.upper(), None)
@@ -198,6 +211,9 @@ def main():
    sys.excepthook = debug 
     
   #parser.set_defaults(func=cat)
+
+  if hasattr(args, 'input') and len(args.input) > 1:
+    args.input = TextFiles(args.input)
 
   if args.lang == 'detect' and args.func != download:
     header = 4096

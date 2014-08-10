@@ -12,6 +12,7 @@ import six
 from six.moves import zip
 from six import text_type as unicode
 from six import iteritems
+from six import string_types
 
 
 class Sequence(object):
@@ -98,6 +99,7 @@ class TextFile(object):
   """
 
   def __init__(self, file, delimiter=u'\n'):
+    self.name = file
     self.delimiter = delimiter
     self.open_file = open(file, 'r')
     self.buf = StringIO()
@@ -167,3 +169,38 @@ class TextFile(object):
     if not line.endswith('\n'):
       line += self.open_file.readline()
     return line
+
+
+class TextFiles(TextFile):
+  """Interface for a sequence of files."""
+
+  def __init__(self, files, delimiter=u'\n'):
+    if isinstance(files[0], string_types):
+      self.files = [TextFile(f) for f in files]
+    self.files = files
+    self.delimiter = delimiter
+    self.buf = StringIO()
+    self.i = 0
+    self.open_file = self.files[self.i].open_file
+
+  def readline(self):
+    raise NotImplementedError("Future work")
+
+  def peek(self, size):
+    self.open_file.seek(0)
+    contents = self.open_file.read(size)
+    self.open_file.seek(0)
+    return contents
+
+  def read(self, size=None):
+    content = super(TextFiles, self).read(size)
+    if not content and self.i < len(self.files)-1:
+      self.i += 1
+      self.buf = StringIO()
+      self.open_file = self.files[self.i].open_file
+      return self.read(size)
+    return content
+
+  @property
+  def names(self):
+    return [f.name for f in self.files]
