@@ -102,7 +102,7 @@ def debug(type_, value, tb):
     pdb.pm()
 
 
-if __name__ == "__main__":
+def main():
   parser = ArgumentParser("polyglot",
                           conflict_handler='resolve')
   subparsers = parser.add_subparsers(title='tools',
@@ -202,3 +202,6 @@ if __name__ == "__main__":
   args.delimiter = unicode(args.delimiter.decode('unicode-escape'))
   args.input.delimiter = args.delimiter
   args.func(args)
+
+if __name__ == '__main__':
+  sys.exit(main())

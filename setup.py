@@ -33,7 +33,11 @@ setup(
                 'polyglot.detect',
                 'polyglot.tokenize',
                 'polyglot.mapping'],
-    scripts=['polyglot/polyglot'],
+    entry_points={
+        'console_scripts': [
+            'polyglot = polyglot.__main__:main',
+        ],
+    },
     include_package_data=True,
     install_requires=requirements,
     license="GPLv3",
