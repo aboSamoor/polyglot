@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import sys
 from io import open
 from argparse import ArgumentParser, FileType
@@ -8,6 +9,7 @@ from collections import Counter
 from signal import signal, SIGPIPE, SIG_DFL
 import logging
 
+import six
 from six import text_type as unicode
 from six import iteritems
 
@@ -18,9 +20,10 @@ from polyglot.mapping import CountedVocabulary
 from polyglot.detect import Detector
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.downloader import Downloader
+from polyglot.utils import _print
 
 
-signal(SIGPIPE,SIG_DFL)
+signal(SIGPIPE, SIG_DFL)
 logger = logging.getLogger(__name__)
 LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
@@ -40,14 +43,14 @@ def detect(args):
   """ Detect the language of each line."""
   for l in args.input:
     if l.strip():
-      print(Detector(l).name.encode("utf-8"))
+      _print(Detector(l).name)
 
 
 def cat(args):
   """ Concatenate the content of the input file."""
 
   for l in args.input:
-    print(l.strip().encode("utf-8"))
+    _print(l.strip())
 
 
 def download(args):
@@ -74,12 +77,12 @@ def segment(args):
   if args.only_sent:
     for l in args.input:
       seq = Sequence(l)
-      if not seq.empty(): print(s_tokenizer.transform(seq).encode("utf-8"))
+      if not seq.empty(): _print(s_tokenizer.transform(seq))
 
   elif args.only_word:
     for l in args.input:
       seq = Sequence(l)
-      if not seq.empty(): print(w_tokenizer.transform(seq).encode("utf-8"))
+      if not seq.empty(): _print(w_tokenizer.transform(seq))
 
   else:
     for l in args.input:
@@ -88,8 +91,13 @@ def segment(args):
       words = w_tokenizer.transform(seq)
       for tokenized_sent in words.split(sents):
         if not tokenized_sent.empty():
-          print(u' '.join(tokenized_sent.tokens()).encode("utf-8"))
+          _print(u' '.join(tokenized_sent.tokens()))
 
+
+def remove_escape(text):
+  if six.PY3:
+    return unicode(text.encode("utf8").decode('unicode-escape'))
+  return unicode(text.decode('unicode-escape'))
 
 def debug(type_, value, tb):
   if hasattr(sys, 'ps1') or not sys.stderr.isatty():
@@ -199,7 +207,7 @@ def main():
     logger.info("Language {} is detected while reading the first {} bytes"
                 ".".format(lang.name, lang.read_bytes))
 
-  args.delimiter = unicode(args.delimiter.decode('unicode-escape'))
+  args.delimiter = remove_escape(args.delimiter)
   args.input.delimiter = args.delimiter
   args.func(args)
 

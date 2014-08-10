@@ -8,6 +8,7 @@ from collections import Counter
 import os
 from concurrent.futures import ProcessPoolExecutor
 
+import six
 from six.moves import zip
 from six import iteritems
 from six import text_type as unicode
@@ -76,8 +77,9 @@ class VocabularyBase(object):
     return u"\n".join(self.words)
 
   def __str__(self):
-    s = self.__unicode__()
-    return s.encode("utf-8")
+    if six.PY3:
+      return self.__unicode__()
+    return self.__unicode__().encode("utf-8")
 
   def __getitem__(self, key):
     if isinstance(key, string_types) and not isinstance(key, unicode):

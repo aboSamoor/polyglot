@@ -8,6 +8,7 @@ from collections import Counter
 import os
 from itertools import islice
 
+import six
 from six.moves import zip
 from six import text_type as unicode
 from six import iteritems
@@ -40,8 +41,9 @@ class Sequence(object):
     return [x.strip() for x in self if x.strip()]
 
   def __str__(self):
-    s = self.__unicode__()
-    return s.encode("utf-8")
+    if six.PY3:
+      return self.__unicode__()
+    return self.__unicode__().encode("utf-8")
 
   def __unicode__(self):
     return u'\n'.join(self.tokens())
