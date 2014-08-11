@@ -6,6 +6,7 @@
 from io import open, StringIO
 from collections import Counter
 import os
+from concurrent.futures import ProcessPoolExecutor
 from itertools import islice
 
 import six
@@ -169,6 +170,20 @@ class TextFile(object):
     if not line.endswith('\n'):
       line += self.open_file.readline()
     return line
+
+  def apply(self, func, workers=1, job_size=10000):
+    """Apply `func` to lines of text in parallel or sequential.
+
+    Args:
+      func : a function that takes a list of lines.
+    """
+    if workers == 1:
+      for lines in self.iter_chunks(job_size):
+        yield func(lines)
+    else:
+      with ProcessPoolExecutor(max_workers=workers) as executor:
+        for result in executor.map(func, self.iter_chunks(job_size)):
+          yield result
 
 
 class TextFiles(TextFile):

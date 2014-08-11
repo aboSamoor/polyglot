@@ -14,6 +14,7 @@ from six import iteritems
 from six import text_type as unicode
 from six import string_types
 
+from ..base import TextFile
 from ..utils import _open
 
 def count(lines):
@@ -188,8 +189,8 @@ class CountedVocabulary(OrderedVocabulary):
           c.update(Counter(counter_.word_count))
     return CountedVocabulary(word_count=c)
 
-  @staticmethod
-  def from_textfile(textfile, workers=1, job_size=1000):
+  @classmethod
+  def from_textfile(cls, textfile, workers=1, job_size=1000):
     """ Count the set of words appeared in a text file.
 
     Args:
@@ -205,16 +206,10 @@ class CountedVocabulary(OrderedVocabulary):
     """
 
     c = Counter()
-    if isinstance(textfile, unicode):
+    if isinstance(textfile, string_types):
       textfile = TextFile(textfile)
-    if workers == 1:
-      for lines in textfile.iter_chunks(job_size):
-        c.update(count(lines))
-    else:
-      with ProcessPoolExecutor(max_workers=workers) as executor:
-        for counter_ in executor.map(count, textfile.iter_chunks(job_size)):
-          c.update(counter_)
-
+    for result in textfile.apply(count, workers, job_size):
+      c.update(result)
     return CountedVocabulary(word_count=c)
 
   def most_frequent(self, k):
