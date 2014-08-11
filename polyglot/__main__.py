@@ -132,20 +132,20 @@ def main():
   detector.add_argument('--fine', action='store_true', default=False,
                         dest='fine_grain')
   detector.add_argument('--input', nargs='*', type=TextFile,
-                        default=TextFile(sys.stdin.fileno()))
+                        default=[TextFile(sys.stdin.fileno())])
   detector.set_defaults(func=detect)
 
   # Morphological Analyzer
   morph = subparsers.add_parser('morph')
   morph.add_argument('--input', nargs='*', type=TextFile,
-                     default=TextFile(sys.stdin.fileno()))
+                     default=[TextFile(sys.stdin.fileno())])
   morph.set_defaults(func=morph)
 
   # Tokenizer
   tokenizer = subparsers.add_parser('tokenize',
                                     help="Tokenize text into sentences and words.")
   tokenizer.add_argument('--input', nargs='*', type=TextFile,
-                         default=TextFile(sys.stdin.fileno()))
+                         default=[TextFile(sys.stdin.fileno())])
   group1= tokenizer.add_mutually_exclusive_group()
   group1.add_argument("--only-sent", default=False, action="store_true",
                       help="Segment sentences without word tokenization")
@@ -174,7 +174,7 @@ def main():
   counter = subparsers.add_parser('count',
                                   help="Count words frequency in a corpus.")
   counter.add_argument('--input', nargs='*', type=TextFile,
-                        default=TextFile(sys.stdin.fileno()))
+                        default=[TextFile(sys.stdin.fileno())])
   group1= counter.add_mutually_exclusive_group()
   group1.add_argument("--min-count", type=int, default=1,
                       help="Ignore all words that appear <= min_freq.")
@@ -186,21 +186,21 @@ def main():
   catter = subparsers.add_parser('cat',
                                  help="Print the contents of the input file to the screen.")
   catter.add_argument('--input', nargs='*', type=TextFile,
-                      default=TextFile(sys.stdin.fileno()))
+                      default=[TextFile(sys.stdin.fileno())])
   catter.set_defaults(func=cat)
 
   # Named Entity Chunker
   ner = subparsers.add_parser('ner',
                               help="Named entity recognition chunking.")
   ner.add_argument('--input', nargs='*', type=TextFile,
-                   default=TextFile(sys.stdin.fileno()))
+                   default=[TextFile(sys.stdin.fileno())])
 
   # Sentiment Analysis
   senti = subparsers.add_parser('sentiment',
                                 help="Classify text to positive and negative polarity.")
 
   senti.add_argument('--input', nargs='*', type=TextFile,
-                     default=TextFile(sys.stdin.fileno()))
+                     default=[TextFile(sys.stdin.fileno())])
 
   args = parser.parse_args()
   numeric_level = getattr(logging, args.log.upper(), None)
@@ -212,8 +212,10 @@ def main():
     
   #parser.set_defaults(func=cat)
 
-  if hasattr(args, 'input') and len(args.input) > 1:
+  if len(args.input) > 1:
     args.input = TextFiles(args.input)
+  else:
+    args.input = args.input[0]
 
   if args.lang == 'detect' and args.func != download:
     header = 4096
