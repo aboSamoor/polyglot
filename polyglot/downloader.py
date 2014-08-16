@@ -190,6 +190,7 @@ except:
   TclError = ValueError
 
 import stat
+import six
 from six import text_type as unicode
 from six.moves import input
 from six.moves.urllib.request import urlopen
@@ -887,6 +888,8 @@ class Downloader(object):
     conn.request("GET", "/storage/v1/b/{}/o".format(self._url))
     r1 = conn.getresponse()
     data = r1.read()
+    if six.PY3:
+      data = data.decode('utf-8')
     data = loads(data)
     objs = data["items"]
 
