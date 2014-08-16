@@ -212,21 +212,22 @@ def main():
     
   #parser.set_defaults(func=cat)
 
-  if len(args.input) > 1:
-    args.input = TextFiles(args.input)
-  else:
-    args.input = args.input[0]
+  if args.func != download:
+    if len(args.input) > 1:
+      args.input = TextFiles(args.input)
+    else:
+      args.input = args.input[0]
 
-  if args.lang == 'detect' and args.func != download:
-    header = 4096
-    text = args.input.peek(header)
-    lang = Detector(text)
-    args.lang = lang.code
-    logger.info("Language {} is detected while reading the first {} bytes"
-                ".".format(lang.name, lang.read_bytes))
+    if args.lang == 'detect':
+      header = 4096
+      text = args.input.peek(header)
+      lang = Detector(text)
+      args.lang = lang.code
+      logger.info("Language {} is detected while reading the first {} bytes"
+                  ".".format(lang.name, lang.read_bytes))
 
-  args.delimiter = remove_escape(args.delimiter)
-  args.input.delimiter = args.delimiter
+    args.delimiter = remove_escape(args.delimiter)
+    args.input.delimiter = args.delimiter
   args.func(args)
 
 if __name__ == '__main__':
