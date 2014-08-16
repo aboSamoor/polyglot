@@ -6,6 +6,7 @@
 from __future__ import print_function
 from os import path
 import os
+import tarfile
 
 import six
 from six import text_type as unicode

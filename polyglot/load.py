@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from os import path
-
+import os
 from . import data_path
-from .mapping import Embedding
+from .mapping import Embedding, CountedVocabulary
 
 from . import data_path
 
@@ -17,6 +17,7 @@ polyglot_path = path.join(path.abspath(data_path), "polyglot_data")
 resource_dir = {
   "cw_embeddings":"embeddings2",
   "visualization": "tsne2",
+  "wiki_vocab": "counts2",
 }
 
 
@@ -46,3 +47,15 @@ def load_embeddings(lang="en", type="cw"):
   src_dir = "{}_embeddings".format(type)
   p = locate_resource(src_dir, lang)
   return Embedding.load(p)
+
+
+def load_vocabulary(lang="en", type="wiki"):
+  """Return a CountedVocabulary object.
+
+  Args:
+    lang (string): language code.
+    type (string): wiki,...
+  """
+  src_dir = "{}_vocab".format(type)
+  p = locate_resource(src_dir, lang)
+  return CountedVocabulary.from_vocabfile(p)

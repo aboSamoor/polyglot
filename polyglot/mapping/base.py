@@ -243,13 +243,13 @@ class CountedVocabulary(OrderedVocabulary):
     return (words, counts)
 
   @staticmethod
-  def from_vocabfile(self, filename):
+  def from_vocabfile(filename):
     """ Construct a CountedVocabulary out of a vocabulary file.
 
     Note:
       File has the following format word1 count1
                                     word2 count2
     """
-    word_count = [x.strip().split() for x in open(filename, 'r').read().splitlines()]
+    word_count = [x.strip().split() for x in _open(filename, 'r').read().splitlines()]
     word_count = {w:int(c) for w,c in word_count}
     return CountedVocabulary(word_count=word_count)
