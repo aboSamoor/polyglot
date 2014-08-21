@@ -12,7 +12,7 @@ polyglot
         :target: https://pypi.python.org/pypi/polyglot
 
 
-Polyglot is a natuaral language pipeline that supports massive multilingual applications.
+Polyglot is a natural language pipeline that supports massive multilingual applications.
 
 * Free software: BSD license
 * Documentation: http://polyglot.readthedocs.org.
