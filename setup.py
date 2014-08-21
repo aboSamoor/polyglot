@@ -14,8 +14,10 @@ except ImportError:
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-requirements = [
-]
+if sys.version_info.major == 2:
+    requirements = ['futures']
+else:
+    requirements = []
 
 test_requirements = [
     # TODO: put package test requirements here
@@ -24,7 +26,7 @@ test_requirements = [
 setup(
     name='polyglot',
     version='"14.11"',
-    description='Polyglot is a natuaral language pipeline that supports massive multilingual applications.',
+    description='Polyglot is a natural language pipeline that supports massive multilingual applications.',
     long_description=readme + '\n\n' + history,
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
