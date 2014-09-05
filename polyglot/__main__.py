@@ -21,7 +21,7 @@ from polyglot.detect import Detector
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.downloader import Downloader
 from polyglot.utils import _print
-
+from polyglot.chunk.ner import NEChunker
 
 signal(SIGPIPE, SIG_DFL)
 logger = logging.getLogger(__name__)
@@ -47,6 +47,14 @@ def detect(args):
     if l.strip():
       _print(Detector(l).name)
 
+
+def ner_chunk(args):
+  """Chunk named entities."""
+  chunker = NEChunker(lang=args.lang)
+  for l in args.input:
+    words = l.strip().split()
+    line_annotations = [u"{}\t{}".format(w,p) for w, p in chunker.annotate(words)]
+    _print(u"\n".join(line_annotations))
 
 def cat(args):
   """ Concatenate the content of the input file."""
@@ -99,6 +107,7 @@ def remove_escape(text):
   if six.PY3:
     return unicode(text.encode("utf8").decode('unicode-escape'))
   return unicode(text.decode('unicode-escape'))
+
 
 def debug(type_, value, tb):
   if hasattr(sys, 'ps1') or not sys.stderr.isatty():
@@ -192,6 +201,7 @@ def main():
   # Named Entity Chunker
   ner = subparsers.add_parser('ner',
                               help="Named entity recognition chunking.")
+  ner.set_defaults(func=ner_chunk)
   ner.add_argument('--input', nargs='*', type=TextFile,
                    default=[TextFile(sys.stdin.fileno())])
 
