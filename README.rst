@@ -14,7 +14,7 @@ polyglot
 
 Polyglot is a natuaral language pipeline that supports massive multilingual applications.
 
-* Free software: BSD license
+* Free software: GPLv3 license
 * Documentation: http://polyglot.readthedocs.org.
 
 Features
