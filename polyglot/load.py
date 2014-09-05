@@ -3,6 +3,10 @@
 
 from os import path
 import os
+
+from six import PY2
+from six.moves import cPickle as pickle
+from .utils import _open
 from . import data_path
 from .mapping import Embedding, CountedVocabulary
 
@@ -18,6 +22,7 @@ resource_dir = {
   "cw_embeddings":"embeddings2",
   "visualization": "tsne2",
   "wiki_vocab": "counts2",
+  "ner2": "ner2"
 }
 
 
@@ -32,8 +37,7 @@ def locate_resource(name, lang, filter=None):
   p = path.join(polyglot_path, task_dir, lang)
   if not path.isdir(p):
     raise ValueError("This resource is not available "
-      "try to run\n\n$polyglot download {}.{}".format(name, lang))
-
+                     "try to run\n\n$polyglot download {}.{}".format(task_dir, lang))
   return path.join(p, os.listdir(p)[0])
 
 
@@ -59,3 +63,19 @@ def load_vocabulary(lang="en", type="wiki"):
   src_dir = "{}_vocab".format(type)
   p = locate_resource(src_dir, lang)
   return CountedVocabulary.from_vocabfile(p)
+
+
+def load_ner_model(lang="en", version="2"):
+  """Return a word embeddings object for `lang` and of type `type`
+
+  Args:
+    lang (string): language code.
+  """
+  src_dir = "ner{}".format(version)
+  p = locate_resource(src_dir, lang)
+  fh = _open(p)
+  try:
+    return pickle.load(fh)
+  except UnicodeDecodeError:
+    fh.seek(0)
+    return pickle.load(fh, encoding='latin1')
