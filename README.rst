@@ -10,9 +10,13 @@ polyglot
 
 .. image:: https://pypip.in/d/polyglot/badge.png
         :target: https://pypi.python.org/pypi/polyglot
+        
+.. image:: https://readthedocs.org/projects/polyglot/badge/?version=latest
+        :target: https://readthedocs.org/projects/polyglot/?badge=latest
+        :alt: Documentation Status        
 
 
-Polyglot is a natuaral language pipeline that supports massive multilingual applications.
+Polyglot is a natural language pipeline that supports massive multilingual applications.
 
 * Free software: GPLv3 license
 * Documentation: http://polyglot.readthedocs.org.
@@ -20,4 +24,9 @@ Polyglot is a natuaral language pipeline that supports massive multilingual appl
 Features
 --------
 
-* TODO
+* Tokenization
+* Language detection
+* Morphological analysis
+* Named Entity Recognition
+* Sentiment Analysis
+* Word Embeddings
