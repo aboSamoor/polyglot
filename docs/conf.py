@@ -16,6 +16,16 @@
 import sys
 import os
 
+
+
+from github_link import make_linkcode_resolve
+
+# Try to override the matplotlib configuration as early as possible
+try:
+  import gen_rst
+except:
+  pass
+
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
 # relative to the documentation root, use os.path.abspath to make it
@@ -40,7 +50,18 @@ import polyglot
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
+extensions = [
+#               'sphinxcontrib.napoleon',
+              'sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.pngmath',
+              'sphinx.ext.linkcode',
+              'sphinx.ext.viewcode',
+             ]
+
+autosummary_generate = True
+
+autodoc_default_flags = ['members', 'inherited-members']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -111,7 +132,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -273,3 +294,9 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# The following is used by sphinx.ext.linkcode to provide links to github
+linkcode_resolve = make_linkcode_resolve('polyglot',
+                                         u'https://github.com/aboSamoor/polyglot'
+                                         '/blob/{revision}/'
+                                         '{package}/{path}#L{lineno}')
