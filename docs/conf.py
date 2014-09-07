@@ -18,7 +18,7 @@ import os
 
 
 
-from github_link import make_linkcode_resolve
+from .github_link import make_linkcode_resolve
 
 # Try to override the matplotlib configuration as early as possible
 try:
