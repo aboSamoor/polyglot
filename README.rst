@@ -2,14 +2,29 @@
 polyglot
 ===============================
 
-.. image:: https://badge.fury.io/py/polyglot.png
-    :target: http://badge.fury.io/py/polyglot
-    
+.. image:: https://pypip.in/download/polyglot/badge.svg
+       :target: https://pypi.python.org/pypi/polyglot
+       :alt: Downloads
+
+.. image:: https://pypip.in/version/polyglot/badge.svg
+       :target: https://pypi.python.org/pypi/polyglot
+       :alt: Latest Version
+
+.. image:: https://pypip.in/py_versions/polyglot/badge.svg
+       :target: https://pypi.python.org/pypi/polyglot/
+       :alt: Supported Python versions
+
+.. image:: https://pypip.in/status/polyglot/badge.svg
+       :target: https://pypi.python.org/pypi/polyglot/
+       :alt: Development Status
+
+.. image:: https://pypip.in/format/polyglot/badge.svg
+       :target: https://pypi.python.org/pypi/polyglot/
+       :alt: Download format
+
 .. image:: https://travis-ci.org/aboSamoor/polyglot.png?branch=master
         :target: https://travis-ci.org/aboSamoor/polyglot
-
-.. image:: https://pypip.in/d/polyglot/badge.png
-        :target: https://pypi.python.org/pypi/polyglot
+        :alt: Build status
         
 .. image:: https://readthedocs.org/projects/polyglot/badge/?version=latest
         :target: https://readthedocs.org/projects/polyglot/?badge=latest
