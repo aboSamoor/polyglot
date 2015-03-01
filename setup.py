@@ -17,7 +17,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-requirements = open("requirements.txt", "r").read().splitlines()
+requirements = filter(lambda x: "http" not in x,
+                      open("requirements.txt", "r").read().splitlines())
 
 test_requirements = [
     # TODO: put package test requirements here
