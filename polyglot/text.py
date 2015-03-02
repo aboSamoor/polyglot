@@ -1,0 +1,445 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sys
+
+from polyglot.base import Sequence, TextFile, TextFiles
+from polyglot.chunk.ner import NEChunker
+from polyglot.detect import Detector
+from polyglot.decorators import cached_property
+from polyglot.downloader import Downloader
+from polyglot.load import load_embeddings
+from polyglot.mapping import CountedVocabulary
+from polyglot.mixins import BlobComparableMixin, StringlikeMixin
+from polyglot.tokenize import SentenceTokenizer, WordTokenizer
+from polyglot.utils import _print
+
+import six
+from six import text_type as unicode
+
+class BaseBlob(StringlikeMixin, BlobComparableMixin):
+  """An abstract base class that all textblob classes will inherit from.
+  Includes words, POS tag, NP, and word count properties. Also includes
+  basic dunder and string methods for making objects like Python strings.
+  :param text: A string.
+  """
+
+  def __init__(self, text):
+    if not isinstance(text, basestring):
+        raise TypeError('The `text` argument passed to `__init__(text)` '
+                        'must be a unicode string, not {0}'.format(type(text)))
+    self.raw = text
+    if not isinstance(text, unicode):
+      self.raw = text.decode("utf-8")
+
+    self.string = self.raw
+
+  @cached_property
+  def detected_languages(self):
+    return Detector(self.raw)
+
+  @property
+  def language(self):
+    detected = self.detected_languages
+    return detected.language
+
+  @property
+  def word_tokenizer(self):
+    word_tokenizer = WordTokenizer(locale=self.language.code)
+    return word_tokenizer
+
+  @property
+  def words(self):
+    """Return a list of word tokens. This excludes punctuation characters.
+    If you want to include punctuation characters, access the ``tokens``
+    property.
+    :returns: A :class:`WordList <WordList>` of word tokens.
+    """
+    return self.tokens
+
+  @cached_property
+  def tokens(self):
+    """Return a list of tokens, using this blob's tokenizer object
+    (defaults to :class:`WordTokenizer <textblob.tokenizers.WordTokenizer>`).
+    """
+    seq = self.word_tokenizer.transform(Sequence(self.raw))
+    return WordList(seq.tokens(), language=self.language.code)
+
+  def tokenize(self, tokenizer=None):
+    """Return a list of tokens, using ``tokenizer``.
+    :param tokenizer: (optional) A tokenizer object. If None, defaults to
+        this blob's default tokenizer.
+    """
+    t = tokenizer if tokenizer is not None else self.tokenizer
+    return WordList(t.tokenize(self.raw))
+
+  @cached_property
+  def sentiment(self):
+    """Return a tuple of form (polarity, subjectivity ) where polarity
+    is a float within the range [-1.0, 1.0] and subjectivity is a float
+    within the range [0.0, 1.0] where 0.0 is very objective and 1.0 is
+    very subjective.
+    :rtype: namedtuple of the form ``Sentiment(polarity, subjectivity)``
+    """
+    return self.analyzer.analyze(self.raw)
+
+  @cached_property
+  def polarity(self):
+    """Return the polarity score as a float within the range [-1.0, 1.0]
+    :rtype: float
+    """
+    return PatternAnalyzer().analyze(self.raw)[0]
+
+  @cached_property
+  def subjectivity(self):
+    """Return the subjectivity score as a float within the range [0.0, 1.0]
+    where 0.0 is very objective and 1.0 is very subjective.
+    :rtype: float
+    """
+    return PatternAnalyzer().analyze(self.raw)[1]
+
+  @cached_property
+  def noun_phrases(self):
+    """Returns a list of noun phrases for this blob."""
+    return WordList([phrase.strip().lower()
+                    for phrase in self.np_extractor.extract(self.raw)
+                    if len(phrase) > 1])
+
+  @cached_property
+  def pos_tags(self):
+    """Returns an list of tuples of the form (word, POS tag).
+    Example:
+    ::
+        [('At', 'IN'), ('eight', 'CD'), ("o'clock", 'JJ'), ('on', 'IN'),
+                ('Thursday', 'NNP'), ('morning', 'NN')]
+    :rtype: list of tuples
+    """
+    return [(Word(word, pos_tag=t), unicode(t))
+            for word, t in self.pos_tagger.tag(self.raw)
+            if not PUNCTUATION_REGEX.match(unicode(t))]
+
+
+  @cached_property
+  def word_counts(self):
+    """Dictionary of word frequencies in this text.
+    """
+    counts = defaultdict(int)
+    for word in self.words:
+        counts[word] += 1
+    return counts
+
+  @cached_property
+  def np_counts(self):
+    """Dictionary of noun phrase frequencies in this text.
+    """
+    counts = defaultdict(int)
+    for phrase in self.noun_phrases:
+        counts[phrase] += 1
+    return counts
+
+  def ngrams(self, n=3):
+    """Return a list of n-grams (tuples of n successive words) for this
+    blob.
+    :rtype: List of :class:`WordLists <WordList>`
+    """
+    if n <= 0:
+        return []
+    grams = [WordList(self.words[i:i+n])
+                        for i in range(len(self.words) - n + 1)]
+    return grams
+
+  def translate(self, from_lang=None, to="en"):
+    """Translate the blob to another language.
+    Uses the Google Translate API. Returns a new TextBlob.
+    Requires an internet connection.
+    Usage:
+    ::
+        >>> b = TextBlob("Simple is better than complex")
+        >>> b.translate(to="es")
+        TextBlob('Lo simple es mejor que complejo')
+    Language code reference:
+        https://developers.google.com/translate/v2/using_rest#language-params
+    .. versionadded:: 0.5.0.
+    :param str from_lang: Language to translate from. If ``None``, will attempt
+        to detect the language.
+    :param str to: Language to translate to.
+    :rtype: :class:`BaseBlob <BaseBlob>`
+    """
+    if from_lang is None:
+        from_lang = self.translator.detect(self.string)
+    return self.__class__(self.translator.translate(self.raw,
+                    from_lang=from_lang, to_lang=to))
+
+  def detect_language(self):
+    """Detect the blob's language using the Google Translate API.
+    Requires an internet connection.
+    Usage:
+    ::
+        >>> b = Text("bonjour")
+        >>> b.language
+        u'fr'
+    """
+    return self.language.code
+
+  def correct(self):
+    """Attempt to correct the spelling of a blob.
+    .. versionadded:: 0.6.0
+    :rtype: :class:`BaseBlob <BaseBlob>`
+    """
+    # regex matches: contraction or word or punctuation or whitespace
+    tokens = nltk.tokenize.regexp_tokenize(self.raw, "\w*('\w*)+|\w+|[^\w\s]|\s")
+    corrected = (Word(w).correct() for w in tokens)
+    ret = ''.join(corrected)
+    return self.__class__(ret)
+
+  def _cmpkey(self):
+    """Key used by ComparableMixin to implement all rich comparison
+    operators.
+    """
+    return self.raw
+
+  def _strkey(self):
+    """Key used by StringlikeMixin to implement string methods."""
+    return self.raw
+
+  def __hash__(self):
+    return hash(self._cmpkey())
+
+  def __add__(self, other):
+    '''Concatenates two text objects the same way Python strings are
+    concatenated.
+    Arguments:
+    - `other`: a string or a text object
+    '''
+    if isinstance(other, basestring):
+        return self.__class__(self.raw + other)
+    elif isinstance(other, BaseBlob):
+        return self.__class__(self.raw + other.raw)
+    else:
+        raise TypeError('Operands must be either strings or {0} objects'
+            .format(self.__class__.__name__))
+
+  def split(self, sep=None, maxsplit=sys.maxsize):
+    """Behaves like the built-in str.split() except returns a
+    WordList.
+    :rtype: :class:`WordList <WordList>`
+    """
+    return WordList(self._strkey().split(sep, maxsplit))
+
+
+
+class Word(unicode):
+
+  """A simple word representation. Includes methods for inflection,
+  translation, and WordNet integration.
+  """
+
+  def __new__(cls, string, language=None, pos_tag=None):
+    """Return a new instance of the class. It is necessary to override
+    this method in order to handle the extra pos_tag argument in the
+    constructor.
+    """
+    return super(Word, cls).__new__(cls, string)
+
+  def __init__(self, string, language=None, pos_tag=None):
+    self.string = string
+    self.pos_tag = pos_tag
+    self.__lang = language
+
+  def __repr__(self):
+      return repr(self.string)
+
+  def __str__(self):
+    return self.string
+
+  @cached_property
+  def detected_languages(self):
+    return Detector(self.string)
+
+  @property
+  def language(self):
+    if self.__lang is None:
+      self.__lang = self.detected_languages.language.code
+    return self.__lang
+
+  @property
+  def vector(self):
+    embeddings = load_embeddings(lang=self.language, task="embeddings")
+    return embeddings[self.string]
+
+  @property
+  def polarity(self):
+    embeddings = load_embeddings(lang=self.language, type="", task="sentiment")
+    return embeddings.get(self.string, [0])[0]
+
+  def translate(self, from_lang=None, to="en"):
+    '''Translate the word to another language using Google's
+    Translate API.
+    .. versionadded:: 0.5.0
+    '''
+    if from_lang is None:
+        from_lang = self.translator.detect(self.string)
+    return self.translator.translate(self.string,
+                                      from_lang=from_lang, to_lang=to)
+
+  def detect_language(self):
+      '''Detect the word's language.
+      '''
+      return self.language
+
+
+class WordList(list):
+  """A list-like collection of words."""
+
+  def __init__(self, collection, language="en"):
+    """Initialize a WordList. Takes a collection of strings as
+    its only argument.
+    """
+    self._collection = [Word(w, language=language) for w in collection]
+    super(WordList, self).__init__(self._collection)
+
+  def __str__(self):
+    return str(self._collection)
+
+  def __repr__(self):
+    """Returns a string representation for debugging."""
+    class_name = self.__class__.__name__
+    return '{cls}({lst})'.format(cls=class_name, lst=repr(self._collection))
+
+  def __getitem__(self, key):
+    """Returns a string at the given index."""
+    if isinstance(key, slice):
+        return self.__class__(self._collection[key])
+    else:
+        return self._collection[key]
+
+  def __getslice__(self, i, j):
+    # This is included for Python 2.* compatibility
+    return self.__class__(self._collection[i:j])
+
+  def __iter__(self):
+    return iter(self._collection)
+
+  def count(self, strg, case_sensitive=False, *args, **kwargs):
+    """Get the count of a word or phrase `s` within this WordList.
+    :param strg: The string to count.
+    :param case_sensitive: A boolean, whether or not the search is case-sensitive.
+    """
+    if not case_sensitive:
+        return [word.lower() for word in self].count(strg.lower(), *args,
+                **kwargs)
+    return self._collection.count(strg, *args, **kwargs)
+
+  def append(self, obj):
+    """Append an object to end. If the object is a string, appends a
+    :class:`Word <Word>` object.
+    """
+    if isinstance(obj, basestring):
+        return self._collection.append(Word(obj))
+    else:
+        return self._collection.append(obj)
+
+  def extend(self, iterable):
+    """Extend WordList by appending elements from ``iterable``. If an element
+    is a string, appends a :class:`Word <Word>` object.
+    """
+    [self._collection.append(Word(e) if isinstance(e, basestring) else e)
+        for e in iterable]
+    return self
+
+  def upper(self):
+    """Return a new WordList with each word upper-cased."""
+    return self.__class__([word.upper() for word in self])
+
+  def lower(self):
+    """Return a new WordList with each word lower-cased."""
+    return self.__class__([word.lower() for word in self])
+
+
+class Sentence(BaseBlob):
+  """A sentence within a TextBlob. Inherits from :class:`BaseBlob <BaseBlob>`.
+  :param sentence: A string, the raw sentence.
+  :param start_index: An int, the index where this sentence begins
+                      in a TextBlob. If not given, defaults to 0.
+  :param end_index: An int, the index where this sentence ends in
+                      a TextBlob. If not given, defaults to the
+                      length of the sentence - 1.
+  """
+
+  def __init__(self, sentence, start_index=0, end_index=None):
+      super(Sentence, self).__init__(sentence)
+      #: The start index within a TextBlob
+      self.start = start_index
+      #: The end index within a textBlob
+      self.end = end_index or len(sentence) - 1
+
+  @property
+  def dict(self):
+      '''The dict representation of this sentence.'''
+      return {
+          'raw': self.raw,
+          'start_index': self.start_index,
+          'end_index': self.end_index,
+          'noun_phrases': self.noun_phrases,
+          'polarity': self.polarity,
+          'subjectivity': self.subjectivity,
+      }
+
+
+class Text(BaseBlob):
+  """.
+  """
+
+  def __init__(self, text):
+    super(Text, self).__init__(text)
+
+  def __str__(self):
+    if len(self.raw) > 1000:
+      return u"{}...{}".format(self.raw[:500], self.raw[-500:])
+    else:
+      return self.raw
+
+  @property
+  def sentences(self):
+    """Return list of :class:`Sentence <Sentence>` objects."""
+    return self._create_sentence_objects()
+
+  @property
+  def raw_sentences(self):
+    """List of strings, the raw sentences in the blob."""
+    return [sentence.raw for sentence in self.sentences]
+
+  @property
+  def serialized(self):
+    """Returns a list of each sentence's dict representation."""
+    return [sentence.dict for sentence in self.sentences]
+
+  def to_json(self, *args, **kwargs):
+    '''Return a json representation (str) of this blob.
+    Takes the same arguments as json.dumps.
+    .. versionadded:: 0.5.1
+    '''
+    return json.dumps(self.serialized, *args, **kwargs)
+
+  @property
+  def json(self):
+    '''The json representation of this blob.
+    .. versionchanged:: 0.5.1
+        Made ``json`` a property instead of a method to restore backwards
+        compatibility that was broken after version 0.4.0.
+    '''
+    return self.to_json()
+
+  def _create_sentence_objects(self):
+    '''Returns a list of Sentence objects from the raw text.
+    '''
+    sentence_objects = []
+    sent_tokenizer = SentenceTokenizer(locale=self.language.code)
+    seq = Sequence(self.raw)
+    seq = sent_tokenizer.transform(seq)
+    for start_index, end_index in zip(seq.idx[:-1], seq.idx[1:]):
+      # Sentences share the same models as their parent blob
+      sent = seq.text[start_index: end_index]
+      s = Sentence(sent, start_index=start_index, end_index=end_index)
+      sentence_objects.append(s)
+    return sentence_objects
