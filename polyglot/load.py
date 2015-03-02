@@ -22,7 +22,8 @@ resource_dir = {
   "cw_embeddings":"embeddings2",
   "visualization": "tsne2",
   "wiki_vocab": "counts2",
-  "ner2": "ner2"
+  "ner2": "ner2",
+  "sentiment": "sentiment2"
 }
 
 
@@ -41,14 +42,15 @@ def locate_resource(name, lang, filter=None):
   return path.join(p, os.listdir(p)[0])
 
 
-def load_embeddings(lang="en", type="cw"):
+def load_embeddings(lang="en", task="embeddings", type="cw"):
   """Return a word embeddings object for `lang` and of type `type`
 
   Args:
     lang (string): language code.
+    task (string): parameters that define task.
     type (string): skipgram, cw, cbow ...
   """
-  src_dir = "{}_embeddings".format(type)
+  src_dir = "_".join((type, task)) if type else task
   p = locate_resource(src_dir, lang)
   return Embedding.load(p)
 
