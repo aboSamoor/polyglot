@@ -22,6 +22,14 @@ polyglot.base module
     :undoc-members:
     :show-inheritance:
 
+polyglot.decorators module
+--------------------------
+
+.. automodule:: polyglot.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 polyglot.downloader module
 --------------------------
 
@@ -38,6 +46,22 @@ polyglot.load module
     :undoc-members:
     :show-inheritance:
 
+polyglot.mixins module
+----------------------
+
+.. automodule:: polyglot.mixins
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+polyglot.text module
+--------------------
+
+.. automodule:: polyglot.text
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 polyglot.utils module
 ---------------------
 
@@ -45,32 +69,6 @@ polyglot.utils module
     :members:
     :undoc-members:
     :show-inheritance:
-
-polyglot.text module
----------------------
-
-.. automodule:: polyglot.text
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-polyglot.mixins module
----------------------
-
-.. automodule:: polyglot.mixins
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-polyglot.decorators module
----------------------
-
-.. automodule:: polyglot.decorators
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 
 
 Module contents
