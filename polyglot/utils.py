@@ -7,7 +7,6 @@ from __future__ import print_function
 from os import path
 import os
 import tarfile
-import functools
 
 import six
 from six import text_type as unicode
@@ -64,15 +63,3 @@ def _unpickle_method(func_name, obj, cls):
     else:
       break
   return func.__get__(obj, cls)
-
-
-def memoize(obj):
-  cache = obj.cache = {}
-
-  @functools.wraps(obj)
-  def memoizer(*args, **kwargs):
-    key = tuple(list(args) + sorted(kwargs.items()))
-    if key not in cache:
-      cache[key] = obj(*args, **kwargs)
-    return cache[key]
-  return memoizer

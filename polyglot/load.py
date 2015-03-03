@@ -8,8 +8,9 @@ from six import PY2
 from six.moves import cPickle as pickle
 
 from . import data_path
+from .decorators import memoize
 from .mapping import Embedding, CountedVocabulary
-from .utils import _open, memoize
+from .utils import _open
 
 if "~" in data_path:
   data_path = path.expanduser(data_path)
