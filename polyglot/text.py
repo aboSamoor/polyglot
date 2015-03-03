@@ -14,6 +14,8 @@ from polyglot.mixins import BlobComparableMixin, StringlikeMixin
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.utils import _print
 
+from .mixins import basestring
+
 import six
 from six import text_type as unicode
 
@@ -77,15 +79,30 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
   def polarity(self):
     """Return the polarity score as a float within the range [-1.0, 1.0]
     """
-    scores = [w.polarity for w in self.words]
+    scores = [w.polarity for w in self.words if w.polarity != 0]
     return sum(scores) / float(len(scores))
 
   @cached_property
-  def noun_phrases(self):
-    """Returns a list of noun phrases for this blob."""
-    return WordList([phrase.strip().lower()
-                    for phrase in self.np_extractor.extract(self.raw)
-                    if len(phrase) > 1])
+  def ne_chunker(self):
+    return NEChunker(lang=self.language.code)
+
+  @cached_property
+  def entities(self):
+    """Returns a list of entities for this blob."""
+    start = 0
+    end = 0
+    prev_tag = u'O'
+    chunks = []
+    for i, (w, tag) in enumerate(self.ne_chunker.annotate(self.words)):
+      if tag != prev_tag:
+        if prev_tag == u'O':
+          start = i
+        else:
+          chunks.append(Chunk(self.words[start: i], start, i, tag=prev_tag))
+        prev_tag = tag
+    if tag != u'O':
+      chunks.append(Chunk(self.words[start: i+1], start, i+1, tag=tag))
+    return chunks
 
   @cached_property
   def pos_tags(self):
@@ -303,6 +320,30 @@ class WordList(list):
     return self.__class__([word.lower() for word in self])
 
 
+class Chunk(WordList):
+  """A subsequence within a WordList object. Inherits from :class:`WordList <WordList>`.
+  :param subsequence: A list, the raw sentence.
+  :param start_index: An int, the index where this chunk begins
+                      in WordList. If not given, defaults to 0.
+  :param end_index: An int, the index where this chunk ends in
+                      a WordList. If not given, defaults to the
+                      length of the sentence - 1.
+  """
+
+  def __init__(self, subsequence, start_index=0, end_index=None, tag=""):
+    super(Chunk, self).__init__(subsequence)
+    #: The start index within a Text
+    self.start = start_index
+    #: The end index within a Text
+    self.end = end_index or len(sentence) - 1
+    class_name = self.__class__.__name__
+    self.tag = tag if tag else class_name 
+      
+
+  def __repr__(self):
+    """Returns a string representation for debugging."""
+    return '{tag}({lst})'.format(tag=self.tag, lst=repr(self._collection))
+
 class Sentence(BaseBlob):
   """A sentence within a Text object. Inherits from :class:`BaseBlob <BaseBlob>`.
   :param sentence: A string, the raw sentence.
@@ -314,23 +355,22 @@ class Sentence(BaseBlob):
   """
 
   def __init__(self, sentence, start_index=0, end_index=None):
-      super(Sentence, self).__init__(sentence)
-      #: The start index within a Text
-      self.start = start_index
-      #: The end index within a Text
-      self.end = end_index or len(sentence) - 1
+    super(Sentence, self).__init__(sentence)
+    #: The start index within a Text
+    self.start = start_index
+    #: The end index within a Text
+    self.end = end_index or len(sentence) - 1
 
   @property
   def dict(self):
-      '''The dict representation of this sentence.'''
-      return {
-          'raw': self.raw,
-          'start_index': self.start_index,
-          'end_index': self.end_index,
-          'noun_phrases': self.noun_phrases,
-          'polarity': self.polarity,
-          'subjectivity': self.subjectivity,
-      }
+    '''The dict representation of this sentence.'''
+    return {
+        'raw': self.raw,
+        'start_index': self.start_index,
+        'end_index': self.end_index,
+        'entities': self.entities,
+        'polarity': self.polarity,
+    }
 
 
 class Text(BaseBlob):
@@ -386,7 +426,9 @@ class Text(BaseBlob):
     seq = sent_tokenizer.transform(seq)
     for start_index, end_index in zip(seq.idx[:-1], seq.idx[1:]):
       # Sentences share the same models as their parent blob
-      sent = seq.text[start_index: end_index]
+      sent = seq.text[start_index: end_index].strip()
+      if not sent: continue
       s = Sentence(sent, start_index=start_index, end_index=end_index)
+      s.detected_languages = self.detected_languages
       sentence_objects.append(s)
     return sentence_objects

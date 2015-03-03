@@ -13,15 +13,15 @@ from six.moves import range
 from ..load import load_embeddings, load_ner_model
 
 
-ID_TAG = {0: 'O', 1: 'I-PER', 2:'I-LOC', 3: 'I-ORG'} 
+ID_TAG = {0: u'O', 1: u'I-PER', 2: u'I-LOC', 3: u'I-ORG'} 
 
 
 class NEChunker(object):
   """ Named entity chunker. """
-  PAD = '<PAD>'
-  START = '<S>'
-  END = '</S>'
-  UNK = '<UNK>'
+  PAD = u'<PAD>'
+  START = u'<S>'
+  END = u'</S>'
+  UNK = u'<UNK>'
 
   def __init__(self, lang='en'):
     """
