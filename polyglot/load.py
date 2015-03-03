@@ -26,7 +26,6 @@ resource_dir = {
   "sentiment": "sentiment2"
 }
 
-
 def locate_resource(name, lang, filter=None):
   """Return filename that contains specific language resource name.
 
@@ -41,7 +40,7 @@ def locate_resource(name, lang, filter=None):
                      "try to run\n\n$polyglot download {}.{}".format(task_dir, lang))
   return path.join(p, os.listdir(p)[0])
 
-
+@memoize
 def load_embeddings(lang="en", task="embeddings", type="cw"):
   """Return a word embeddings object for `lang` and of type `type`
 
@@ -55,6 +54,7 @@ def load_embeddings(lang="en", task="embeddings", type="cw"):
   return Embedding.load(p)
 
 
+@memoize
 def load_vocabulary(lang="en", type="wiki"):
   """Return a CountedVocabulary object.
 
@@ -67,6 +67,7 @@ def load_vocabulary(lang="en", type="wiki"):
   return CountedVocabulary.from_vocabfile(p)
 
 
+@memoize
 def load_ner_model(lang="en", version="2"):
   """Return a word embeddings object for `lang` and of type `type`
 
