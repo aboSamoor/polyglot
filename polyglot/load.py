@@ -6,11 +6,10 @@ import os
 
 from six import PY2
 from six.moves import cPickle as pickle
-from .utils import _open
-from . import data_path
-from .mapping import Embedding, CountedVocabulary
 
 from . import data_path
+from .mapping import Embedding, CountedVocabulary
+from .utils import _open, memoize
 
 if "~" in data_path:
   data_path = path.expanduser(data_path)
