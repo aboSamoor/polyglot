@@ -11,7 +11,7 @@
 """
 The Polyglot corpus and module downloader.  This module defines several
 interfaces which can be used to download corpora, models, and other
-data packages that can be used with NLTK.
+data packages that can be used with polyglot.
 
 Downloading Packages
 ====================
@@ -28,7 +28,7 @@ package that should be downloaded:
   [polyglot_data] Downloading package 'treebank'...
   [polyglot_data]   Unzipping corpora/treebank.zip.
 
-NLTK also provides a number of \"package collections\", consisting of
+Polyglot also provides a number of \"package collections\", consisting of
 a group of related packages.  To download all packages in a
 colleciton, simply call ``download()`` with the collection's
 identifier:
@@ -52,10 +52,10 @@ used to specify a different installation target, if desired.
 See ``Downloader.default_download_dir()`` for more a detailed
 description of how the default download directory is chosen.
 
-NLTK Download Server
+Polyglot Download Server
 ====================
 Before downloading any packages, the corpus and module downloader
-contacts the NLTK download server, to retrieve an index file
+contacts the Polyglot download server, to retrieve an index file
 describing the available packages.  By default, this index file is
 loaded from ``http://nltk.googlecode.com/svn/trunk/polyglot_data/index.xml``.
 If necessary, it is possible to create a new ``Downloader`` object,
@@ -425,12 +425,12 @@ class SelectDownloadDirMessage(DownloaderMessage):
   def __init__(self, download_dir): self.download_dir = download_dir
 
 ######################################################################
-# NLTK Data Server
+# Polyglot Data Server
 ######################################################################
 
 class Downloader(object):
   """
-  A class used to access the NLTK data server, which can be used to
+  A class used to access the Polyglot data server, which can be used to
   download corpora and other data packages.
   """
 
@@ -445,7 +445,7 @@ class Downloader(object):
 
   # DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/polyglot_data/index.xml'
   DEFAULT_URL = 'polyglot-models'
-  """The default URL for the NLTK data server's index.  An
+  """The default URL for the Polyglot data server's index.  An
      alternative URL can be specified when creating a new
      ``Downloader`` object."""
 
@@ -1235,7 +1235,7 @@ class DownloaderShell(object):
 
 class DownloaderGUI(object):
   """
-  Graphical interface for downloading packages from the NLTK data
+  Graphical interface for downloading packages from the Polyglot data
   server.
   """
 
@@ -1319,12 +1319,12 @@ class DownloaderGUI(object):
     # A message log.
     self._log_messages = []
     self._log_indent = 0
-    self._log('NLTK Downloader Started!')
+    self._log('Polyglot Downloader Started!')
 
     # Create the main window.
     top = self.top = Tk()
     top.geometry('+50+50')
-    top.title('NLTK Downloader')
+    top.title('Polyglot Downloader')
     top.configure(background=self._BACKDROP_COLOR[1])
 
     # Set up some bindings now, in case anything goes wrong.
@@ -1769,7 +1769,7 @@ class DownloaderGUI(object):
 
   def _show_log(self):
     text = '\n'.join(self._log_messages)
-    ShowText(self.top, 'NLTK Downloader Log', text)
+    ShowText(self.top, 'Polyglot Downloader Log', text)
 
   def _package_to_columns(self, pkg):
     """
@@ -1835,7 +1835,7 @@ class DownloaderGUI(object):
 
   \"package.\"
 
-  The NLTK downloader can be used to download a variety of corpora,
+  The Polyglot downloader can be used to download a variety of corpora,
   models, and other data packages.
 
   Keyboard shortcuts::
@@ -1849,16 +1849,16 @@ class DownloaderGUI(object):
   def help(self, *e):
     # The default font's not very legible; try using 'fixed' instead.
     try:
-      ShowText(self.top, 'Help: NLTK Dowloader',
+      ShowText(self.top, 'Help: Polyglot Dowloader',
            self.HELP.strip(), width=75, font='fixed')
     except:
-      ShowText(self.top, 'Help: NLTK Downloader',
+      ShowText(self.top, 'Help: Polyglot Downloader',
            self.HELP.strip(), width=75)
 
   def about(self, *e):
-    ABOUT = ("NLTK Downloader\n"+
+    ABOUT = ("Polyglot Downloader\n"+
          "Written by Edward Loper")
-    TITLE = 'About: NLTK Downloader'
+    TITLE = 'About: Polyglot Downloader'
     try:
       from tkMessageBox import Message
       Message(message=ABOUT, title=TITLE).show()
