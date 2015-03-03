@@ -18,7 +18,7 @@ import six
 from six import text_type as unicode
 
 class BaseBlob(StringlikeMixin, BlobComparableMixin):
-  """An abstract base class that all textblob classes will inherit from.
+  """An abstract base class that Sentence, Text will inherit from.
   Includes words, POS tag, NP, and word count properties. Also includes
   basic dunder and string methods for making objects like Python strings.
   :param text: A string.
@@ -74,29 +74,11 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     return WordList(t.tokenize(self.raw))
 
   @cached_property
-  def sentiment(self):
-    """Return a tuple of form (polarity, subjectivity ) where polarity
-    is a float within the range [-1.0, 1.0] and subjectivity is a float
-    within the range [0.0, 1.0] where 0.0 is very objective and 1.0 is
-    very subjective.
-    :rtype: namedtuple of the form ``Sentiment(polarity, subjectivity)``
-    """
-    return self.analyzer.analyze(self.raw)
-
-  @cached_property
   def polarity(self):
     """Return the polarity score as a float within the range [-1.0, 1.0]
-    :rtype: float
     """
-    return PatternAnalyzer().analyze(self.raw)[0]
-
-  @cached_property
-  def subjectivity(self):
-    """Return the subjectivity score as a float within the range [0.0, 1.0]
-    where 0.0 is very objective and 1.0 is very subjective.
-    :rtype: float
-    """
-    return PatternAnalyzer().analyze(self.raw)[1]
+    scores = [w.polarity for w in self.words]
+    return sum(scores) / float(len(scores))
 
   @cached_property
   def noun_phrases(self):
@@ -117,7 +99,6 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     return [(Word(word, pos_tag=t), unicode(t))
             for word, t in self.pos_tagger.tag(self.raw)
             if not PUNCTUATION_REGEX.match(unicode(t))]
-
 
   @cached_property
   def word_counts(self):
@@ -147,28 +128,6 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     grams = [WordList(self.words[i:i+n])
                         for i in range(len(self.words) - n + 1)]
     return grams
-
-  def translate(self, from_lang=None, to="en"):
-    """Translate the blob to another language.
-    Uses the Google Translate API. Returns a new TextBlob.
-    Requires an internet connection.
-    Usage:
-    ::
-        >>> b = TextBlob("Simple is better than complex")
-        >>> b.translate(to="es")
-        TextBlob('Lo simple es mejor que complejo')
-    Language code reference:
-        https://developers.google.com/translate/v2/using_rest#language-params
-    .. versionadded:: 0.5.0.
-    :param str from_lang: Language to translate from. If ``None``, will attempt
-        to detect the language.
-    :param str to: Language to translate to.
-    :rtype: :class:`BaseBlob <BaseBlob>`
-    """
-    if from_lang is None:
-        from_lang = self.translator.detect(self.string)
-    return self.__class__(self.translator.translate(self.raw,
-                    from_lang=from_lang, to_lang=to))
 
   def detect_language(self):
     """Detect the blob's language using the Google Translate API.
@@ -227,7 +186,6 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     return WordList(self._strkey().split(sep, maxsplit))
 
 
-
 class Word(unicode):
 
   """A simple word representation. Includes methods for inflection,
@@ -272,20 +230,9 @@ class Word(unicode):
     embeddings = load_embeddings(lang=self.language, type="", task="sentiment")
     return embeddings.get(self.string, [0])[0]
 
-  def translate(self, from_lang=None, to="en"):
-    '''Translate the word to another language using Google's
-    Translate API.
-    .. versionadded:: 0.5.0
-    '''
-    if from_lang is None:
-        from_lang = self.translator.detect(self.string)
-    return self.translator.translate(self.string,
-                                      from_lang=from_lang, to_lang=to)
-
   def detect_language(self):
-      '''Detect the word's language.
-      '''
-      return self.language
+    """Detect the word's language."""
+    return self.language
 
 
 class WordList(list):
@@ -357,20 +304,20 @@ class WordList(list):
 
 
 class Sentence(BaseBlob):
-  """A sentence within a TextBlob. Inherits from :class:`BaseBlob <BaseBlob>`.
+  """A sentence within a Text object. Inherits from :class:`BaseBlob <BaseBlob>`.
   :param sentence: A string, the raw sentence.
   :param start_index: An int, the index where this sentence begins
-                      in a TextBlob. If not given, defaults to 0.
+                      in Text. If not given, defaults to 0.
   :param end_index: An int, the index where this sentence ends in
-                      a TextBlob. If not given, defaults to the
+                      a Text. If not given, defaults to the
                       length of the sentence - 1.
   """
 
   def __init__(self, sentence, start_index=0, end_index=None):
       super(Sentence, self).__init__(sentence)
-      #: The start index within a TextBlob
+      #: The start index within a Text
       self.start = start_index
-      #: The end index within a textBlob
+      #: The end index within a Text
       self.end = end_index or len(sentence) - 1
 
   @property
