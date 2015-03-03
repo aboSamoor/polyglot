@@ -1,5 +1,5 @@
 wheel>=0.23.0
--e git+https://github.com/aboSamoor/pycld2.git#egg=pycld2
+pycld2>=0.20
 six>=1.7.3
 futures>=2.1.6
 sphinxcontrib-napoleon>=0.2.8
