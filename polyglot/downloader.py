@@ -5,7 +5,7 @@
 #
 # Copyright (C) 2014 Polyglot Project
 # Author: Rami Al-Rfou' <rmyeid@gmail.com>
-# URL: <http://bit.ly/polyglot/>
+# URL: <http://bit.ly/embeddings/>
 # For license information, see LICENSE.TXT
 
 """
@@ -63,105 +63,15 @@ specifying a different URL for the package index file.
 
 Usage::
 
-  python nltk/downloader.py [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
+  python polyglot/downloader.py [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 
 or::
 
-  python -m nltk.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
+  python -m polyglot.downloader [-d DATADIR] [-q] [-f] [-k] PACKAGE_IDS
 """
 #----------------------------------------------------------------------
 from __future__ import print_function, division, unicode_literals
 
-"""
-
-  0   1  2  3
-[label][----][label][----]
-[column  ][column   ]
-
-Notes
-=====
-Handling data files..  Some questions:
-
-* Should the data files be kept zipped or unzipped?  I say zipped.
-
-* Should the data files be kept in svn at all?  Advantages: history;
-  automatic version numbers; 'svn up' could be used rather than the
-  downloader to update the corpora.  Disadvantages: they're big,
-  which makes working from svn a bit of a pain.  And we're planning
-  to potentially make them much bigger.  I don't think we want
-  people to have to download 400MB corpora just to use nltk from svn.
-
-* Compromise: keep the data files in trunk/data rather than in
-  trunk/nltk.  That way you can check them out in svn if you want
-  to; but you don't need to, and you can use the downloader instead.
-
-* Also: keep models in mind.  When we change the code, we'd
-  potentially like the models to get updated.  This could require a
-  little thought.
-
-* So.. let's assume we have a trunk/data directory, containing a bunch
-  of packages.  The packages should be kept as zip files, because we
-  really shouldn't be editing them much (well -- we may edit models
-  more, but they tend to be binary-ish files anyway, where diffs
-  aren't that helpful).  So we'll have trunk/data, with a bunch of
-  files like abc.zip and treebank.zip and propbank.zip.  For each
-  package we could also have eg treebank.xml and propbank.xml,
-  describing the contents of the package (name, copyright, license,
-  etc).  Collections would also have .xml files.  Finally, we would
-  pull all these together to form a single index.xml file.  Some
-  directory structure wouldn't hurt.  So how about::
-
-  /trunk/data/ ....................... root of data svn
-    index.xml ........................ main index file
-    src/ ............................. python scripts
-    packages/ ........................ dir for packages
-    corpora/ ....................... zip & xml files for corpora
-    grammars/ ...................... zip & xml files for grammars
-    taggers/ ....................... zip & xml files for taggers
-    tokenizers/ .................... zip & xml files for tokenizers
-    etc.
-    collections/ ..................... xml files for collections
-
-  Where the root (/trunk/data) would contain a makefile; and src/
-  would contain a script to update the info.xml file.  It could also
-  contain scripts to rebuild some of the various model files.  The
-  script that builds index.xml should probably check that each zip
-  file expands entirely into a single subdir, whose name matches the
-  package's uid.
-
-Changes I need to make:
-  - in index: change "size" to "filesize" or "compressed-size"
-  - in index: add "unzipped-size"
-  - when checking status: check both compressed & uncompressed size.
-  uncompressed size is important to make sure we detect a problem
-  if something got partially unzipped.  define new status values
-  to differentiate stale vs corrupt vs corruptly-uncompressed??
-  (we shouldn't need to re-download the file if the zip file is ok
-  but it didn't get uncompressed fully.)
-  - add other fields to the index: author, license, copyright, contact,
-  etc.
-
-the current grammars/ package would become a single new package (eg
-toy-grammars or book-grammars).
-
-xml file should have:
-  - authorship info
-  - license info
-  - copyright info
-  - contact info
-  - info about what type of data/annotation it contains?
-  - recommended corpus reader?
-
-collections can contain other collections.  they can also contain
-multiple package types (corpora & models).  Have a single 'basics'
-package that includes everything we talk about in the book?
-
-n.b.: there will have to be a fallback to the punkt tokenizer, in case
-they didn't download that model.
-
-default: unzip or not?
-
-"""
 import time
 import os
 import zipfile
@@ -2314,6 +2224,7 @@ def _find_packages(root):
 # Aliases
 _downloader = Downloader()
 download = _downloader.download
+list_packages = _downloader.list
 
 def download_shell():
   DownloaderShell(_downloader).run()
