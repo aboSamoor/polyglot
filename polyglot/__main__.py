@@ -53,7 +53,7 @@ def ner_chunk(args):
   chunker = NEChunker(lang=args.lang)
   for l in args.input:
     words = l.strip().split()
-    line_annotations = [u"{}\t{}".format(w,p) for w, p in chunker.annotate(words)]
+    line_annotations = [u"{:<16}{:<5}".format(w,p) for w, p in chunker.annotate(words)]
     _print(u"\n".join(line_annotations))
 
 def cat(args):
@@ -231,7 +231,7 @@ def main():
     if args.lang == 'detect':
       header = 4096
       text = args.input.peek(header)
-      lang = Detector(text)
+      lang = Detector(text).language
       args.lang = lang.code
       logger.info("Language {} is detected while reading the first {} bytes"
                   ".".format(lang.name, lang.read_bytes))
