@@ -417,7 +417,7 @@ class Downloader(object):
   # Information
   #/////////////////////////////////////////////////////////////////
 
-  def list(self, download_dir=None, show_packages=True,
+  def list(self, download_dir=None, show_packages=False,
        show_collections=True, header=True, more_prompt=False,
        skip_installed=False):
     lines = 0 # for more_prompt
@@ -842,13 +842,15 @@ class Downloader(object):
       else:
         name = lang
 
+      id = "lang:{}".format(lang) 
       name = "{:<20} packages and models".format(name)
-      c = Collection(id=lang, name=name, children=children)
+      c = Collection(id=id, name=name, children=children)
       collections.append(c)
 
     for task in tasks:
       children = tasks[task]
-      c = Collection(id=task, name=task, children=children)
+      id = "task:{}".format(task)
+      c = Collection(id=id, name=task, children=children)
       collections.append(c)
 
 
