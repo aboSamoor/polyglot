@@ -376,6 +376,14 @@ class Downloader(object):
   """A status string indicating that a collection is partially
      installed (i.e., only some of its packages are installed.)"""
 
+  LANG_PREFIX = "LANG:"
+  """Collection ID prefix for collections that gathers models of a specific
+     task."""
+
+  TASK_PREFIX = "TASK:"
+  """Collection ID prefix for collections that gathers models of a specific
+     task."""
+
   #/////////////////////////////////////////////////////////////////
   # Cosntructor
   #/////////////////////////////////////////////////////////////////
@@ -842,14 +850,14 @@ class Downloader(object):
       else:
         name = lang
 
-      id = "lang:{}".format(lang) 
+      id = "{}{}".format(Downloader.LANG_PREFIX, lang)
       name = "{:<20} packages and models".format(name)
       c = Collection(id=id, name=name, children=children)
       collections.append(c)
 
     for task in tasks:
       children = tasks[task]
-      id = "task:{}".format(task)
+      id = "{}{}".format(Downloader.TASK_PREFIX, task)
       c = Collection(id=id, name=task, children=children)
       collections.append(c)
 
@@ -899,6 +907,60 @@ class Downloader(object):
     if id in self._packages: return self._packages[id]
     if id in self._collections: return self._collections[id]
     raise ValueError('Package %r not found in index' % id)
+
+  def get_collection(self, lang=None, task=None):
+    """ Return the collection that represents a specific language or task.
+
+    Args:
+      lang (string): Language code.
+      task (string): Task name.
+    """
+    if lang: id = "{}{}".format(Downloader.LANG_PREFIX, lang)
+    elif task: id = "{}{}".format(Downloader.TASK_PREFIX, task)
+    else: raise ValueError("You should pass either the task or the lang")
+    try:
+      return self.info(id)
+    except ValueError as e:
+      if lang: raise LanguageNotSupported("Language {} is not supported".format(id))
+      if task: raise TaskNotSupported("Task {} is not supported".format(id))
+
+  def supported_language(lang):
+    """Return True if polyglot supports the language.
+
+    Args:
+      lang (string): Language code.
+    """
+    try:
+      self.get_collection(lang=lang)
+      return True
+    except LanguageNotSupported as e:
+      return False
+
+  def supported_languages(self, task=None):
+    """Languages that are covered by a specific task.
+
+    Args:
+      task (string): Task name.
+    """
+    if task:
+      collection = self.get_collection(task=task)
+      return [isoLangs[x.id.split('.')[1]]["name"]
+                                         for x in collection.packages]
+    else:
+      return [x.name.split()[0] for x in self.collections()
+                                         if Downloader.LANG_PREFIX in x.id]
+
+  def supported_tasks(self, lang=None):
+    """Languages that are covered by a specific task.
+
+    Args:
+      lang (string): Language code name.
+    """
+    if lang:
+      collection = self.get_collection(lang=lang)
+      return [x.id.split('.')[0] for x in collection.packages]
+    else:
+      return [x.name.split()[0] for x in self.collections() if Downloader.TASK_PREFIX in x.id]
 
   def xmlinfo(self, id):
     """Return the XML info record for the given item"""
@@ -2224,9 +2286,7 @@ def _find_packages(root):
 # There should be a command-line interface
 
 # Aliases
-_downloader = Downloader()
-download = _downloader.download
-list_packages = _downloader.list
+downloader = Downloader()
 
 def download_shell():
   DownloaderShell(_downloader).run()
