@@ -1,6 +1,7 @@
 include *.rst
 include notebooks/*.ipynb
 include *.txt
+include Makefile
 
 recursive-include tests *
 recursive-exclude * __pycache__
