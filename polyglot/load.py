@@ -4,11 +4,14 @@
 from os import path
 import os
 
+import numpy as np
+
 from six import PY2
 from six.moves import cPickle as pickle
 
 from . import data_path
 from .decorators import memoize
+from .downloader import downloader
 from .mapping import Embedding, CountedVocabulary
 from .utils import _open
 
@@ -22,9 +25,9 @@ resource_dir = {
   "cw_embeddings":"embeddings2",
   "visualization": "tsne2",
   "wiki_vocab": "counts2",
-  "ner2": "ner2",
-  "sentiment": "sentiment2"
+  "sentiment": "sentiment2",
 }
+
 
 def locate_resource(name, lang, filter=None):
   """Return filename that contains specific language resource name.
@@ -33,12 +36,15 @@ def locate_resource(name, lang, filter=None):
     name (string): Name of the resource.
     lang (string): language code to be loaded.
   """
-  task_dir = resource_dir[name]
+  task_dir = resource_dir.get(name, name)
+  package_id = u"{}.{}".format(task_dir, lang)
+  if downloader.status(package_id) != downloader.INSTALLED:
+    raise ValueError("This resource is available in the index "
+                     "but not downloaded, yet. Try to run\n\n"
+                     "polyglot download {}".format(package_id))
   p = path.join(polyglot_path, task_dir, lang)
-  if not path.isdir(p):
-    raise ValueError("This resource is not available "
-                     "try to run\n\n$polyglot download {}.{}".format(task_dir, lang))
   return path.join(p, os.listdir(p)[0])
+
 
 @memoize
 def load_embeddings(lang="en", task="embeddings", type="cw"):
@@ -69,10 +75,11 @@ def load_vocabulary(lang="en", type="wiki"):
 
 @memoize
 def load_ner_model(lang="en", version="2"):
-  """Return a word embeddings object for `lang` and of type `type`
+  """Return a named entity extractor parameters for `lang` and of version `version`
 
   Args:
     lang (string): language code.
+    version (string): version of the parameters to be used.
   """
   src_dir = "ner{}".format(version)
   p = locate_resource(src_dir, lang)
@@ -82,3 +89,17 @@ def load_ner_model(lang="en", version="2"):
   except UnicodeDecodeError:
     fh.seek(0)
     return pickle.load(fh, encoding='latin1')
+
+
+@memoize
+def load_pos_model(lang="en", version="2"):
+  """Return a part of speech tagger parameters for `lang` and of version `version`
+
+  Args:
+    lang (string): language code.
+    version (string): version of the parameters to be used.
+  """
+  src_dir = "pos{}".format(version)
+  p = locate_resource(src_dir, lang)
+  fh = _open(p)
+  return dict(np.load(fh))
