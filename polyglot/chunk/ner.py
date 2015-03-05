@@ -10,14 +10,15 @@ Detect three types of entities: {Person, Location, Organization.}
 import numpy as np
 from six.moves import range
 
-from ..load import load_embeddings, load_ner_model
+from ..load import load_embeddings, load_ner_model, load_pos_model
 
 
-ID_TAG = {0: u'O', 1: u'I-PER', 2: u'I-LOC', 3: u'I-ORG'} 
+NER_ID_TAG = {0: u'O', 1: u'I-PER', 2: u'I-LOC', 3: u'I-ORG'}
+POS_ID_TAG = {0: u'.', 1: u'ADJ', 2: u'ADP', 3: u'ADV', 4: u'CONJ', 5: u'DET',
+              6: u'NOUN', 7: u'NUM', 8: u'PRON', 9: u'PRT', 10: u'VERB', 11: u'X'}
 
-
-class NEChunker(object):
-  """ Named entity chunker. """
+class TaggerBase(object):
+  """Tagger base class that defines the interface. """
   PAD = u'<PAD>'
   START = u'<S>'
   END = u'</S>'
@@ -29,29 +30,22 @@ class NEChunker(object):
       lang: language code to decide which chunker to use.
     """
     self.lang = lang
-    self.embeddings = load_embeddings(self.lang, type='cw')
-    self.embeddings.normalize_words(inplace=True)
-    self.model = load_ner_model(lang=self.lang, version=2)
     self.predictor = self._load_network()
-
-  def _load_network(self):
-    """ Building the predictor out of the model."""
-    first_layer, second_layer = self.model
-    def predict_proba(input_):
-      hidden = np.tanh(np.dot(first_layer, input_))
-      hidden = np.hstack((hidden, np.ones((hidden.shape[0], 1))))
-      output =  (second_layer *  hidden).sum(axis=1)
-      output_ = 1.0/(1.0 + np.exp(-output))
-      probs = output_/output_.sum()
-      return probs
-    return predict_proba
+    self.ID_TAG = {}
+    self.add_bias = True
+    self.context = 2
 
   @staticmethod
   def ngrams(sequence, n):
     ngrams_ = []
-    seq = (n-1) * [NEChunker.PAD] + [NEChunker.START] + sequence + [NEChunker.END] + (n-1) * [NEChunker.PAD]
+    seq = ((n-1) * [TaggerBase.PAD] + [TaggerBase.START] +
+           sequence +
+           [TaggerBase.END] + (n-1) * [TaggerBase.PAD])
     for i in range(n, n+len(sequence)):
       yield seq[i-n: i+n+1]
+
+  def _load_network(self):
+    raise NotImplementedError()
 
   def annotate(self, sent):
     """Annotate a squence of words with entity tags.
@@ -64,7 +58,7 @@ class NEChunker(object):
     for word, fv in self.sent2examples(sent):
       probs = self.predictor(fv)
       tags = probs.argsort()
-      tag = ID_TAG[tags[-1]]
+      tag = self.ID_TAG[tags[-1]]
 
       words.append(word)
       preds.append(tag)
@@ -77,10 +71,65 @@ class NEChunker(object):
     """ Convert ngrams into feature vectors."""
 
     # TODO(rmyeid): use expanders.
-    words = [w if w in self.embeddings else NEChunker.UNK for w in sent]
-    ngrams = NEChunker.ngrams(words, 2)
+    words = [w if w in self.embeddings else TaggerBase.UNK for w in sent]
+    ngrams = TaggerBase.ngrams(words, self.context)
     fvs = []
     for word, ngram in zip(sent, ngrams):
-      fv_ = np.array([self.embeddings[w] for w in ngram])
-      fv = np.hstack((fv_.flatten(), np.array(1)))
+      fv = np.array([self.embeddings[w] for w in ngram]).flatten()
+      if self.add_bias:
+        fv = np.hstack((fv, np.array(1)))
       yield word, fv
+
+
+class NEChunker(TaggerBase):
+  """Named entity extractor."""
+
+  def __init__(self, lang='en'):
+    """
+    Args:
+      lang: language code to decide which chunker to use.
+    """
+    super(NEChunker, self).__init__(lang=lang)
+    self.ID_TAG = NER_ID_TAG
+
+  def _load_network(self):
+    """ Building the predictor out of the model."""
+    self.embeddings = load_embeddings(self.lang, type='cw')
+    self.embeddings.normalize_words(inplace=True)
+    self.model = load_ner_model(lang=self.lang, version=2)
+    first_layer, second_layer = self.model
+    def predict_proba(input_):
+      hidden = np.tanh(np.dot(first_layer, input_))
+      hidden = np.hstack((hidden, np.ones((hidden.shape[0], 1))))
+      output =  (second_layer *  hidden).sum(axis=1)
+      output_ = 1.0/(1.0 + np.exp(-output))
+      probs = output_/output_.sum()
+      return probs
+    return predict_proba
+
+
+class POSTagger(TaggerBase):
+  """Universal Part of Speech Tagger."""
+
+  def __init__(self, lang='en'):
+    """
+    Args:
+      lang: language code to decide which chunker to use.
+    """
+    super(POSTagger, self).__init__(lang=lang)
+    self.ID_TAG = POS_ID_TAG
+    self.add_bias = False
+
+  def _load_network(self):
+    """ Building the predictor out of the model."""
+    self.embeddings = load_embeddings(self.lang, type='cw')
+    #self.embeddings.normalize_words(inplace=True)
+    self.model = load_pos_model(lang=self.lang, version=2)
+
+    def predict_proba(input_):
+      hidden = np.tanh(np.dot(input_, self.model["W1"]) + self.model["b1"])
+      output =  np.dot(hidden, self.model["W2"]) + self.model["b2"]
+      scores = np.exp(output)
+      probs = scores/scores.sum()
+      return probs
+    return predict_proba
