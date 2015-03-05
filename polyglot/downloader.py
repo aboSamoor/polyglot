@@ -3,8 +3,8 @@
 
 # Polyglot Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2014 Polyglot Project
-# Author: Rami Al-Rfou' <rmyeid@gmail.com>
+# Copyright (C) 2014-2015 Polyglot Project
+# Author: Rami Al-Rfou <rmyeid@gmail.com>
 # URL: <http://bit.ly/embeddings/>
 # For license information, see LICENSE.TXT
 
@@ -102,6 +102,7 @@ except:
 import stat
 import six
 from six import text_type as unicode
+from six import string_types
 from six.moves import input
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.error import HTTPError, URLError
@@ -109,6 +110,19 @@ from six.moves.http_client import HTTPSConnection
 
 
 logger = logging.getLogger(__name__)
+
+######################################################################
+# Exceptions
+######################################################################
+
+class ExceptionBase(Exception):
+  """General base exception for the downloader module."""
+
+class LanguageNotSupported(ExceptionBase):
+  """Raised if the language is not covered by polyglot."""
+
+class TaskNotSupported(ExceptionBase):
+  """Raised if the task is not covered by polyglot."""
 
 ######################################################################
 # Directory entry objects (from the data server's index file)
@@ -639,6 +653,8 @@ class Downloader(object):
       return True
 
     else:
+      if isinstance(info_or_id, string_types):
+        info_or_id = unicode(info_or_id)
       # Define a helper function for displaying output:
       def show(s, prefix2=''):
         print(textwrap.fill(s, initial_indent=prefix+prefix2,
