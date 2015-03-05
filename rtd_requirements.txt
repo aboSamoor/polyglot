@@ -4,3 +4,4 @@ six>=1.7.3
 futures>=2.1.6
 sphinxcontrib-napoleon>=0.2.8
 mock>=1.0.1
+sphinx-bootstrap-theme>=0.4.5
