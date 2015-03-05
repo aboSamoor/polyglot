@@ -214,14 +214,16 @@ the `Polyglot-NER: Multilingual Named Entity
 Recognition <https://sites.google.com/site/rmyeid/papers/polyglot-ner.pdf?attredirects=0&d=1>`__
 paper. The author of this library strongly encourage you to cite the
 following paper if you are using this software.
-@article{polyglotner,
-         author = {Al-Rfou, Rami and Kulkarni, Vivek and Perozzi, Bryan and Skiena, Steven},
-         title = {{Polyglot-NER}: Massive Multilingual Named Entity Recognition},
-         journal = {{Proceedings of the 2015 {SIAM} International Conference on Data Mining, Vancouver, British Columbia, Canada, April 30 - May 2, 2015}},
-         month     = {April},
-         year      = {2015},
-         publisher = {SIAM}
-}
+.. code-block::
+
+    @article{polyglotner,
+             author = {Al-Rfou, Rami and Kulkarni, Vivek and Perozzi, Bryan and Skiena, Steven},
+             title = {{Polyglot-NER}: Massive Multilingual Named Entity Recognition},
+             journal = {{Proceedings of the 2015 {SIAM} International Conference on Data Mining, Vancouver, British Columbia, Canada, April 30 - May 2, 2015}},
+             month     = {April},
+             year      = {2015},
+             publisher = {SIAM}
+    }
 References
 ----------
 
