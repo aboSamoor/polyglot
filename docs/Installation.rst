@@ -55,4 +55,6 @@ polyglot depends on `numpy <http://www.numpy.org/>`__ and
 ubuntu/debian linux distribution you can install such packages by
 executing the following command:
 
--  sudo apt-get install python-numpy libicu-dev
+.. code:: python
+
+    sudo apt-get install python-numpy libicu-dev
