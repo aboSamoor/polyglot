@@ -21,7 +21,7 @@ from polyglot.detect import Detector
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.downloader import Downloader
 from polyglot.utils import _print
-from polyglot.chunk.ner import NEChunker
+from polyglot.tag import NEChunker, POSTagger
 
 signal(SIGPIPE, SIG_DFL)
 logger = logging.getLogger(__name__)

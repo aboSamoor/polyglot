@@ -4,13 +4,13 @@
 import sys
 
 from polyglot.base import Sequence, TextFile, TextFiles
-from polyglot.chunk.ner import NEChunker
 from polyglot.detect import Detector
 from polyglot.decorators import cached_property
 from polyglot.downloader import Downloader
 from polyglot.load import load_embeddings
 from polyglot.mapping import CountedVocabulary
 from polyglot.mixins import BlobComparableMixin, StringlikeMixin
+from polyglot.tag import NEChunker, POSTagger
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.utils import _print
 
