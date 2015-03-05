@@ -38,7 +38,7 @@ setup(
                 'polyglot.detect',
                 'polyglot.tokenize',
                 'polyglot.mapping',
-                'polyglot.chunk'],
+                'polyglot.tag'],
     entry_points={
         'console_scripts': [
             'polyglot = polyglot.__main__:main',
