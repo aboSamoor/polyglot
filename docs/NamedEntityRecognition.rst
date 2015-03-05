@@ -22,13 +22,32 @@ Wikipedia. Polyglot currently supports 40 major languages.
 .. code:: python
 
     from __future__ import print_function
-    
+.. code:: python
+
     from polyglot.downloader import downloader
     print(", ".join(downloader.supported_languages("ner2")))
 
 .. parsed-literal::
 
     Polish, Turkish, Russian, Czech, Arabic, Korean, Catalan; Valencian, Indonesian, Vietnamese, Thai, Romanian, Moldavian, Moldovan, Tagalog, Danish, Finnish, German, Persian, Latvian, Chinese, French, Portuguese, Slovak, Hebrew (modern), Malay, Slovene, Bulgarian, Hindi, Japanese, Hungarian, Croatian, Ukrainian, Serbian, Lithuanian, Norwegian, Dutch, Swedish, English, Greek, Modern, Spanish; Castilian, Italian, Estonian
+
+
+Download Necessary Models
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    %%bash
+    polyglot download embeddings2.en ner2.en
+
+.. parsed-literal::
+
+    [polyglot_data] Downloading package embeddings2.en to
+    [polyglot_data]     /home/rmyeid/polyglot_data...
+    [polyglot_data]   Package embeddings2.en is already up-to-date!
+    [polyglot_data] Downloading package ner2.en to
+    [polyglot_data]     /home/rmyeid/polyglot_data...
+    [polyglot_data]   Package ner2.en is already up-to-date!
 
 
 Library Interface
@@ -97,24 +116,6 @@ the sentence.
 Command Line Interface
 ----------------------
 
-Download Necessary Models
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code:: python
-
-    %%bash
-    polyglot download embeddings2.en ner2.en
-
-.. parsed-literal::
-
-    [polyglot_data] Downloading package embeddings2.en to
-    [polyglot_data]     /home/rmyeid/polyglot_data...
-    [polyglot_data]   Package embeddings2.en is already up-to-date!
-    [polyglot_data] Downloading package ner2.en to
-    [polyglot_data]     /home/rmyeid/polyglot_data...
-    [polyglot_data]   Package ner2.en is already up-to-date!
-
-
 Tokenization
 ^^^^^^^^^^^^
 
@@ -136,7 +137,7 @@ will bem used to detect the language of the document.
 
 .. parsed-literal::
 
-    2015-03-04 21:14:57 INFO __main__.py: 237 Language English is detected while reading the first 1128 bytes.
+    2015-03-05 17:27:39 INFO __main__.py: 246 Language English is detected while reading the first 1128 bytes.
 
 
 Named Entity Extraction
@@ -169,7 +170,7 @@ Named Entity Extraction
     275             O    
     runs            O    
     .               O    
-    David           I-PER
+    
 
 
 Nesting steps
@@ -184,7 +185,6 @@ bash pipeline
 
 .. parsed-literal::
 
-    2007            I-LOC
     ,               O    
     which           O    
     was             O    
@@ -204,10 +204,18 @@ bash pipeline
     in              O    
     Sydney          I-LOC
     .               O    
+    
 
 
+Demo
+----
+.. raw:: html
+   <div class="figure">
+   <iframe src="https://entityextractor.appspot.com/" width="100%" height="225" seamless></iframe>
+   <p class="caption">Demo</p>
+   </div>
 Citation
-~~~~~~~~
+--------
 
 This work is a direct implementation of the research being described in
 the `Polyglot-NER: Multilingual Named Entity

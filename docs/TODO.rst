@@ -27,6 +27,7 @@ Infrastructure
 -  [STRIKEOUT:added task/lang as part of the identifier, what is left is
    to iterate over the collections.]
 -  Throw different exception for missing package than undownloaded one
+-  Define NotSupportedLanguage/Task Exception for the downloader
 
 Documentation
 =============
