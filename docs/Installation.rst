@@ -53,5 +53,6 @@ Dependencies
 polyglot depends on `numpy <http://www.numpy.org/>`__ and
 `libicu-dev <https://packages.debian.org/sid/libicu-dev>`__, on
 ubuntu/debian linux distribution you can install such packages by
-executing the following command: - sudo apt-get install python-numpy
-libicu-dev
+executing the following command:
+
+-  sudo apt-get install python-numpy libicu-dev
