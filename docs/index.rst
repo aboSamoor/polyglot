@@ -12,11 +12,12 @@ Contents:
    :maxdepth: 2
 
    readme
-   installation
+   Installation
    usage
    contributing
    authors
    history
+   NamedEntityRecognition
    modules
 
 Indices and tables
