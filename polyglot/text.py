@@ -87,6 +87,10 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     return NEChunker(lang=self.language.code)
 
   @cached_property
+  def pos_tagger(self):
+    return POSTagger(lang=self.language.code)
+
+  @cached_property
   def entities(self):
     """Returns a list of entities for this blob."""
     start = 0
@@ -109,13 +113,15 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     """Returns an list of tuples of the form (word, POS tag).
     Example:
     ::
-        [('At', 'IN'), ('eight', 'CD'), ("o'clock", 'JJ'), ('on', 'IN'),
-                ('Thursday', 'NNP'), ('morning', 'NN')]
+        [('At', 'ADP'), ('eight', 'NUM'), ("o'clock", 'NOUN'), ('on', 'ADP'),
+        ('Thursday', 'NOUN'), ('morning', 'NOUN')]
     :rtype: list of tuples
     """
-    return [(Word(word, pos_tag=t), unicode(t))
-            for word, t in self.pos_tagger.tag(self.raw)
-            if not PUNCTUATION_REGEX.match(unicode(t))]
+    tagged_words = []
+    for word,t in self.pos_tagger.annotate(self.words):
+      word.pos_tag = t
+      tagged_words.append((word, t))
+    return tagged_words
 
   @cached_property
   def word_counts(self):
