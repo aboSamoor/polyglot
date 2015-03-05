@@ -15,6 +15,7 @@
 
 import sys
 import os
+#import sphinx_bootstrap_theme
 
 
 # Solution to RTD problem suggested by
@@ -75,6 +76,8 @@ extensions = [
               'sphinx.ext.linkcode',
 #              'sphinx.ext.viewcode',
               'sphinxcontrib.napoleon',
+              'IPython.sphinxext.ipython_console_highlighting',
+              'IPython.sphinxext.ipython_directive'
              ]
 
 autosummary_generate = True
@@ -150,7 +153,10 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
+
 html_theme = 'default'
+#html_theme = 'bootstrap'
+#html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
