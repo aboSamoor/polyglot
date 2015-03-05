@@ -13,11 +13,9 @@ Contents:
 
    readme
    Installation
-   usage
-   contributing
-   authors
-   history
+   POS
    NamedEntityRecognition
+   authors
    modules
 
 Indices and tables
