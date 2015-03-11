@@ -1,3 +1,3 @@
-from .base import Detector
+from .base import Detector, Language
 
-__all__ = ['Detector']
+__all__ = ['Detector', 'Language']
