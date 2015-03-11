@@ -3,8 +3,10 @@
 
 from os import path
 import os
+from tempfile import NamedTemporaryFile
 
 import numpy as np
+import morfessor
 
 from six import PY2
 from six.moves import cPickle as pickle
@@ -38,11 +40,12 @@ def locate_resource(name, lang, filter=None):
   """
   task_dir = resource_dir.get(name, name)
   package_id = u"{}.{}".format(task_dir, lang)
-  if downloader.status(package_id) != downloader.INSTALLED:
-    raise ValueError("This resource is available in the index "
-                     "but not downloaded, yet. Try to run\n\n"
-                     "polyglot download {}".format(package_id))
   p = path.join(polyglot_path, task_dir, lang)
+  if not path.isdir(p):
+    if downloader.status(package_id) != downloader.INSTALLED:
+      raise ValueError("This resource is available in the index "
+                       "but not downloaded, yet. Try to run\n\n"
+                       "polyglot download {}".format(package_id))
   return path.join(p, os.listdir(p)[0])
 
 
@@ -103,3 +106,22 @@ def load_pos_model(lang="en", version="2"):
   p = locate_resource(src_dir, lang)
   fh = _open(p)
   return dict(np.load(fh))
+
+@memoize
+def load_morfessor_model(lang="en", version="2"):
+  """Return a morfessor model for `lang` and of version `version`
+
+  Args:
+    lang (string): language code.
+    version (string): version of the parameters to be used.
+  """
+  src_dir = "morph{}".format(version)
+  p = locate_resource(src_dir, lang)
+  file_handler = _open(p)
+  tmp_file_ = NamedTemporaryFile(delete=False)
+  tmp_file_.write(file_handler.read())
+  tmp_file_.close()
+  io = morfessor.MorfessorIO()
+  model = io.read_any_model(tmp_file_.name)
+  os.remove(tmp_file_.name)
+  return model

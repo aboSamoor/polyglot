@@ -4,10 +4,10 @@
 import sys
 
 from polyglot.base import Sequence, TextFile, TextFiles
-from polyglot.detect import Detector
+from polyglot.detect import Detector, Language
 from polyglot.decorators import cached_property
 from polyglot.downloader import Downloader
-from polyglot.load import load_embeddings
+from polyglot.load import load_embeddings, load_morfessor_model
 from polyglot.mapping import CountedVocabulary
 from polyglot.mixins import BlobComparableMixin, StringlikeMixin
 from polyglot.tag import NEChunker, POSTagger
@@ -35,6 +35,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
       self.raw = text.decode("utf-8")
 
     self.string = self.raw
+    self.__lang = None
 
   @cached_property
   def detected_languages(self):
@@ -42,8 +43,14 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
 
   @property
   def language(self):
-    detected = self.detected_languages
-    return detected.language
+    if self.__lang is None:
+      self.__lang = self.detected_languages.language
+    return self.__lang
+
+  @language.setter
+  def language(self, value):
+    self.__lang = Language.from_code(value)
+
 
   @property
   def word_tokenizer(self):
@@ -89,6 +96,16 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
   @cached_property
   def pos_tagger(self):
     return POSTagger(lang=self.language.code)
+
+  @cached_property
+  def morpheme_analyzer(self):
+    return load_morfessor_model(lang=self.language.code)
+
+  @cached_property
+  def morphemes(self):
+    words, score = self.morpheme_analyzer.viterbi_segment(self.raw)
+    return WordList(words, language=self.language.code)
+
 
   @cached_property
   def entities(self):
@@ -233,6 +250,16 @@ class Word(unicode):
   def __str__(self):
     return self.string
 
+
+  @cached_property
+  def morpheme_analyzer(self):
+    return load_morfessor_model(lang=self.language)
+
+  @cached_property
+  def morphemes(self):
+    words, score = self.morpheme_analyzer.viterbi_segment(self.string)
+    return WordList(words, language=self.language)
+
   @cached_property
   def detected_languages(self):
     return Detector(self.string)
@@ -242,6 +269,10 @@ class Word(unicode):
     if self.__lang is None:
       self.__lang = self.detected_languages.language.code
     return self.__lang
+
+  @language.setter
+  def language(self, value):
+    self.__lang = value
 
   @property
   def vector(self):
@@ -343,8 +374,8 @@ class Chunk(WordList):
     #: The end index within a Text
     self.end = end_index or len(sentence) - 1
     class_name = self.__class__.__name__
-    self.tag = tag if tag else class_name 
-      
+    self.tag = tag if tag else class_name
+
 
   def __repr__(self):
     """Returns a string representation for debugging."""

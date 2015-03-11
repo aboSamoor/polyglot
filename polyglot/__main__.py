@@ -16,6 +16,7 @@ from six import iteritems
 from icu import Locale
 
 from polyglot.base import Sequence, TextFile, TextFiles
+from polyglot.load import load_morfessor_model
 from polyglot.mapping import CountedVocabulary
 from polyglot.detect import Detector
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
@@ -53,6 +54,17 @@ def tag(tagger, args):
   for l in args.input:
     words = l.strip().split()
     line_annotations = [u"{:<16}{:<5}".format(w,p) for w, p in tagger.annotate(words)]
+    _print(u"\n".join(line_annotations))
+    _print(u"")
+
+
+def morphemes(args):
+  """Segment words according to their morphemes."""
+  morfessor = load_morfessor_model(lang=args.lang)
+  for l in args.input:
+    words = l.strip().split()
+    morphemes = [(w, u"_".join(morfessor.viterbi_segment(w)[0])) for w in words]
+    line_annotations = [u"{:<16}{:<5}".format(w,p) for w, p in morphemes]
     _print(u"\n".join(line_annotations))
     _print(u"")
 
@@ -157,7 +169,7 @@ def main():
 
   # Morphological Analyzer
   morph = subparsers.add_parser('morph')
-  morph.set_defaults(func=morph)
+  morph.set_defaults(func=morphemes)
 
   # Tokenizer
   tokenizer = subparsers.add_parser('tokenize',
@@ -215,11 +227,10 @@ def main():
   senti = subparsers.add_parser('sentiment',
                                 help="Classify text to positive and negative polarity.")
 
-
   for name, subparser in parser._subparsers._group_actions[0].choices.items():
     if name == 'download': continue
     subparser.add_argument('--input', nargs='*', type=TextFile,
-                     default=[TextFile(sys.stdin.fileno())])
+                           default=[TextFile(sys.stdin.fileno())])
 
   args = parser.parse_args()
   numeric_level = getattr(logging, args.log.upper(), None)
