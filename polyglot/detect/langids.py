@@ -23,6 +23,10 @@ isoLangs = {
         "name":"Albanian",
         "nativeName":"Shqip"
     },
+    "als":{
+        "name":"Alemannic",
+        "nativeName":"Alemannischi"
+    },
     "am":{
         "name":"Amharic",
         "nativeName":"አማርኛ"
@@ -42,6 +46,10 @@ isoLangs = {
     "as":{
         "name":"Assamese",
         "nativeName":"অসমীয়া"
+    },
+    "ast":{
+        "name":"Asturian",
+        "nativeName":"Asturianu"
     },
     "av":{
         "name":"Avaric",
@@ -71,6 +79,10 @@ isoLangs = {
         "name":"Basque",
         "nativeName":"euskara, euskera"
     },
+    "bar":{
+        "name":"Bavarian",
+        "nativeName":"Bairisch"
+    },
     "be":{
         "name":"Belarusian",
         "nativeName":"Беларуская"
@@ -83,6 +95,10 @@ isoLangs = {
         "name":"Bihari",
         "nativeName":"भोजपुरी"
     },
+    "bpy":{
+        "name":"Bishnupriya Manipuri",
+        "nativeName":"বিষ্ণুপ্রিয়া মণিপুরী"
+    },
     "bi":{
         "name":"Bislama",
         "nativeName":"Bislama"
@@ -90,6 +106,10 @@ isoLangs = {
     "bs":{
         "name":"Bosnian",
         "nativeName":"bosanski jezik"
+    },
+    "sh":{
+        "name":"Bosnian-Croatian-Serbian",
+        "nativeName":"Bosnian Croatian Serbian"
     },
     "br":{
         "name":"Breton",
@@ -167,6 +187,10 @@ isoLangs = {
         "name":"Dutch",
         "nativeName":"Nederlands, Vlaams"
     },
+    "arz":{
+        "name":"Egyptian Arabic",
+        "nativeName":"العربية"
+    },
     "en":{
         "name":"English",
         "nativeName":"English"
@@ -191,6 +215,10 @@ isoLangs = {
         "name":"Fijian",
         "nativeName":"vosa Vakaviti"
     },
+    "hif":{
+        "name":"Fiji Hindi",
+        "nativeName":"फिजी बात"
+    },
     "fi":{
         "name":"Finnish",
         "nativeName":"suomi, suomen kieli"
@@ -206,6 +234,10 @@ isoLangs = {
     "gl":{
         "name":"Galician",
         "nativeName":"Galego"
+    },
+    "gan":{
+        "name":"Gan Chinese",
+        "nativeName":"赣语"
     },
     "ka":{
         "name":"Georgian",
@@ -254,6 +286,10 @@ isoLangs = {
     "hu":{
         "name":"Hungarian",
         "nativeName":"Magyar"
+    },
+    "ilo":{
+        "name":"Ilokano",
+        "nativeName":"Ti Pagsasao nga Iloko"
     },
     "ia":{
         "name":"Interlingua",
@@ -315,6 +351,10 @@ isoLangs = {
         "name":"Kanuri",
         "nativeName":"Kanuri"
     },
+    "pam":{
+        "name":"Kapampangan",
+        "nativeName":"Pampango"
+    },
     "ks":{
         "name":"Kashmiri",
         "nativeName":"कश्मीरी, كشميري‎"
@@ -362,6 +402,10 @@ isoLangs = {
     "la":{
         "name":"Latin",
         "nativeName":"latine, lingua latina"
+    },
+    "lmo":{
+        "name":"Lombard language",
+        "nativeName":"Lengua Lumbarda"
     },
     "lb":{
         "name":"Luxembourgish, Letzeburgesch",
@@ -519,6 +563,10 @@ isoLangs = {
         "name":"Pashto, Pushto",
         "nativeName":"پښتو"
     },
+    "pms":{
+        "name":"Piedmontese language",
+        "nativeName":"Lenga Piemontèisa"
+    },
     "pt":{
         "name":"Portuguese",
         "nativeName":"Português"
@@ -543,6 +591,10 @@ isoLangs = {
         "name":"Russian",
         "nativeName":"русский язык"
     },
+    "sah":{
+        "name":"Sakha",
+        "nativeName":"Yakut"
+    },
     "sa":{
         "name":"Sanskrit (Saṁskṛta)",
         "nativeName":"संस्कृतम्"
@@ -550,6 +602,10 @@ isoLangs = {
     "sc":{
         "name":"Sardinian",
         "nativeName":"sardu"
+    },
+    "szl":{
+        "name":"Silesian",
+        "nativeName":"ślōnskŏ gŏdka"
     },
     "sd":{
         "name":"Sindhi",
@@ -571,6 +627,10 @@ isoLangs = {
         "name":"Serbian",
         "nativeName":"српски језик"
     },
+    "sco":{
+        "name":"Scots",
+        "nativeName":"Scots"
+    },
     "gd":{
         "name":"Scottish Gaelic; Gaelic",
         "nativeName":"Gàidhlig"
@@ -578,6 +638,10 @@ isoLangs = {
     "sn":{
         "name":"Shona",
         "nativeName":"chiShona"
+    },
+    "scn":{
+        "name":"Sicilian",
+        "nativeName":"Sicilianu"
     },
     "si":{
         "name":"Sinhala, Sinhalese",
@@ -691,6 +755,10 @@ isoLangs = {
         "name":"Urdu",
         "nativeName":"اردو"
     },
+    "hsb":{
+        "name":"Upper Sorbian",
+        "nativeName":"Hornjoserbšćina"
+    },
     "uz":{
         "name":"Uzbek",
         "nativeName":"zbek, Ўзбек, أۇزبېك‎"
@@ -698,6 +766,10 @@ isoLangs = {
     "ve":{
         "name":"Venda",
         "nativeName":"Tshivenḓa"
+    },
+    "vec":{
+        "name":"Venetian",
+        "nativeName":"Vèneto"
     },
     "vi":{
         "name":"Vietnamese",
@@ -714,6 +786,10 @@ isoLangs = {
     "cy":{
         "name":"Welsh",
         "nativeName":"Cymraeg"
+    },
+    "vls":{
+        "name":"West Flemish",
+        "nativeName":"West-Vlaams"
     },
     "war":{
         "name": "Waray-Waray",
@@ -738,6 +814,10 @@ isoLangs = {
     "yo":{
         "name":"Yoruba",
         "nativeName":"Yorùbá"
+    },
+    "diq":{
+        "name":"Zazaki",
+        "nativeName":"Zaza"
     },
     "za":{
         "name":"Zhuang, Chuang",
