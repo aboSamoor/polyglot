@@ -9,7 +9,7 @@ import pycld2 as cld2
 
 class Language(object):
   def __init__(self, choice):
-    self.basic_name, code, confidence, bytesize = choice
+    basic_name, code, confidence, bytesize = choice
     self.locale = Locale(code)
     self.confidence = float(confidence)
     self.read_bytes = int(bytesize)
@@ -26,6 +26,10 @@ class Language(object):
     return ("name: {:<12}code: {:<5}confidence: {:>5.1f} "
             "read bytes:{:>6}".format(self.name, self.code,
                                     self.confidence, self.read_bytes))
+
+  @staticmethod
+  def from_code(code):
+    return Language(("", code, 100, 0))
 
 
 class Detector(object):
