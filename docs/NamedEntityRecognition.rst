@@ -210,10 +210,8 @@ bash pipeline
 Demo
 ----
 .. raw:: html
-   <div class="figure">
    <iframe src="https://entityextractor.appspot.com/" width="100%" height="225" seamless></iframe>
-   <p class="caption">Demo</p>
-   </div>
+
 Citation
 --------
 

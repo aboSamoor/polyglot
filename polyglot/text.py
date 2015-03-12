@@ -12,6 +12,7 @@ from polyglot.mapping import CountedVocabulary
 from polyglot.mixins import BlobComparableMixin, StringlikeMixin
 from polyglot.tag import NEChunker, POSTagger
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
+from polyglot.transliteration import Transliterator
 from polyglot.utils import _print
 
 from .mixins import basestring
@@ -50,7 +51,6 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
   @language.setter
   def language(self, value):
     self.__lang = Language.from_code(value)
-
 
   @property
   def word_tokenizer(self):
@@ -100,6 +100,11 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
   @cached_property
   def morpheme_analyzer(self):
     return load_morfessor_model(lang=self.language.code)
+
+  def transliterate(self, target_language="en"):
+    """Transliterate the string to the target language."""
+    return WordList([w.transliterate(target_language) for w in self.words],
+                     language=target_language)
 
   @cached_property
   def morphemes(self):
@@ -287,6 +292,12 @@ class Word(unicode):
   def detect_language(self):
     """Detect the word's language."""
     return self.language
+
+  def transliterate(self, target_language="en"):
+    """Transliterate the string to the target language."""
+    t = Transliterator(source_lang=self.language,
+                       target_lang=target_language)
+    return t.transliterate(self.string)
 
 
 class WordList(list):

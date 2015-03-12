@@ -16,13 +16,14 @@ from six import iteritems
 from icu import Locale
 
 from polyglot.base import Sequence, TextFile, TextFiles
+from polyglot.detect import Detector
+from polyglot.downloader import Downloader
 from polyglot.load import load_morfessor_model
 from polyglot.mapping import CountedVocabulary
-from polyglot.detect import Detector
-from polyglot.tokenize import SentenceTokenizer, WordTokenizer
-from polyglot.downloader import Downloader
-from polyglot.utils import _print
 from polyglot.tag import NEChunker, POSTagger
+from polyglot.tokenize import SentenceTokenizer, WordTokenizer
+from polyglot.transliteration import Transliterator
+from polyglot.utils import _print
 
 signal(SIGPIPE, SIG_DFL)
 logger = logging.getLogger(__name__)
@@ -54,6 +55,17 @@ def tag(tagger, args):
   for l in args.input:
     words = l.strip().split()
     line_annotations = [u"{:<16}{:<5}".format(w,p) for w, p in tagger.annotate(words)]
+    _print(u"\n".join(line_annotations))
+    _print(u"")
+
+
+def transliterate(args):
+  """Transliterate words according to the target language."""
+  t = Transliterator(source_lang=args.lang,
+                     target_lang=args.target)
+  for l in args.input:
+    words = l.strip().split()
+    line_annotations = [u"{:<16}{:<16}".format(w, t.transliterate(w)) for w in words]
     _print(u"\n".join(line_annotations))
     _print(u"")
 
@@ -223,10 +235,17 @@ def main():
                               help="Part of Speech tagger.")
   ner.set_defaults(func=pos_tag)
 
+  # Transliteration
+  transliterator = subparsers.add_parser('transliteration',
+                                         help="Rewriting the input in the "
+                                              "target language script.")
+  transliterator.add_argument("--target", default="en",
+                              help="Language code of the target language.")
+  transliterator.set_defaults(func=transliterate)
+
   # Sentiment Analysis
   senti = subparsers.add_parser('sentiment',
                                 help="Classify text to positive and negative polarity.")
-
   for name, subparser in parser._subparsers._group_actions[0].choices.items():
     if name == 'download': continue
     subparser.add_argument('--input', nargs='*', type=TextFile,

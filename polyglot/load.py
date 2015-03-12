@@ -125,3 +125,17 @@ def load_morfessor_model(lang="en", version="2"):
   model = io.read_any_model(tmp_file_.name)
   os.remove(tmp_file_.name)
   return model
+
+
+@memoize
+def load_transliteration_table(lang="en", version="2"):
+  """Return a morfessor model for `lang` and of version `version`
+
+  Args:
+    lang (string): language code.
+    version (string): version of the parameters to be used.
+  """
+  src_dir = "transliteration{}".format(version)
+  p = locate_resource(src_dir, lang)
+  file_handler = _open(p)
+  return pickle.load(file_handler)
