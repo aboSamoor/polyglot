@@ -14,9 +14,13 @@ Contents:
    readme
    Installation
    Download
+   Embeddings
    POS
    NamedEntityRecognition
+   MorphologicalAnalysis
+   Transliteration
    authors
+   history
    modules
 
 Indices and tables
