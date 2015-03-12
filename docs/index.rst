@@ -13,6 +13,7 @@ Contents:
 
    readme
    Installation
+   Download
    POS
    NamedEntityRecognition
    authors

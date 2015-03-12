@@ -10,6 +10,7 @@ Subpackages
     polyglot.mapping
     polyglot.tag
     polyglot.tokenize
+    polyglot.transliteration
 
 Submodules
 ----------
