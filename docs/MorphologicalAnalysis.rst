@@ -2,30 +2,22 @@
 Morphological Analysis
 ======================
 
-.. code:: python
+Polyglot offers trained `morfessor
+models <http://www.cis.hut.fi/cis/projects/morpho/>`__ to generate
+morphemes from words. The goal of the Morpho project is to develop
+unsupervised data-driven methods that discover the regularities behind
+word forming in natural languages. In particular, Morpho project is
+focussing on the discovery of morphemes, which are the primitive units
+of syntax, the smallest individually meaningful elements in the
+utterances of a language. Morphemes are important in automatic
+generation and recognition of a language, especially in languages in
+which words may have many different inflected forms.
 
-    import sys
-    import os.path as p
-.. code:: python
-
-    %load_ext autoreload
-    %autoreload 2
-.. code:: python
-
-    exp_dir = "/media/data/code/polyglot/"
-    
-    if exp_dir not in sys.path:
-      sys.path.insert(0, exp_dir)
-.. code:: python
-
-    import polyglot
 Languages Coverage
 ------------------
 
-The models were trained on a combination of: - Original CONLL datasets
-after the tags were converted using the `universal POS
-tables <http://universaldependencies.github.io/docs/tagset-conversion/index.html>`__.
-- Universal Dependencies 1.0 corpora whenever they are available.
+Using polyglot vocabulary dictionaries, we trained morfessor models on
+the most frequent words 50,000 words of each language.
 
 .. code:: python
 
@@ -58,21 +50,43 @@ Download Necessary Models
     [polyglot_data]   Package morph2.ar is already up-to-date!
 
 
-Library Interface
------------------
+Example
+-------
 
-We tag each word in the text with one part of speech.
+Word Segmentation
+~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
     from polyglot.text import Text, Word
 .. code:: python
 
+    words = ["preprocessing", "processor", "invaluable", "thankful", "crossed"]
+    for w in words:
+      w = Word(w, language="en")
+      print("{:<20}{}".format(w, w.morphemes))
+
+.. parsed-literal::
+
+    preprocessing       ['pre', 'process', 'ing']
+    processor           ['process', 'or']
+    invaluable          ['in', 'valuable']
+    thankful            ['thank', 'ful']
+    crossed             ['cross', 'ed']
+
+
+Sentence Segmentation
+~~~~~~~~~~~~~~~~~~~~~
+
+If the text is not tokenized properly, morphological analysis could
+offer a smart of way of splitting the text into its original units.
+Here, is an example:
+
+.. code:: python
+
     blob = "Wewillmeettoday."
     text = Text(blob)
     text.language = "en"
-We can query all the tagged words
-
 .. code:: python
 
     text.morphemes
@@ -85,114 +99,8 @@ We can query all the tagged words
 
 
 
-After calling the pos\_tags property once, the words objects will carry
-the POS tags.
-
-.. code:: python
-
-    words = ["preprocessing", "processor", "invaluable", "thankful", "crossed"]
-    for w in words:
-      w2 = Word(w, language="en")
-      print("{:<20}{}".format(w2, w2.morphemes))
-
-.. parsed-literal::
-
-    preprocessing       ['pre', 'process', 'ing']
-    processor           ['process', 'or']
-    invaluable          ['in', 'valuable']
-    thankful            ['thank', 'ful']
-    crossed             ['cross', 'ed']
-
-
 Command Line Interface
-----------------------
-
-Tokenization
-^^^^^^^^^^^^
-
-Notice, if we do not pass ``--lang`` the language code, the detector
-will bem used to detect the language of the document.
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot --lang en tokenize --input testdata/cricket.txt > $tok_file
-    head -n 2 $tok_file
-
-.. parsed-literal::
-
-    Australia posted a World Cup record total of 417 - 6 as they beat Afghanistan by 275 runs .
-    David Warner hit 178 off 133 balls , Steve Smith scored 95 while Glenn Maxwell struck 88 in 39 deliveries in the Pool A encounter in Perth .
-
-
-Morphemes
-^^^^^^^^^
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot --lang en morph --input $tok_file | tail -n 50
-
-.. parsed-literal::
-
-    -               -    
-    4               4    
-    against         a_gain_st
-    West            West 
-    Indies          In_dies
-    and             and  
-    Ireland         Ireland
-    respectively    re_spective_ly
-    .               .    
-    
-    The             The  
-    winning         winning
-    margin          margin
-    beats           beat_s
-    the             the  
-    257             2_57 
-    -               -    
-    run             run  
-    amount          amount
-    by              by   
-    which           which
-    India           In_dia
-    beat            beat 
-    Bermuda         Ber_mud_a
-    in              in   
-    Port            Port 
-    of              of   
-    Spain           Spa_in
-    in              in   
-    2007            2007 
-    ,               ,    
-    which           which
-    was             wa_s 
-    equalled        equal_led
-    five            five 
-    days            day_s
-    ago             ago  
-    by              by   
-    South           South
-    Africa          Africa
-    in              in   
-    their           t_heir
-    victory         victor_y
-    over            over 
-    West            West 
-    Indies          In_dies
-    in              in   
-    Sydney          Syd_ney
-    .               .    
-    
-
-
-Nesting steps
-^^^^^^^^^^^^^
-
-We can nest the tokenization and POS tagging in a simple bash pipeline
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -232,35 +140,32 @@ We can nest the tokenization and POS tagging in a simple bash pipeline
     
 
 
+Demo
+----
+
+This demo does not reflect the models supplied by polyglot, however, we
+think it is indicative of what you should expect from morfessor
+
+`Demo <http://www.cis.hut.fi/cgi-bin/morpho/nform.cgi>`__
+
 Citation
 ~~~~~~~~
 
-This work is a direct implementation of the research being described in
-the `Polyglot: Distributed Word Representations for Multilingual
-NLP <http://www.aclweb.org/anthology/W13-3520>`__ paper. The author of
-this library strongly encourage you to cite the following paper if you
-are using this software.
+This is an interface to the implementation being described in the
+`Morfessor2.0: Python Implementation and Extensions for Morfessor
+Baseline <https://aaltodoc.aalto.fi/bitstream/handle/123456789/11836/isbn9789526055015.pdf?sequence=1>`__
+technical report.
 .. code-block::
-   @InProceedings{polyglot:2013:ACL-CoNLL,
-                Title:	Morfessor 2.0: Python Implementation and Extensions for Morfessor Baseline
-                Author(s):	Virpioja, Sami ; Smit, Peter ; Grönroos, Stig-Arne ; Kurimo, Mikko
-                Date:	2013
-                Language:	en
-                Pages:	38
-                Department:	Signaalinkäsittelyn ja akustiikan laitos
-                Department of Signal Processing and Acoustics
-                ISBN:	978-952-60-5501-5 (electronic)
-                Series:	Aalto University publication series SCIENCE + TECHNOLOGY, 25/2013
-                ISSN:	1799-490X (electronic)
-                1799-4896 (printed)
-                1799-4896 (ISSN-L)
-                Subject:	Computer science, Linguistics
-                Keywords:	morpheme segmentation, morphology induction, unsupervised learning, semi-supervised learning, morfessor, machine learning
+   @InProceedings{morfessor2,
+                title:{Morfessor 2.0: Python Implementation and Extensions for Morfessor Baseline},
+                author:	{Virpioja, Sami ; Smit, Peter ; Grönroos, Stig-Arne ; Kurimo, Mikko},
+                year: {2013},
+                publisher: {Department of Signal Processing and Acoustics, Aalto University},
+                booktitle:{Aalto University publication series}
    }
 References
 ----------
 
--  `Universal Part of Speech
-   Tagging <http://universaldependencies.github.io/docs/u/pos/index.html>`__
--  `Universal Dependencies
-   1.0 <https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-1464>`__.
+-  `Morpho project <http://www.cis.hut.fi/cis/projects/morpho/>`__
+-  `Background information on morpheme
+   discovery <http://www.cis.hut.fi/cis/projects/morpho/problem.shtml>`__.
