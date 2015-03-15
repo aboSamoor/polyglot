@@ -259,13 +259,15 @@ def main():
 
   #parser.set_defaults(func=cat)
 
+  language_agnostic = {detect, vocab_counter}
+
   if args.func != download:
     if len(args.input) > 1:
       args.input = TextFiles(args.input)
     else:
       args.input = args.input[0]
 
-    if args.lang == 'detect' and args.func != detect:
+    if args.lang == 'detect' and args.func not in language_agnostic:
       header = 4096
       text = args.input.peek(header)
       lang = Detector(text).language
