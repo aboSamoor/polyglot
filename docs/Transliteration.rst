@@ -2,35 +2,20 @@
 Transliteration
 ===============
 
-.. code:: python
+Transliteration is the conversion of a text from one script to another.
+For instance, a Latin transliteration of the Greek phrase "Ελληνική
+Δημοκρατία", usually translated as 'Hellenic Republic', is "Ellēnikḗ
+Dēmokratía".
 
-    import sys
-    import os.path as p
-.. code:: python
-
-    %load_ext autoreload
-    %autoreload 2
-.. code:: python
-
-    exp_dir = '/media/data/code/polyglot/'
-    if exp_dir not in sys.path:
-      sys.path.insert(0, exp_dir)
-.. code:: python
-
-    import polyglot
-.. code:: python
-
-    from polyglot.load import load_transliteration_table, locate_resource
 .. code:: python
 
     from polyglot.transliteration import Transliterator
 Languages Coverage
 ------------------
 
-The models were trained on a combination of: - Original CONLL datasets
-after the tags were converted using the `universal POS
-tables <http://universaldependencies.github.io/docs/tagset-conversion/index.html>`__.
-- Universal Dependencies 1.0 corpora whenever they are available.
+**TODO**
+
+Describe how did we get these models
 
 .. code:: python
 
@@ -57,8 +42,8 @@ Download Necessary Models
     [polyglot_data]   Package pos2.en is already up-to-date!
 
 
-Library Interface
------------------
+Example
+-------
 
 We tag each word in the text with one part of speech.
 
@@ -91,74 +76,7 @@ We can query all the tagged words
 
 
 Command Line Interface
-----------------------
-
-Tokenization
-^^^^^^^^^^^^
-
-Notice, if we do not pass ``--lang`` the language code, the detector
-will bem used to detect the language of the document.
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot tokenize --input testdata/cricket.txt > $tok_file
-    head -n 2 $tok_file
-
-.. parsed-literal::
-
-    Australia posted a World Cup record total of 417 - 6 as they beat Afghanistan by 275 runs .
-    David Warner hit 178 off 133 balls , Steve Smith scored 95 while Glenn Maxwell struck 88 in 39 deliveries in the Pool A encounter in Perth .
-
-
-.. parsed-literal::
-
-    2015-03-11 22:20:03 INFO __main__.py: 275 Language English is detected while reading the first 1128 bytes.
-
-
-Part of Speech
-^^^^^^^^^^^^^^
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot --lang en transliteration --target ar --input $tok_file | head -n 25
-
-.. parsed-literal::
-
-    Australia       اوستراليا       
-    posted          بوستيد          
-    a               ا               
-    World           وورلد           
-    Cup             كوب             
-    record          ريكورد          
-    total           توتال           
-    of              وف              
-    417                             
-    -                               
-    6                               
-    as              اس              
-    they            ثي              
-    beat            بيت             
-    Afghanistan     افغانيستان      
-    by              بي              
-    275                             
-    runs            رونس            
-    .                               
-    
-    David           دافيد           
-    Warner          وارنر           
-    hit             هيت             
-    178                             
-    off             وفف             
-
-
-Nesting steps
-^^^^^^^^^^^^^
-
-We can nest the tokenization and POS tagging in a simple bash pipeline
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -202,15 +120,8 @@ Citation
 ~~~~~~~~
 
 This work is a direct implementation of the research being described in
-the `Polyglot: Distributed Word Representations for Multilingual
-NLP <http://www.aclweb.org/anthology/W13-3520>`__ paper. The author of
-this library strongly encourage you to cite the following paper if you
-are using this software.
+the ` <>`__ paper. The author of this library strongly encourage you to
+cite the following paper if you are using this software.
 .. code-block::
 References
 ----------
-
--  `Universal Part of Speech
-   Tagging <http://universaldependencies.github.io/docs/u/pos/index.html>`__
--  `Universal Dependencies
-   1.0 <https://lindat.mff.cuni.cz/repository/xmlui/handle/11234/1-1464>`__.

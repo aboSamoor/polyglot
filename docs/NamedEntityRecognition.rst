@@ -50,8 +50,8 @@ Download Necessary Models
     [polyglot_data]   Package ner2.en is already up-to-date!
 
 
-Library Interface
------------------
+Example
+-------
 
 Entities inside a text object or a sentence are represented as chunks.
 Each chunk identifies the start and the end indices of the word
@@ -114,70 +114,7 @@ the sentence.
 
 
 Command Line Interface
-----------------------
-
-Tokenization
-^^^^^^^^^^^^
-
-Notice, if we do not pass ``--lang`` the language code, the detector
-will bem used to detect the language of the document.
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot tokenize --input testdata/cricket.txt > $tok_file
-    head -n 2 $tok_file
-
-.. parsed-literal::
-
-    Australia posted a World Cup record total of 417 - 6 as they beat Afghanistan by 275 runs .
-    David Warner hit 178 off 133 balls , Steve Smith scored 95 while Glenn Maxwell struck 88 in 39 deliveries in the Pool A encounter in Perth .
-
-
-.. parsed-literal::
-
-    2015-03-05 17:27:39 INFO __main__.py: 246 Language English is detected while reading the first 1128 bytes.
-
-
-Named Entity Extraction
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot --lang en ner --input $tok_file | head -n 20
-
-.. parsed-literal::
-
-    Australia       I-LOC
-    posted          O    
-    a               O    
-    World           O    
-    Cup             O    
-    record          O    
-    total           O    
-    of              O    
-    417             O    
-    -               O    
-    6               O    
-    as              O    
-    they            O    
-    beat            O    
-    Afghanistan     I-LOC
-    by              O    
-    275             O    
-    runs            O    
-    .               O    
-    
-
-
-Nesting steps
-^^^^^^^^^^^^^
-
-We can nest the tokenization and the named entity extraction in a simple
-bash pipeline
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -210,10 +147,11 @@ bash pipeline
 Demo
 ----
 .. raw:: html
+   <embed>
    <iframe src="https://entityextractor.appspot.com/" width="100%" height="225" seamless></iframe>
-
+   </embed>
 Citation
---------
+~~~~~~~~
 
 This work is a direct implementation of the research being described in
 the `Polyglot-NER: Multilingual Named Entity

@@ -3,8 +3,8 @@ Tasks
 =====
 
 -  [STRIKEOUT:POS]
--  morphological analysis
--  transliteration
+-  [STRIKEOUT:morphological analysis]
+-  [STRIKEOUT:transliteration]
 
 Library Interface
 =================
@@ -17,6 +17,7 @@ Command Line interface
 ======================
 
 -  Sentiment
+-  Reading stdin column format
 
 Infrastructure
 ==============
@@ -30,10 +31,13 @@ Infrastructure
    undownloaded one]
 -  [STRIKEOUT:Define NotSupportedLanguage/Task Exception for the
    downloader]
+-  Remove noun phrases support.
+-  Train more/new POS taggers
 
 Documentation
 =============
 
 -  Add a quick tutorial
+-  Embed demos in our documentation
 -  [STRIKEOUT:pycld2 README]
 -  [STRIKEOUT:Update rtdcs with the new submodules.]

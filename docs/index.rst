@@ -13,12 +13,16 @@ Contents:
 
    readme
    Installation
+   Detection
+   Tokenization
+   CLI
    Download
    Embeddings
    POS
    NamedEntityRecognition
    MorphologicalAnalysis
    Transliteration
+   Sentiment
    authors
    history
    modules

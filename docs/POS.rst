@@ -1,12 +1,13 @@
 
-Part of Speech tagging
+Part of Speech Tagging
 ======================
 
 Part of speech tagging task aims to assign every word/token in plain
 text a category that identifies the syntactic functionality of the word
 occurrence.
 
-Polyglot recognizes 17 parts of speech:
+Polyglot recognizes 17 parts of speech, this set is called the
+``universal part of speech tag set``:
 
 -  **ADJ**: adjective
 -  **ADP**: adposition
@@ -29,10 +30,13 @@ Polyglot recognizes 17 parts of speech:
 Languages Coverage
 ------------------
 
-The models were trained on a combination of: - Original CONLL datasets
-after the tags were converted using the `universal POS
-tables <http://universaldependencies.github.io/docs/tagset-conversion/index.html>`__.
-- Universal Dependencies 1.0 corpora whenever they are available.
+The models were trained on a combination of:
+
+-  Original CONLL datasets after the tags were converted using the
+   `universal POS
+   tables <http://universaldependencies.github.io/docs/tagset-conversion/index.html>`__.
+
+-  Universal Dependencies 1.0 corpora whenever they are available.
 
 .. code:: python
 
@@ -65,8 +69,8 @@ Download Necessary Models
     [polyglot_data]   Package pos2.en is already up-to-date!
 
 
-Library Interface
------------------
+Example
+-------
 
 We tag each word in the text with one part of speech.
 
@@ -116,74 +120,7 @@ the POS tags.
 
 
 Command Line Interface
-----------------------
-
-Tokenization
-^^^^^^^^^^^^
-
-Notice, if we do not pass ``--lang`` the language code, the detector
-will bem used to detect the language of the document.
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot tokenize --input testdata/cricket.txt > $tok_file
-    head -n 2 $tok_file
-
-.. parsed-literal::
-
-    Australia posted a World Cup record total of 417 - 6 as they beat Afghanistan by 275 runs .
-    David Warner hit 178 off 133 balls , Steve Smith scored 95 while Glenn Maxwell struck 88 in 39 deliveries in the Pool A encounter in Perth .
-
-
-.. parsed-literal::
-
-    2015-03-05 17:21:22 INFO __main__.py: 246 Language English is detected while reading the first 1128 bytes.
-
-
-Part of Speech
-^^^^^^^^^^^^^^
-
-.. code:: python
-
-    %%bash
-    tok_file=/tmp/cricket.tok.txt
-    polyglot --lang en pos --input $tok_file | head -n 25
-
-.. parsed-literal::
-
-    Australia       NOUN 
-    posted          VERB 
-    a               DET  
-    World           NOUN 
-    Cup             NOUN 
-    record          NOUN 
-    total           NOUN 
-    of              ADP  
-    417             NOUN 
-    -               .    
-    6               NOUN 
-    as              ADP  
-    they            PRON 
-    beat            VERB 
-    Afghanistan     NOUN 
-    by              ADP  
-    275             NOUN 
-    runs            NOUN 
-    .               .    
-    
-    David           NOUN 
-    Warner          NOUN 
-    hit             VERB 
-    178             ADJ  
-    off             ADP  
-
-
-Nesting steps
-^^^^^^^^^^^^^
-
-We can nest the tokenization and POS tagging in a simple bash pipeline
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
