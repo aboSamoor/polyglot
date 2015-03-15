@@ -40,7 +40,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
 
   @cached_property
   def detected_languages(self):
-    return Detector(self.raw)
+    return Detector(self.raw, quiet=True)
 
   @property
   def language(self):
@@ -267,7 +267,7 @@ class Word(unicode):
 
   @cached_property
   def detected_languages(self):
-    return Detector(self.string)
+    return Detector(self.string, quiet=True)
 
   @property
   def language(self):
