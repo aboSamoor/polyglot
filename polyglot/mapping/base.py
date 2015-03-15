@@ -228,7 +228,7 @@ class CountedVocabulary(OrderedVocabulary):
       n (integer): specifies the minimum word frequency allowed.
     """
     word_count = {w:c for w,c in iteritems(self.word_count) if c >= n}
-    return Vocabulary(word_count=word_count)
+    return CountedVocabulary(word_count=word_count)
 
   def __unicode__(self):
     return u"\n".join([u"{}\t{}".format(w,self.word_count[w]) for w in self.words])
