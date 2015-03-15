@@ -64,7 +64,12 @@ class Detector(object):
     """If true, exceptions will be silenced."""
     self.detect(text)
 
-  def detect(self, text, quiet=False):
+  @staticmethod
+  def supported_languages():
+    """Returns a list of the languages that can be detected by pycld2."""
+    return [name.capitalize() for name,code in cld2.LANGUAGES]
+
+  def detect(self, text):
     """Decide which language is used to write the text.
 
     The method tries first to detect the language with high reliability. If

@@ -47,7 +47,7 @@ def detect(args):
   """ Detect the language of each line."""
   for l in args.input:
     if l.strip():
-      _print(Detector(l).name)
+      _print("{:<20}{}".format(Detector(l).language.name, l.strip()))
 
 
 def tag(tagger, args):
@@ -175,8 +175,6 @@ def main():
   # Language detector
   detector = subparsers.add_parser('detect',
                                    help="Detect the language(s) used in text.")
-  detector.add_argument('--fine', action='store_true', default=False,
-                        dest='fine_grain')
   detector.set_defaults(func=detect)
 
   # Morphological Analyzer
@@ -267,7 +265,7 @@ def main():
     else:
       args.input = args.input[0]
 
-    if args.lang == 'detect':
+    if args.lang == 'detect' and args.func != detect:
       header = 4096
       text = args.input.peek(header)
       lang = Detector(text).language
