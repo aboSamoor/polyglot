@@ -67,6 +67,10 @@ class Embedding(object):
   def shape(self):
     return self.vectors.shape
 
+  def apply_expansion(self, expansion):
+    """Apply a vocabulary expansion to the current emebddings."""
+    self.vocabulary = expansion(self.vocabulary)
+
   def get(self, k, default=None):
     try:
       return self[k]
