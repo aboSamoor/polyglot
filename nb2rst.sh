@@ -1,8 +1,11 @@
 #! /bin/bash
 
 
-for f in `ls notebooks/*ipynb`
+files=`ls notebooks/*ipynb`
+cd docs
+for f in $files
 do
   b=`basename -s .ipynb $f`
-  ipython nbconvert $f --to rst --output docs/${b}.rst
+  echo "ipython nbconvert ../notebooks/${b}.ipynb --to rst --output ${b}.rst"
 done
+cd -
