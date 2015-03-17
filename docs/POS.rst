@@ -168,18 +168,21 @@ the `Polyglot: Distributed Word Representations for Multilingual
 NLP <http://www.aclweb.org/anthology/W13-3520>`__ paper. The author of
 this library strongly encourage you to cite the following paper if you
 are using this software.
-.. code-block::
-   @InProceedings{polyglot:2013:ACL-CoNLL,
-     author    = {Al-Rfou, Rami  and  Perozzi, Bryan  and  Skiena, Steven},
-     title     = {Polyglot: Distributed Word Representations for Multilingual NLP},
-     booktitle = {Proceedings of the Seventeenth Conference on Computational Natural Language Learning},
-     month     = {August},
-     year      = {2013},
-     address   = {Sofia, Bulgaria},
-     publisher = {Association for Computational Linguistics},
-     pages     = {183--192}, 
-     url       = {http://www.aclweb.org/anthology/W13-3520}
-   }
+
+::
+
+       @InProceedings{polyglot:2013:ACL-CoNLL,
+         author    = {Al-Rfou, Rami  and  Perozzi, Bryan  and  Skiena, Steven},
+         title     = {Polyglot: Distributed Word Representations for Multilingual NLP},
+         booktitle = {Proceedings of the Seventeenth Conference on Computational Natural Language Learning},
+         month     = {August},
+         year      = {2013},
+         address   = {Sofia, Bulgaria},
+         publisher = {Association for Computational Linguistics},
+         pages     = {183--192}, 
+         url       = {http://www.aclweb.org/anthology/W13-3520}
+       }
+
 References
 ----------
 

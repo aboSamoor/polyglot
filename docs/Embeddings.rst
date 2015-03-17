@@ -83,7 +83,7 @@ word is the larger the norm of its own vector.
     plt.xlabel("Word Rank"); _ = plt.ylabel("$L_2$ norm")
 
 
-.. image:: Embeddings_files/docs/Embeddings_12_0.png
+.. image:: Embeddings_files/Embeddings_12_0.png
 
 
 This could be problematic for some applications and training algorithms.

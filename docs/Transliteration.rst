@@ -120,8 +120,14 @@ Citation
 ~~~~~~~~
 
 This work is a direct implementation of the research being described in
-the ` <>`__ paper. The author of this library strongly encourage you to
-cite the following paper if you are using this software.
-.. code-block::
+the `FooBar <https://abc.com>`__ paper. The author of this library
+strongly encourage you to cite the following paper if you are using this
+software.
+
+::
+
 References
 ----------
+
+-  asd
+-  asd

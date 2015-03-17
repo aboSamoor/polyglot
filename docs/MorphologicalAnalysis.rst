@@ -155,14 +155,17 @@ This is an interface to the implementation being described in the
 `Morfessor2.0: Python Implementation and Extensions for Morfessor
 Baseline <https://aaltodoc.aalto.fi/bitstream/handle/123456789/11836/isbn9789526055015.pdf?sequence=1>`__
 technical report.
-.. code-block::
-   @InProceedings{morfessor2,
-                title:{Morfessor 2.0: Python Implementation and Extensions for Morfessor Baseline},
-                author:	{Virpioja, Sami ; Smit, Peter ; Grönroos, Stig-Arne ; Kurimo, Mikko},
-                year: {2013},
-                publisher: {Department of Signal Processing and Acoustics, Aalto University},
-                booktitle:{Aalto University publication series}
-   }
+
+::
+
+    @InProceedings{morfessor2,
+                   title:{Morfessor 2.0: Python Implementation and Extensions for Morfessor Baseline},
+                   author:  {Virpioja, Sami ; Smit, Peter ; Grönroos, Stig-Arne ; Kurimo, Mikko},
+                   year: {2013},
+                   publisher: {Department of Signal Processing and Acoustics, Aalto University},
+                   booktitle:{Aalto University publication series}
+    }
+
 References
 ----------
 
