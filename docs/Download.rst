@@ -20,6 +20,7 @@ download the specified packages in the ``polyglot_data`` directory.
 
     !polyglot download --help
 
+
 .. parsed-literal::
 
     usage: polyglot download [-h] [--dir DIR] [--quiet] [--force] [--exit-on-error] [--url SERVER_INDEX_URL] [packages [packages ...]]
@@ -41,6 +42,7 @@ download the specified packages in the ``polyglot_data`` directory.
 
     !polyglot download morph2.en
 
+
 .. parsed-literal::
 
     [polyglot_data] Downloading package morph2.en to
@@ -58,6 +60,7 @@ line.
 
     !polyglot download
 
+
 .. parsed-literal::
 
     Polyglot Downloader
@@ -73,6 +76,7 @@ Library Interface
 
     from polyglot.downloader import downloader
     downloader.download("embeddings2.en")
+
 
 .. parsed-literal::
 
@@ -110,6 +114,7 @@ Therefore, we can just run:
 .. code:: python
 
     !polyglot download LANG:ar
+
 
 .. parsed-literal::
 
@@ -156,6 +161,7 @@ Therefore, we can just run:
 
 
 
+
 .. parsed-literal::
 
     True
@@ -171,6 +177,7 @@ polyglot, as the following:
 .. code:: python
 
     downloader.supported_tasks(lang="en")
+
 
 
 
@@ -192,6 +199,7 @@ polyglot named entity recognition subsystem, as the following:
 .. code:: python
 
     downloader.supported_languages(task="ner2")
+
 
 
 
@@ -246,6 +254,7 @@ through the list function
 .. code:: python
 
     downloader.list(show_packages=False)
+
 
 .. parsed-literal::
 

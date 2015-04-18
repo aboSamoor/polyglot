@@ -6,12 +6,14 @@
 Welcome to polyglot's documentation!
 ======================================
 
+.. include::
+   README.rst
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   readme
    Installation
    Detection
    Tokenization

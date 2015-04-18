@@ -10,6 +10,7 @@ Dēmokratía".
 .. code:: python
 
     from polyglot.transliteration import Transliterator
+
 Languages Coverage
 ------------------
 
@@ -20,10 +21,12 @@ Describe how did we get these models
 .. code:: python
 
     from __future__ import print_function
+
 .. code:: python
 
     from polyglot.downloader import downloader
     print(", ".join(downloader.supported_languages("pos2")))
+
 Download Necessary Models
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -31,6 +34,7 @@ Download Necessary Models
 
     %%bash
     polyglot download embeddings2.en pos2.en
+
 
 .. parsed-literal::
 
@@ -50,16 +54,19 @@ We tag each word in the text with one part of speech.
 .. code:: python
 
     from polyglot.text import Text
+
 .. code:: python
 
     blob = """We will meet at eight o'clock on Thursday morning."""
     text = Text(blob)
+
 We can query all the tagged words
 
 .. code:: python
 
     for x in text.transliterate("ar"):
       print(x)
+
 
 .. parsed-literal::
 
@@ -81,6 +88,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en transliteration --target ar | tail -n 30
+
 
 .. parsed-literal::
 

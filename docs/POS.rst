@@ -41,10 +41,12 @@ The models were trained on a combination of:
 .. code:: python
 
     from __future__ import print_function
+
 .. code:: python
 
     from polyglot.downloader import downloader
     print(", ".join(downloader.supported_languages("pos2")))
+
 
 .. parsed-literal::
 
@@ -58,6 +60,7 @@ Download Necessary Models
 
     %%bash
     polyglot download embeddings2.en pos2.en
+
 
 .. parsed-literal::
 
@@ -77,15 +80,18 @@ We tag each word in the text with one part of speech.
 .. code:: python
 
     from polyglot.text import Text
+
 .. code:: python
 
     blob = """We will meet at eight o'clock on Thursday morning."""
     text = Text(blob)
+
 We can query all the tagged words
 
 .. code:: python
 
     text.pos_tags
+
 
 
 
@@ -113,6 +119,7 @@ the POS tags.
 
 
 
+
 .. parsed-literal::
 
     u'PRON'
@@ -125,6 +132,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en pos | tail -n 30
+
 
 .. parsed-literal::
 

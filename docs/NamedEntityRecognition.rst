@@ -22,10 +22,12 @@ Wikipedia. Polyglot currently supports 40 major languages.
 .. code:: python
 
     from __future__ import print_function
+
 .. code:: python
 
     from polyglot.downloader import downloader
     print(", ".join(downloader.supported_languages("ner2")))
+
 
 .. parsed-literal::
 
@@ -39,6 +41,7 @@ Download Necessary Models
 
     %%bash
     polyglot download embeddings2.en ner2.en
+
 
 .. parsed-literal::
 
@@ -60,15 +63,18 @@ subsequence within the text.
 .. code:: python
 
     from polyglot.text import Text
+
 .. code:: python
 
     blob = """The Israeli Prime Minister Benjamin Netanyahu has warned that Iran poses a "threat to the entire world"."""
     text = Text(blob)
+
 We can query all entities mentioned in a text.
 
 .. code:: python
 
     text.entities
+
 
 
 
@@ -86,6 +92,7 @@ Or, we can query entites per sentence
       print(sent, "\n")
       for entity in sent.entities:
         print(entity.tag, entity)
+
 
 .. parsed-literal::
 
@@ -107,6 +114,7 @@ the sentence.
 
 
 
+
 .. parsed-literal::
 
     WordList([u'Benjamin', u'Netanyahu'])
@@ -119,6 +127,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en ner | tail -n 20
+
 
 .. parsed-literal::
 
@@ -146,10 +155,12 @@ Command Line Interface
 
 Demo
 ----
+
 .. raw:: html
    <embed>
    <iframe src="https://entityextractor.appspot.com/" width="100%" height="225" seamless></iframe>
    </embed>
+
 Citation
 ~~~~~~~~
 

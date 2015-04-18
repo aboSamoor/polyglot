@@ -17,12 +17,15 @@ You can use C/C++ ICU library by installing the required package
 .. code:: python
 
     sudo apt-get install libicu-dev
+
 .. code:: python
 
     from __future__ import print_function
+
 .. code:: python
 
     from polyglot.text import Text
+
 Word Tokenization
 -----------------
 
@@ -35,11 +38,13 @@ To call our word tokenizer, first we need to construct a Text object.
     该超市1月9日遭受枪手袭击，导致4人死亡，据悉这起事件与法国《查理周刊》杂志社恐怖袭击案有关。
     """
     text = Text(blob)
+
 The property words will call the word tokenizer.
 
 .. code:: python
 
     text.words
+
 
 
 
@@ -56,6 +61,7 @@ detect the language used first before calling the tokenizer
 
     print(text.language)
 
+
 .. parsed-literal::
 
     name:             code: zh       confidence:  99.0 read bytes:  1920
@@ -70,6 +76,7 @@ query the ``sentences`` property
 .. code:: python
 
     text.sentences
+
 
 
 
@@ -90,6 +97,7 @@ sentence into words using the same property ``words``
 
 
 
+
 .. parsed-literal::
 
     WordList(['两', '个', '月', '前', '遭受', '恐怖', '袭击', '的', '法国', '巴黎', '的', '犹太', '超市', '在', '装修', '之后', '周日', '重新', '开放', '，', '法国', '内政', '部长', '以及', '超市', '的', '管理者', '都', '表示', '，', '这', '显示', '了', '生命力', '要', '比', '野蛮', '行为', '更', '强大', '。'])
@@ -105,6 +113,7 @@ tokenization.
 .. code:: python
 
     ! polyglot tokenize --help
+
 
 .. parsed-literal::
 
@@ -122,6 +131,7 @@ Each line represents a sentence where the words are split by spaces.
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt
+
 
 .. parsed-literal::
 

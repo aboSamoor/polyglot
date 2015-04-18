@@ -10,6 +10,7 @@ word embeddings.
 .. code:: python
 
     from polyglot.mapping import Embedding
+
 Formats
 -------
 
@@ -22,6 +23,7 @@ The Embedding class can read word embeddings from different sources:
 .. code:: python
 
     embeddings = Embedding.load("/home/rmyeid/polyglot_data/embeddings2/en/embeddings_pkl.tar.bz2")
+
 Nearest Neighbors
 -----------------
 
@@ -32,6 +34,7 @@ query for the nearest neightbors of any word.
 
     neighbors = embeddings.nearest_neighbors("green")
     neighbors
+
 
 
 
@@ -59,6 +62,7 @@ the ``distances`` method
 
 
 
+
 .. parsed-literal::
 
     array([ 1.34894466,  1.37864077,  1.39504588,  1.39524949,  1.43183875,
@@ -74,6 +78,7 @@ word is the larger the norm of its own vector.
     %matplotlib inline
     import matplotlib.pyplot as plt
     import numpy as np
+
 .. code:: python
 
     norms = np.linalg.norm(embeddings.vectors, axis=1)
@@ -81,6 +86,7 @@ word is the larger the norm of its own vector.
     smooth_line = np.convolve(norms, np.ones(window)/float(window), mode='valid')
     plt.plot(smooth_line)
     plt.xlabel("Word Rank"); _ = plt.ylabel("$L_2$ norm")
+
 
 
 .. image:: Embeddings_files/Embeddings_12_0.png
@@ -93,11 +99,13 @@ effects of word frequency, as the following
 .. code:: python
 
     embeddings = embeddings.normalize_words()
+
 .. code:: python
 
     neighbors = embeddings.nearest_neighbors("green")
     for w,d in zip(neighbors, embeddings.distances("green", neighbors)):
       print("{:<8}{:.4f}".format(w,d))
+
 
 .. parsed-literal::
 
@@ -119,6 +127,7 @@ Vocabulary Expansion
 .. code:: python
 
     from polyglot.mapping import CaseExpander, DigitExpander
+
 Not all the words are available in the dictionary defined by the word
 embeddings. Sometimes it would be useful to map new words to similar
 ones that we have embeddings for.
@@ -134,6 +143,7 @@ For example, the word ``GREEN`` is not available in the embeddings,
 
 
 
+
 .. parsed-literal::
 
     False
@@ -146,9 +156,11 @@ to do that we apply a case expansion:
 .. code:: python
 
     embeddings.apply_expansion(CaseExpander)
+
 .. code:: python
 
     "GREEN" in embeddings
+
 
 
 
@@ -161,6 +173,7 @@ to do that we apply a case expansion:
 .. code:: python
 
     embeddings.nearest_neighbors("GREEN")
+
 
 
 
@@ -195,6 +208,7 @@ result in a failure
 
 
 
+
 .. parsed-literal::
 
     False
@@ -207,9 +221,11 @@ To fix that, we apply another type of vocabulary expansion
 .. code:: python
 
     embeddings.apply_expansion(DigitExpander)
+
 .. code:: python
 
     "434" in embeddings
+
 
 
 
@@ -225,6 +241,7 @@ numbers:
 .. code:: python
 
     embeddings.nearest_neighbors("434")
+
 
 
 

@@ -20,6 +20,7 @@ executing the following command:
 .. code:: python
 
     sudo apt-get install python-numpy libicu-dev
+
 From Source
 -----------
 
@@ -31,6 +32,7 @@ You can clone the public repo:
 .. code:: python
 
     git clone https://github.com/aboSamoor/polyglot
+
 Or download one of the following:
 
 -  `tarball <https://github.com/aboSamoor/polyglot/tarball/master>`__
@@ -42,6 +44,7 @@ with:
 .. code:: python
 
     python setup.py install
+
 Get the bleeding edge version
 -----------------------------
 

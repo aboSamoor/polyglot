@@ -22,10 +22,12 @@ the most frequent words 50,000 words of each language.
 .. code:: python
 
     from __future__ import print_function
+
 .. code:: python
 
     from polyglot.downloader import downloader
     print(", ".join(sorted(downloader.supported_languages("morph2"))))
+
 
 .. parsed-literal::
 
@@ -39,6 +41,7 @@ Download Necessary Models
 
     %%bash
     polyglot download morph2.en morph2.ar
+
 
 .. parsed-literal::
 
@@ -59,12 +62,14 @@ Word Segmentation
 .. code:: python
 
     from polyglot.text import Text, Word
+
 .. code:: python
 
     words = ["preprocessing", "processor", "invaluable", "thankful", "crossed"]
     for w in words:
       w = Word(w, language="en")
       print("{:<20}{}".format(w, w.morphemes))
+
 
 .. parsed-literal::
 
@@ -87,9 +92,11 @@ Here, is an example:
     blob = "Wewillmeettoday."
     text = Text(blob)
     text.language = "en"
+
 .. code:: python
 
     text.morphemes
+
 
 
 
@@ -105,6 +112,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en morph | tail -n 30
+
 
 .. parsed-literal::
 
