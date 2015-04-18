@@ -14,8 +14,13 @@ from ..load import load_embeddings, load_ner_model, load_pos_model
 
 
 NER_ID_TAG = {0: u'O', 1: u'I-PER', 2: u'I-LOC', 3: u'I-ORG'}
-POS_ID_TAG = {0: u'.', 1: u'ADJ', 2: u'ADP', 3: u'ADV', 4: u'CONJ', 5: u'DET',
-              6: u'NOUN', 7: u'NUM', 8: u'PRON', 9: u'PRT', 10: u'VERB', 11: u'X'}
+
+POS_TAG_ID = {u'ADJ': 0, u'ADP': 1, u'ADV': 2, u'AUX': 3, u'CONJ': 4,
+              u'DET': 5, u'INTJ': 6, u'NOUN': 7, u'NUM': 8, u'PART': 9,
+              u'PRON': 10, u'PROPN': 11, u'PUNCT': 12, u'SCONJ': 13,
+              u'SYM': 14, u'VERB': 15, u'X': 16}
+
+POS_ID_TAG = {v:k for k,v in POS_TAG_ID.iteritems()}
 
 class TaggerBase(object):
   """Tagger base class that defines the interface. """
