@@ -1,2 +1,1 @@
-.. include::
-   docs/README.rst
+docs/README.rst
