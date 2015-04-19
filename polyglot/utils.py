@@ -63,3 +63,17 @@ def _unpickle_method(func_name, obj, cls):
     else:
       break
   return func.__get__(obj, cls)
+
+def pretty_list(items, cols=3):
+  text = []
+  width = 24
+  col_width = u"{" + u":<" + str(width) + u"} "
+  for i, lang in enumerate(items):
+    lang = lang.decode(u"utf-8")
+    if len(lang) > width:
+      lang = lang[:width-3] + "..."
+    text.append(u"{:>3}. ".format(i+1))
+    text.append(col_width.format(lang))
+    if (i+1) % cols  == 0:
+      text.append(u"\n")
+  return u"".join(text)
