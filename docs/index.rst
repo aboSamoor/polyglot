@@ -25,13 +25,4 @@ Contents:
    MorphologicalAnalysis
    Transliteration
    Sentiment
-   authors
-   history
    modules
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
