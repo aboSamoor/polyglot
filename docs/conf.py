@@ -280,7 +280,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'polyglot.tex',
+    ('index_latex', 'polyglot.tex',
      u'polyglot Documentation',
      u'Rami Al-Rfou', 'manual'),
 ]
