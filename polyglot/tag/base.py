@@ -20,7 +20,7 @@ POS_TAG_ID = {u'ADJ': 0, u'ADP': 1, u'ADV': 2, u'AUX': 3, u'CONJ': 4,
               u'PRON': 10, u'PROPN': 11, u'PUNCT': 12, u'SCONJ': 13,
               u'SYM': 14, u'VERB': 15, u'X': 16}
 
-POS_ID_TAG = {v:k for k,v in POS_TAG_ID.iteritems()}
+POS_ID_TAG = {v:k for k,v in POS_TAG_ID.items()}
 
 class TaggerBase(object):
   """Tagger base class that defines the interface. """
