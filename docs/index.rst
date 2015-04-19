@@ -10,6 +10,7 @@ Welcome to polyglot's documentation!
    README.rst
 
 Contents:
+=========
 
 .. toctree::
    :maxdepth: 2
@@ -26,3 +27,4 @@ Contents:
    Transliteration
    Sentiment
    modules
+

@@ -20,10 +20,6 @@ You can use C/C++ ICU library by installing the required package
 
 .. code:: python
 
-    from __future__ import print_function
-
-.. code:: python
-
     from polyglot.text import Text
 
 Word Tokenization

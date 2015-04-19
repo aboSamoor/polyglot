@@ -9,7 +9,6 @@ language(s) used in plain text.
 
 .. code:: python
 
-    from __future__ import print_function
     from polyglot.detect import Detector
 
 Example
@@ -77,15 +76,13 @@ the confidence in the detection went down for the first line
 
 .. parsed-literal::
 
-    China (simplified Chinese: 中国; traditional Chinese: 中國), 
-    
+    (u'China (simplified Chinese: \u4e2d\u56fd; traditional Chinese: \u4e2d\u570b),', '\n')
     name: English     code: en       confidence:  71.0 read bytes:   887
     name: Chinese     code: zh_Hant  confidence:  11.0 read bytes:  1755
     name: un          code: un       confidence:   0.0 read bytes:     0
     
     
-    officially the People's Republic of China (PRC), is a sovereign state located in East Asia. 
-    
+    (u"officially the People's Republic of China (PRC), is a sovereign state located in East Asia.", '\n')
     name: English     code: en       confidence:  98.0 read bytes:  1291
     name: un          code: un       confidence:   0.0 read bytes:     0
     name: un          code: un       confidence:   0.0 read bytes:     0
@@ -135,11 +132,11 @@ best effort strategy, an exception ``UnknownLanguage`` will be thrown.
 
     UnknownLanguage                           Traceback (most recent call last)
 
-    <ipython-input-8-de43776398b9> in <module>()
+    <ipython-input-9-de43776398b9> in <module>()
     ----> 1 print(Detector("4"))
     
 
-    /usr/local/lib/python2.7/dist-packages/polyglot-15.03.12-py2.7.egg/polyglot/detect/base.pyc in __init__(self, text, quiet)
+    /usr/local/lib/python2.7/dist-packages/polyglot-15.04.17-py2.7.egg/polyglot/detect/base.pyc in __init__(self, text, quiet)
          63     self.quiet = quiet
          64     """If true, exceptions will be silenced."""
     ---> 65     self.detect(text)
@@ -147,7 +144,7 @@ best effort strategy, an exception ``UnknownLanguage`` will be thrown.
          67   @staticmethod
 
 
-    /usr/local/lib/python2.7/dist-packages/polyglot-15.03.12-py2.7.egg/polyglot/detect/base.pyc in detect(self, text)
+    /usr/local/lib/python2.7/dist-packages/polyglot-15.04.17-py2.7.egg/polyglot/detect/base.pyc in detect(self, text)
          89 
          90       if not reliable and not self.quiet:
     ---> 91         raise UnknownLanguage("Try passing a longer snippet of text")
@@ -223,10 +220,76 @@ cld2 can detect up to 165 languages.
 
 .. code:: python
 
-    print("; ".join(Detector.supported_languages()))
+    from polyglot.utils import pretty_list
+    print(pretty_list(Detector.supported_languages()))
 
 
 .. parsed-literal::
 
-    Abkhazian; Afar; Afrikaans; Akan; Albanian; Amharic; Arabic; Armenian; Assamese; Aymara; Azerbaijani; Bashkir; Basque; Belarusian; Bengali; Bihari; Bislama; Bosnian; Breton; Bulgarian; Burmese; Catalan; Cebuano; Cherokee; Nyanja; Corsican; Croatian; Croatian; Czech; Chinese; Chinese; Chinese; Chinese; Chineset; Chineset; Chineset; Chineset; Chineset; Chineset; Danish; Dhivehi; Dutch; Dzongkha; English; Esperanto; Estonian; Ewe; Faroese; Fijian; Finnish; French; Frisian; Ga; Galician; Ganda; Georgian; German; Greek; Greenlandic; Guarani; Gujarati; Haitian_creole; Hausa; Hawaiian; Hebrew; Hebrew; Hindi; Hmong; Hungarian; Icelandic; Igbo; Indonesian; Interlingua; Interlingue; Inuktitut; Inupiak; Irish; Italian; Ignore; Javanese; Javanese; Japanese; Kannada; Kashmiri; Kazakh; Khasi; Khmer; Kinyarwanda; Krio; Kurdish; Kyrgyz; Korean; Laothian; Latin; Latvian; Limbu; Limbu; Limbu; Lingala; Lithuanian; Lozi; Luba_lulua; Luo_kenya_and_tanzania; Luxembourgish; Macedonian; Malagasy; Malay; Malayalam; Maltese; Manx; Maori; Marathi; Mauritian_creole; Romanian; Mongolian; Montenegrin; Montenegrin; Montenegrin; Montenegrin; Nauru; Ndebele; Nepali; Newari; Norwegian; Norwegian; Norwegian_n; Nyanja; Occitan; Oriya; Oromo; Ossetian; Pampanga; Pashto; Pedi; Persian; Polish; Portuguese; Punjabi; Quechua; Rajasthani; Rhaeto_romance; Romanian; Rundi; Russian; Samoan; Sango; Sanskrit; Scots; Scots_gaelic; Serbian; Serbian; Seselwa; Seselwa; Sesotho; Shona; Sindhi; Sinhalese; Siswant; Slovak; Slovenian; Somali; Spanish; Sundanese; Swahili; Swedish; Syriac; Tagalog; Tajik; Tamil; Tatar; Telugu; Thai; Tibetan; Tigrinya; Tonga; Tsonga; Tswana; Tumbuka; Turkish; Turkmen; Twi; Uighur; Ukrainian; Urdu; Uzbek; Venda; Vietnamese; Volapuk; Waray_philippines; Welsh; Wolof; Xhosa; X_arabic; X_armenian; X_avestan; X_bork_bork_bork; X_balinese; X_bamum; X_batak; X_bengali; X_bopomofo; X_brahmi; X_braille; X_buginese; X_buhid; X_canadian_aboriginal; X_carian; X_chakma; X_cham; X_cherokee; X_common; X_coptic; X_cuneiform; X_cypriot; X_cyrillic; X_deseret; X_devanagari; X_elmer_fudd; X_egyptian_hieroglyphs; X_ethiopic; X_georgian; X_glagolitic; X_gothic; X_greek; X_gujarati; X_gurmukhi; X_hacker; X_han; X_hangul; X_hanunoo; X_hebrew; X_hiragana; X_imperial_aramaic; X_inherited; X_inscriptional_pahlavi; X_inscriptional_parthian; X_javanese; X_klingon; X_kaithi; X_kannada; X_katakana; X_kayah_li; X_kharoshthi; X_khmer; X_lao; X_latin; X_lepcha; X_limbu; X_linear_b; X_lisu; X_lycian; X_lydian; X_malayalam; X_mandaic; X_meetei_mayek; X_meroitic_cursive; X_meroitic_hieroglyphs; X_miao; X_mongolian; X_myanmar; X_new_tai_lue; X_nko; X_ogham; X_ol_chiki; X_old_italic; X_old_persian; X_old_south_arabian; X_old_turkic; X_oriya; X_osmanya; X_pig_latin; X_phags_pa; X_phoenician; X_rejang; X_runic; X_samaritan; X_saurashtra; X_sharada; X_shavian; X_sinhala; X_sora_sompeng; X_sundanese; X_syloti_nagri; X_syriac; X_tagalog; X_tagbanwa; X_tai_le; X_tai_tham; X_tai_viet; X_takri; X_tamil; X_telugu; X_thaana; X_thai; X_tibetan; X_tifinagh; X_ugaritic; X_vai; X_yi; Yiddish; Yoruba; Zhuang; Zulu
+      1. Abkhazian                  2. Afar                       3. Afrikaans                
+      4. Akan                       5. Albanian                   6. Amharic                  
+      7. Arabic                     8. Armenian                   9. Assamese                 
+     10. Aymara                    11. Azerbaijani               12. Bashkir                  
+     13. Basque                    14. Belarusian                15. Bengali                  
+     16. Bihari                    17. Bislama                   18. Bosnian                  
+     19. Breton                    20. Bulgarian                 21. Burmese                  
+     22. Catalan                   23. Cebuano                   24. Cherokee                 
+     25. Nyanja                    26. Corsican                  27. Croatian                 
+     28. Croatian                  29. Czech                     30. Chinese                  
+     31. Chinese                   32. Chinese                   33. Chinese                  
+     34. Chineset                  35. Chineset                  36. Chineset                 
+     37. Chineset                  38. Chineset                  39. Chineset                 
+     40. Danish                    41. Dhivehi                   42. Dutch                    
+     43. Dzongkha                  44. English                   45. Esperanto                
+     46. Estonian                  47. Ewe                       48. Faroese                  
+     49. Fijian                    50. Finnish                   51. French                   
+     52. Frisian                   53. Ga                        54. Galician                 
+     55. Ganda                     56. Georgian                  57. German                   
+     58. Greek                     59. Greenlandic               60. Guarani                  
+     61. Gujarati                  62. Haitian_creole            63. Hausa                    
+     64. Hawaiian                  65. Hebrew                    66. Hebrew                   
+     67. Hindi                     68. Hmong                     69. Hungarian                
+     70. Icelandic                 71. Igbo                      72. Indonesian               
+     73. Interlingua               74. Interlingue               75. Inuktitut                
+     76. Inupiak                   77. Irish                     78. Italian                  
+     79. Ignore                    80. Javanese                  81. Javanese                 
+     82. Japanese                  83. Kannada                   84. Kashmiri                 
+     85. Kazakh                    86. Khasi                     87. Khmer                    
+     88. Kinyarwanda               89. Krio                      90. Kurdish                  
+     91. Kyrgyz                    92. Korean                    93. Laothian                 
+     94. Latin                     95. Latvian                   96. Limbu                    
+     97. Limbu                     98. Limbu                     99. Lingala                  
+    100. Lithuanian               101. Lozi                     102. Luba_lulua               
+    103. Luo_kenya_and_tanzania   104. Luxembourgish            105. Macedonian               
+    106. Malagasy                 107. Malay                    108. Malayalam                
+    109. Maltese                  110. Manx                     111. Maori                    
+    112. Marathi                  113. Mauritian_creole         114. Romanian                 
+    115. Mongolian                116. Montenegrin              117. Montenegrin              
+    118. Montenegrin              119. Montenegrin              120. Nauru                    
+    121. Ndebele                  122. Nepali                   123. Newari                   
+    124. Norwegian                125. Norwegian                126. Norwegian_n              
+    127. Nyanja                   128. Occitan                  129. Oriya                    
+    130. Oromo                    131. Ossetian                 132. Pampanga                 
+    133. Pashto                   134. Pedi                     135. Persian                  
+    136. Polish                   137. Portuguese               138. Punjabi                  
+    139. Quechua                  140. Rajasthani               141. Rhaeto_romance           
+    142. Romanian                 143. Rundi                    144. Russian                  
+    145. Samoan                   146. Sango                    147. Sanskrit                 
+    148. Scots                    149. Scots_gaelic             150. Serbian                  
+    151. Serbian                  152. Seselwa                  153. Seselwa                  
+    154. Sesotho                  155. Shona                    156. Sindhi                   
+    157. Sinhalese                158. Siswant                  159. Slovak                   
+    160. Slovenian                161. Somali                   162. Spanish                  
+    163. Sundanese                164. Swahili                  165. Swedish                  
+    166. Syriac                   167. Tagalog                  168. Tajik                    
+    169. Tamil                    170. Tatar                    171. Telugu                   
+    172. Thai                     173. Tibetan                  174. Tigrinya                 
+    175. Tonga                    176. Tsonga                   177. Tswana                   
+    178. Tumbuka                  179. Turkish                  180. Turkmen                  
+    181. Twi                      182. Uighur                   183. Ukrainian                
+    184. Urdu                     185. Uzbek                    186. Venda                    
+    187. Vietnamese               188. Volapuk                  189. Waray_philippines        
+    190. Welsh                    191. Wolof                    192. Xhosa                    
+    193. Yiddish                  194. Yoruba                   195. Zhuang                   
+    196. Zulu                     
 

@@ -287,9 +287,3 @@ are using this software.
      pages     = {183--192}, 
      url       = {http://www.aclweb.org/anthology/W13-3520}
     }
-
-References
-----------
-
--  
--  
