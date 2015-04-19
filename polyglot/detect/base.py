@@ -67,7 +67,7 @@ class Detector(object):
   @staticmethod
   def supported_languages():
     """Returns a list of the languages that can be detected by pycld2."""
-    return [name.capitalize() for name,code in cld2.LANGUAGES]
+    return [name.capitalize() for name,code in cld2.LANGUAGES if not name.startswith("X_")]
 
   def detect(self, text):
     """Decide which language is used to write the text.
