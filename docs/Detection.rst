@@ -68,7 +68,7 @@ the confidence in the detection went down for the first line
 .. code:: python
 
     for line in mixed_text.strip().splitlines():
-      print(line, "\n")
+      print(line + u"\n")
       for language in Detector(line).languages:
         print(language)
       print("\n")
@@ -76,13 +76,15 @@ the confidence in the detection went down for the first line
 
 .. parsed-literal::
 
-    (u'China (simplified Chinese: \u4e2d\u56fd; traditional Chinese: \u4e2d\u570b),', '\n')
+    China (simplified Chinese: 中国; traditional Chinese: 中國),
+    
     name: English     code: en       confidence:  71.0 read bytes:   887
     name: Chinese     code: zh_Hant  confidence:  11.0 read bytes:  1755
     name: un          code: un       confidence:   0.0 read bytes:     0
     
     
-    (u"officially the People's Republic of China (PRC), is a sovereign state located in East Asia.", '\n')
+    officially the People's Republic of China (PRC), is a sovereign state located in East Asia.
+    
     name: English     code: en       confidence:  98.0 read bytes:  1291
     name: un          code: un       confidence:   0.0 read bytes:     0
     name: un          code: un       confidence:   0.0 read bytes:     0

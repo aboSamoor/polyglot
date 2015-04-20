@@ -14,14 +14,10 @@ Dēmokratía".
 Languages Coverage
 ------------------
 
-**TODO**
-
-Describe how did we get these models
-
 .. code:: python
 
     from polyglot.downloader import downloader
-    print(downloader.supported_languages_table("transliteration2", 3))
+    print(downloader.supported_languages_table("transliteration2"))
 
 
 .. parsed-literal::
@@ -52,8 +48,8 @@ Describe how did we get these models
     
 
 
-Download Necessary Models
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Downloading Necessary Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 

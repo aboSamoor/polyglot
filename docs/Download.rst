@@ -77,22 +77,6 @@ Library Interface
     from polyglot.downloader import downloader
     downloader.download("embeddings2.en")
 
-
-.. parsed-literal::
-
-    [polyglot_data] Downloading package embeddings2.en to
-    [polyglot_data]     /home/rmyeid/polyglot_data...
-    [polyglot_data]   Package embeddings2.en is already up-to-date!
-
-
-
-
-.. parsed-literal::
-
-    True
-
-
-
 Collections
 -----------
 
@@ -198,54 +182,25 @@ polyglot named entity recognition subsystem, as the following:
 
 .. code:: python
 
-    downloader.supported_languages(task="ner2")
-
-
+    print(downloader.supported_languages_table(task="ner2"))
 
 
 .. parsed-literal::
 
-    ['Polish',
-     'Turkish',
-     'Russian',
-     'Indonesian',
-     'Czech',
-     'Arabic',
-     'Korean',
-     'Catalan; Valencian',
-     'Italian',
-     'Thai',
-     'Romanian, Moldavian, Moldovan',
-     'Tagalog',
-     'Danish',
-     'Finnish',
-     'German',
-     'Persian',
-     'Dutch',
-     'Chinese',
-     'French',
-     'Portuguese',
-     'Slovak',
-     'Hebrew (modern)',
-     'Malay',
-     'Slovene',
-     'Bulgarian',
-     'Hindi',
-     'Japanese',
-     'Hungarian',
-     'Croatian',
-     'Ukrainian',
-     'Serbian',
-     'Lithuanian',
-     'Norwegian',
-     'Latvian',
-     'Swedish',
-     'English',
-     'Greek, Modern',
-     'Spanish; Castilian',
-     'Vietnamese',
-     'Estonian']
-
+      1. Polish                     2. Turkish                    3. Russian                  
+      4. Indonesian                 5. Czech                      6. Arabic                   
+      7. Korean                     8. Catalan; Valencian         9. Italian                  
+     10. Thai                      11. Romanian, Moldavian, ...  12. Tagalog                  
+     13. Danish                    14. Finnish                   15. German                   
+     16. Persian                   17. Dutch                     18. Chinese                  
+     19. French                    20. Portuguese                21. Slovak                   
+     22. Hebrew (modern)           23. Malay                     24. Slovene                  
+     25. Bulgarian                 26. Hindi                     27. Japanese                 
+     28. Hungarian                 29. Croatian                  30. Ukrainian                
+     31. Serbian                   32. Lithuanian                33. Norwegian                
+     34. Latvian                   35. Swedish                   36. English                  
+     37. Greek, Modern             38. Spanish; Castilian        39. Vietnamese               
+     40. Estonian                 
 
 
 You can view all the available and/or installed collections or packages
