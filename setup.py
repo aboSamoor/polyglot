@@ -28,7 +28,7 @@ test_requirements = [
 
 setup(
     name='polyglot',
-    version='15.04.17',
+    version='15.04.19',
     description='Polyglot is a natuaral language pipeline that supports massive multilingual applications.',
     long_description=readme + '\n\n' + history,
     author='Rami Al-Rfou',
