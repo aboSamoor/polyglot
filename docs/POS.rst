@@ -40,17 +40,18 @@ The models were trained on a combination of:
 
 .. code:: python
 
-    from __future__ import print_function
-
-.. code:: python
-
     from polyglot.downloader import downloader
-    print(", ".join(downloader.supported_languages("pos2")))
+    print(downloader.supported_languages_table("pos2"))
 
 
 .. parsed-literal::
 
-    Danish, Czech, Slovene, English, Bulgarian, Swedish, Portuguese, Dutch
+      1. German                     2. Italian                    3. Danish                   
+      4. Czech                      5. Slovene                    6. French                   
+      7. English                    8. Finnish                    9. Bulgarian                
+     10. Spanish; Castilian        11. Swedish                   12. Portuguese               
+     13. Irish                     14. Hungarian                 15. Dutch                    
+    
 
 
 Download Necessary Models
@@ -98,15 +99,15 @@ We can query all the tagged words
 .. parsed-literal::
 
     [(u'We', u'PRON'),
-     (u'will', u'VERB'),
+     (u'will', u'AUX'),
      (u'meet', u'VERB'),
      (u'at', u'ADP'),
      (u'eight', u'NUM'),
      (u"o'clock", u'NOUN'),
      (u'on', u'ADP'),
-     (u'Thursday', u'NOUN'),
+     (u'Thursday', u'PROPN'),
      (u'morning', u'NOUN'),
-     (u'.', u'.')]
+     (u'.', u'PUNCT')]
 
 
 
@@ -137,34 +138,34 @@ Command Line Interface
 .. parsed-literal::
 
     which           DET  
-    India           NOUN 
+    India           PROPN
     beat            VERB 
-    Bermuda         NOUN 
+    Bermuda         PROPN
     in              ADP  
-    Port            NOUN 
+    Port            PROPN
     of              ADP  
-    Spain           NOUN 
+    Spain           PROPN
     in              ADP  
-    2007            NOUN 
-    ,               .    
+    2007            NUM  
+    ,               PUNCT
     which           DET  
-    was             VERB 
+    was             AUX  
     equalled        VERB 
     five            NUM  
     days            NOUN 
     ago             ADV  
     by              ADP  
-    South           NOUN 
-    Africa          NOUN 
+    South           PROPN
+    Africa          PROPN
     in              ADP  
     their           PRON 
     victory         NOUN 
     over            ADP  
-    West            NOUN 
-    Indies          NOUN 
+    West            PROPN
+    Indies          PROPN
     in              ADP  
-    Sydney          NOUN 
-    .               .    
+    Sydney          PROPN
+    .               PUNCT
     
 
 

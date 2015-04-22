@@ -32,6 +32,7 @@ Features
 -  Tokenization (165 Languages)
 -  Language detection (196 Languages)
 -  Named Entity Recognition (40 Languages)
+-  Part of Speech Tagging (15 Languages)
 -  Sentiment Analysis (136 Languages)
 -  Word Embeddings (137 Languages)
 -  Morphological analysis (135 Languages)
@@ -107,20 +108,20 @@ Part of Speech Tagging
 
     Word            POS Tag
     ------------------------------
-    O               PART
-    primeiro        SCONJ
-    uso             PART
+    O               DET
+    primeiro        ADJ
+    uso             NOUN
     de              ADP
-    desobediência   PART
-    civil           SCONJ
+    desobediência   NOUN
+    civil           ADJ
     em              ADP
-    massa           PART
-    ocorreu         SCONJ
+    massa           NOUN
+    ocorreu         ADJ
     em              ADP
-    setembro        PART
+    setembro        NOUN
     de              ADP
-    1906            DET
-    .               ADV
+    1906            NUM
+    .               PUNCT
 
 
 Named Entity Recognition

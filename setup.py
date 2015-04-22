@@ -28,8 +28,8 @@ test_requirements = [
 
 setup(
     name='polyglot',
-    version='15.04.19',
-    description='Polyglot is a natuaral language pipeline that supports massive multilingual applications.',
+    version='15.04.22',
+    description='Polyglot is a natural language pipeline that supports massive multilingual applications.',
     long_description=readme + '\n\n' + history,
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
