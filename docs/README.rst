@@ -43,7 +43,7 @@ Developer
 
 -  Rami Al-Rfou @ ``rmyeid gmail com``
 
-Qiuck Tutorial
+Quick Tutorial
 --------------
 
 .. code:: python
