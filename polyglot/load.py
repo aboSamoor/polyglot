@@ -26,6 +26,7 @@ polyglot_path = path.join(path.abspath(data_path), "polyglot_data")
 
 resource_dir = {
   "cw_embeddings":"embeddings2",
+  "sgns_embeddings":"sgns2",
   "visualization": "tsne2",
   "wiki_vocab": "counts2",
   "sentiment": "sentiment2",
@@ -65,6 +66,8 @@ def load_embeddings(lang="en", task="embeddings", type="cw"):
   if type == "cw":
     e.apply_expansion(CaseExpander)
     e.apply_expansion(DigitExpander)
+  if type == "sgns":
+    e.apply_expansion(CaseExpander)
   return e
 
 
@@ -111,6 +114,7 @@ def load_pos_model(lang="en", version="2"):
   p = locate_resource(src_dir, lang)
   fh = _open(p)
   return dict(np.load(fh))
+
 
 @memoize
 def load_morfessor_model(lang="en", version="2"):

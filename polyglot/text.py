@@ -285,8 +285,15 @@ class Word(unicode):
 
   @property
   def vector(self):
-    embeddings = load_embeddings(lang=self.language, task="embeddings")
+    embeddings = load_embeddings(lang=self.language, type="sgns",
+                                 task="embeddings")
     return embeddings[self.string]
+
+  @property
+  def neighbors(self):
+    embeddings = load_embeddings(lang=self.language, type="sgns",
+                                 task="embeddings")
+    return embeddings.nearest_neighbors(self.string)
 
   @property
   def polarity(self):
