@@ -3,16 +3,19 @@
 
     import sys
     from os import path as p
+
 .. code:: python
 
     polyglot_dir = '/data/polyglot/'
     
     if polyglot_dir not in sys.path:
       sys.path.insert(0, polyglot_dir)
+
 .. code:: python
 
     %load_ext autoreload
     %autoreload 2
+
 
 .. parsed-literal::
 
@@ -24,6 +27,7 @@
 
     import polyglot
     from polyglot.text import Text
+
 Download packages
 =================
 
@@ -31,6 +35,7 @@ Download packages
 
     from polyglot.downloader import download, list_packages, _downloader
     download(info_or_id=u"sentiment2.en")
+
 
 .. parsed-literal::
 
@@ -54,6 +59,7 @@ Download packages
 
 
 
+
 .. parsed-literal::
 
     [<Package tsne2.en>,
@@ -67,6 +73,7 @@ Download packages
 .. code:: python
 
     list_packages()
+
 
 .. parsed-literal::
 
@@ -236,6 +243,7 @@ Language Detection
     print
     print "top language name\n", "-"*40, "\n", text.language.name
 
+
 .. parsed-literal::
 
     Text
@@ -273,6 +281,7 @@ Tokenization
     print "\nSentences\n", "-"*40
     print zen.sentences
 
+
 .. parsed-literal::
 
     Text
@@ -297,6 +306,7 @@ Polarity
     %%bash
     polyglot download sentiment2.en
 
+
 .. parsed-literal::
 
     [polyglot_data] Downloading package sentiment2.en to
@@ -312,6 +322,7 @@ Word base polarity
     print "{:<16}{}".format("Word", "Polarity"),"\n", "-"*40,"\n"
     for w in zen.words:
         print "{:<16}{:>2}".format(w, w.polarity)
+
 
 .. parsed-literal::
 
@@ -346,6 +357,7 @@ Sentence Level Sentiment
     for sent in zen.sentences:
       print sent, sent.polarity
 
+
 .. parsed-literal::
 
     Beautiful is better than ugly. 0.0
@@ -362,6 +374,7 @@ Named Entity Extraction
 
 
 
+
 .. parsed-literal::
 
     []
@@ -375,6 +388,7 @@ Embeddings
 
     w = zen.words[5]
     w.vector
+
 
 
 

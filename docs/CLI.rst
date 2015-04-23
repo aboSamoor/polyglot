@@ -11,6 +11,7 @@ command ``polyglot``
 
     !polyglot --help
 
+
 .. parsed-literal::
 
     usage: polyglot [-h] [--lang LANG] [--delimiter DELIMITER] [--workers WORKERS] [-l LOG] [--debug]
@@ -50,6 +51,7 @@ language the input is written in.
 
     !polyglot --lang en tokenize --input testdata/cricket.txt | head -n 3
 
+
 .. parsed-literal::
 
     Australia posted a World Cup record total of 417 - 6 as they beat Afghanistan by 275 runs .
@@ -64,6 +66,7 @@ the input.
 .. code:: python
 
     !polyglot tokenize --input testdata/cricket.txt | head -n 3
+
 
 .. parsed-literal::
 
@@ -106,6 +109,7 @@ First, let us examine the subcommand ``count`` options
 
     !polyglot count --help
 
+
 .. parsed-literal::
 
     usage: polyglot count [-h] [--min-count MIN_COUNT | --most-freq MOST_FREQ] [--input [INPUT [INPUT ...]]]
@@ -125,6 +129,7 @@ appeared at least twice
 .. code:: python
 
     !polyglot count --input testdata/cricket.txt --min-count 2
+
 
 .. parsed-literal::
 
@@ -155,6 +160,7 @@ option ``workers``.
 .. code:: python
 
     !polyglot --log debug --workers 5 count --input testdata/cricket.txt testdata/cricket.txt --min-count 3
+
 
 .. parsed-literal::
 
@@ -189,6 +195,7 @@ word counts
 
     !polyglot count --input testdata/cricket.txt | tail -n 10
 
+
 .. parsed-literal::
 
     Ireland	1
@@ -212,6 +219,7 @@ build a simple pipe.
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt | polyglot count --min-count 2
+
 
 .. parsed-literal::
 

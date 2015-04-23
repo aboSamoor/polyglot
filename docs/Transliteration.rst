@@ -10,27 +10,52 @@ Dēmokratía".
 .. code:: python
 
     from polyglot.transliteration import Transliterator
+
 Languages Coverage
 ------------------
 
-**TODO**
-
-Describe how did we get these models
-
-.. code:: python
-
-    from __future__ import print_function
 .. code:: python
 
     from polyglot.downloader import downloader
-    print(", ".join(downloader.supported_languages("pos2")))
-Download Necessary Models
-^^^^^^^^^^^^^^^^^^^^^^^^^
+    print(downloader.supported_languages_table("transliteration2"))
+
+
+.. parsed-literal::
+
+      1. Haitian; Haitian Creole    2. Tamil                      3. Vietnamese               
+      4. Telugu                     5. Croatian                   6. Hungarian                
+      7. Thai                       8. Kannada                    9. Tagalog                  
+     10. Armenian                  11. Hebrew (modern)           12. Turkish                  
+     13. Portuguese                14. Belarusian                15. Norwegian Nynorsk        
+     16. Norwegian                 17. Dutch                     18. Japanese                 
+     19. Albanian                  20. Bulgarian                 21. Serbian                  
+     22. Swahili                   23. Swedish                   24. French                   
+     25. Latin                     26. Czech                     27. Yiddish                  
+     28. Hindi                     29. Danish                    30. Finnish                  
+     31. German                    32. Bosnian-Croatian-Serbian  33. Slovak                   
+     34. Persian                   35. Lithuanian                36. Slovene                  
+     37. Latvian                   38. Bosnian                   39. Gujarati                 
+     40. Italian                   41. Icelandic                 42. Spanish; Castilian       
+     43. Ukrainian                 44. Georgian                  45. Urdu                     
+     46. Indonesian                47. Marathi (Marāṭhī)         48. Korean                   
+     49. Galician                  50. Khmer                     51. Catalan; Valencian       
+     52. Romanian, Moldavian, ...  53. Basque                    54. Macedonian               
+     55. Russian                   56. Azerbaijani               57. Chinese                  
+     58. Estonian                  59. Welsh                     60. Arabic                   
+     61. Bengali                   62. Amharic                   63. Irish                    
+     64. Malay                     65. Afrikaans                 66. Polish                   
+     67. Greek, Modern             68. Esperanto                 69. Maltese                  
+    
+
+
+Downloading Necessary Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
     %%bash
     polyglot download embeddings2.en pos2.en
+
 
 .. parsed-literal::
 
@@ -50,16 +75,19 @@ We tag each word in the text with one part of speech.
 .. code:: python
 
     from polyglot.text import Text
+
 .. code:: python
 
     blob = """We will meet at eight o'clock on Thursday morning."""
     text = Text(blob)
+
 We can query all the tagged words
 
 .. code:: python
 
     for x in text.transliterate("ar"):
       print(x)
+
 
 .. parsed-literal::
 
@@ -81,6 +109,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en transliteration --target ar | tail -n 30
+
 
 .. parsed-literal::
 
@@ -115,19 +144,3 @@ Command Line Interface
     .                               
     
 
-
-Citation
-~~~~~~~~
-
-This work is a direct implementation of the research being described in
-the `FooBar <https://abc.com>`__ paper. The author of this library
-strongly encourage you to cite the following paper if you are using this
-software.
-
-::
-
-References
-----------
-
--  asd
--  asd

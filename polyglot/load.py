@@ -14,7 +14,8 @@ from six.moves import cPickle as pickle
 from . import data_path
 from .decorators import memoize
 from .downloader import downloader
-from .mapping import Embedding, CountedVocabulary
+from .mapping import Embedding, CountedVocabulary, CaseExpander, DigitExpander
+
 from .utils import _open
 
 if "~" in data_path:
@@ -60,7 +61,11 @@ def load_embeddings(lang="en", task="embeddings", type="cw"):
   """
   src_dir = "_".join((type, task)) if type else task
   p = locate_resource(src_dir, lang)
-  return Embedding.load(p)
+  e = Embedding.load(p)
+  if type == "cw":
+    e.apply_expansion(CaseExpander)
+    e.apply_expansion(DigitExpander)
+  return e
 
 
 @memoize

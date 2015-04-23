@@ -21,15 +21,58 @@ the most frequent words 50,000 words of each language.
 
 .. code:: python
 
-    from __future__ import print_function
-.. code:: python
-
     from polyglot.downloader import downloader
-    print(", ".join(sorted(downloader.supported_languages("morph2"))))
+    print(downloader.supported_languages_table("morph2"))
+
 
 .. parsed-literal::
 
-    Afrikaans, Albanian, Alemannic, Amharic, Arabic, Aragonese, Armenian, Assamese, Asturian, Azerbaijani, Bashkir, Basque, Bavarian, Belarusian, Bengali, Bishnupriya Manipuri, Bosnian, Bosnian-Croatian-Serbian, Breton, Bulgarian, Burmese, Catalan; Valencian, Cebuano, Chechen, Chinese, Chuvash, Croatian, Czech, Danish, Divehi; Dhivehi; Maldivian;, Dutch, Egyptian Arabic, English, Esperanto, Estonian, Faroese, Fiji Hindi, Finnish, French, Galician, Gan Chinese, Georgian, German, Greek, Modern, Gujarati, Haitian; Haitian Creole, Hebrew (modern), Hindi, Hungarian, Icelandic, Ido, Ilokano, Indonesian, Interlingua, Irish, Italian, Japanese, Javanese, Kannada, Kapampangan, Kazakh, Khmer, Kirghiz, Kyrgyz, Korean, Kurdish, Latin, Latvian, Limburgish, Limburgan, Limburger, Lithuanian, Lombard language, Luxembourgish, Letzeburgesch, Macedonian, Malagasy, Malay, Malayalam, Maltese, Manx, Marathi (Marāṭhī), Mongolian, Nepali, Northern Sami, Norwegian, Norwegian Nynorsk, Occitan, Oriya, Ossetian, Ossetic, Panjabi, Punjabi, Pashto, Pushto, Persian, Piedmontese language, Polish, Portuguese, Quechua, Romanian, Moldavian, Moldovan, Romansh, Russian, Sakha, Sanskrit (Saṁskṛta), Scots, Scottish Gaelic; Gaelic, Serbian, Sicilian, Silesian, Sinhala, Sinhalese, Slovak, Slovene, Spanish; Castilian, Sundanese, Swahili, Swedish, Tagalog, Tajik, Tamil, Tatar, Telugu, Thai, Tibetan Standard, Tibetan, Central, Turkish, Turkmen, Uighur, Uyghur, Ukrainian, Upper Sorbian, Urdu, Uzbek, Venetian, Vietnamese, Volapük, Walloon, Waray-Waray, Welsh, West Flemish, Western Frisian, Yiddish, Yoruba, Zazaki
+      1. Piedmontese language       2. Lombard language           3. Gan Chinese              
+      4. Sicilian                   5. Scots                      6. Kirghiz, Kyrgyz          
+      7. Pashto, Pushto             8. Kurdish                    9. Portuguese               
+     10. Kannada                   11. Korean                    12. Khmer                    
+     13. Kazakh                    14. Ilokano                   15. Polish                   
+     16. Panjabi, Punjabi          17. Georgian                  18. Chuvash                  
+     19. Alemannic                 20. Czech                     21. Welsh                    
+     22. Chechen                   23. Catalan; Valencian        24. Northern Sami            
+     25. Sanskrit (Saṁskṛta)       26. Slovene                   27. Javanese                 
+     28. Slovak                    29. Bosnian-Croatian-Serbian  30. Bavarian                 
+     31. Swedish                   32. Swahili                   33. Sundanese                
+     34. Serbian                   35. Albanian                  36. Japanese                 
+     37. Western Frisian           38. French                    39. Finnish                  
+     40. Upper Sorbian             41. Faroese                   42. Persian                  
+     43. Sinhala, Sinhalese        44. Italian                   45. Amharic                  
+     46. Aragonese                 47. Volapük                   48. Icelandic                
+     49. Sakha                     50. Afrikaans                 51. Indonesian               
+     52. Interlingua               53. Azerbaijani               54. Ido                      
+     55. Arabic                    56. Assamese                  57. Yoruba                   
+     58. Yiddish                   59. Waray-Waray               60. Croatian                 
+     61. Hungarian                 62. Haitian; Haitian Creole   63. Quechua                  
+     64. Armenian                  65. Hebrew (modern)           66. Silesian                 
+     67. Hindi                     68. Divehi; Dhivehi; Mald...  69. German                   
+     70. Danish                    71. Occitan                   72. Tagalog                  
+     73. Turkmen                   74. Thai                      75. Tajik                    
+     76. Greek, Modern             77. Telugu                    78. Tamil                    
+     79. Oriya                     80. Ossetian, Ossetic         81. Tatar                    
+     82. Turkish                   83. Kapampangan               84. Venetian                 
+     85. Manx                      86. Gujarati                  87. Galician                 
+     88. Irish                     89. Scottish Gaelic; Gaelic   90. Nepali                   
+     91. Cebuano                   92. Zazaki                    93. Walloon                  
+     94. Dutch                     95. Norwegian                 96. Norwegian Nynorsk        
+     97. West Flemish              98. Chinese                   99. Bosnian                  
+    100. Breton                   101. Belarusian               102. Bulgarian                
+    103. Bashkir                  104. Egyptian Arabic          105. Tibetan Standard, Tib... 
+    106. Bengali                  107. Burmese                  108. Romansh                  
+    109. Marathi (Marāṭhī)        110. Malay                    111. Maltese                  
+    112. Russian                  113. Macedonian               114. Malayalam                
+    115. Mongolian                116. Malagasy                 117. Vietnamese               
+    118. Spanish; Castilian       119. Estonian                 120. Basque                   
+    121. Bishnupriya Manipuri     122. Asturian                 123. English                  
+    124. Esperanto                125. Luxembourgish, Letzeb... 126. Latin                    
+    127. Uighur, Uyghur           128. Ukrainian                129. Limburgish, Limburgan... 
+    130. Latvian                  131. Urdu                     132. Lithuanian               
+    133. Fiji Hindi               134. Uzbek                    135. Romanian, Moldavian, ... 
+    
 
 
 Download Necessary Models
@@ -39,6 +82,7 @@ Download Necessary Models
 
     %%bash
     polyglot download morph2.en morph2.ar
+
 
 .. parsed-literal::
 
@@ -59,12 +103,14 @@ Word Segmentation
 .. code:: python
 
     from polyglot.text import Text, Word
+
 .. code:: python
 
     words = ["preprocessing", "processor", "invaluable", "thankful", "crossed"]
     for w in words:
       w = Word(w, language="en")
       print("{:<20}{}".format(w, w.morphemes))
+
 
 .. parsed-literal::
 
@@ -87,9 +133,11 @@ Here, is an example:
     blob = "Wewillmeettoday."
     text = Text(blob)
     text.language = "en"
+
 .. code:: python
 
     text.morphemes
+
 
 
 
@@ -105,6 +153,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en morph | tail -n 30
+
 
 .. parsed-literal::
 

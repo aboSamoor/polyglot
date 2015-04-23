@@ -147,6 +147,10 @@ isoLangs = {
         "name":"Chinese Character",
         "nativeName":"中文 (Zhōngwén), 汉语, 漢語"
     },
+    "zhw":{
+        "name":"Chinese Word",
+        "nativeName":"中文 (Zhōngwén), 汉语, 漢語"
+    },
     "cv":{
         "name":"Chuvash",
         "nativeName":"чӑваш чӗлхи"

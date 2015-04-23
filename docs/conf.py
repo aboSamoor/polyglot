@@ -256,6 +256,16 @@ htmlhelp_basename = 'polyglotdoc'
 # -- Options for LaTeX output ------------------------------------------
 
 latex_elements = {
+    'inputenc': '',
+    'utf8extra': '',
+    'preamble': '''
+
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{Courier New}
+%\setmonofont{FreeMono}
+''',
     # The paper size ('letterpaper' or 'a4paper').
     #'papersize': 'letterpaper',
 
@@ -270,7 +280,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'polyglot.tex',
+    ('index_latex', 'polyglot.tex',
      u'polyglot Documentation',
      u'Rami Al-Rfou', 'manual'),
 ]

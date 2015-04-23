@@ -86,8 +86,10 @@ import logging
 from os import path
 from json import loads
 
+
 from polyglot import data_path
 from polyglot.detect.langids import isoLangs
+from polyglot.utils import pretty_list
 from icu import Locale
 
 import stat
@@ -956,6 +958,11 @@ class Downloader(object):
     else:
       return [x.name.split()[0] for x in self.collections()
                                          if Downloader.LANG_PREFIX in x.id]
+
+  def supported_languages_table(self, task, cols=3):
+    languages = self.supported_languages(task)
+    return pretty_list(languages)
+
 
   def supported_tasks(self, lang=None):
     """Languages that are covered by a specific task.

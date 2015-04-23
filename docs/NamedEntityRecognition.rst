@@ -21,15 +21,26 @@ Wikipedia. Polyglot currently supports 40 major languages.
 
 .. code:: python
 
-    from __future__ import print_function
-.. code:: python
-
     from polyglot.downloader import downloader
-    print(", ".join(downloader.supported_languages("ner2")))
+    print(downloader.supported_languages_table("ner2", 3))
+
 
 .. parsed-literal::
 
-    Polish, Turkish, Russian, Czech, Arabic, Korean, Catalan; Valencian, Indonesian, Vietnamese, Thai, Romanian, Moldavian, Moldovan, Tagalog, Danish, Finnish, German, Persian, Latvian, Chinese, French, Portuguese, Slovak, Hebrew (modern), Malay, Slovene, Bulgarian, Hindi, Japanese, Hungarian, Croatian, Ukrainian, Serbian, Lithuanian, Norwegian, Dutch, Swedish, English, Greek, Modern, Spanish; Castilian, Italian, Estonian
+      1. Polish                     2. Turkish                    3. Russian                  
+      4. Indonesian                 5. Czech                      6. Arabic                   
+      7. Korean                     8. Catalan; Valencian         9. Italian                  
+     10. Thai                      11. Romanian, Moldavian, ...  12. Tagalog                  
+     13. Danish                    14. Finnish                   15. German                   
+     16. Persian                   17. Dutch                     18. Chinese                  
+     19. French                    20. Portuguese                21. Slovak                   
+     22. Hebrew (modern)           23. Malay                     24. Slovene                  
+     25. Bulgarian                 26. Hindi                     27. Japanese                 
+     28. Hungarian                 29. Croatian                  30. Ukrainian                
+     31. Serbian                   32. Lithuanian                33. Norwegian                
+     34. Latvian                   35. Swedish                   36. English                  
+     37. Greek, Modern             38. Spanish; Castilian        39. Vietnamese               
+     40. Estonian                 
 
 
 Download Necessary Models
@@ -39,6 +50,7 @@ Download Necessary Models
 
     %%bash
     polyglot download embeddings2.en ner2.en
+
 
 .. parsed-literal::
 
@@ -60,15 +72,18 @@ subsequence within the text.
 .. code:: python
 
     from polyglot.text import Text
+
 .. code:: python
 
     blob = """The Israeli Prime Minister Benjamin Netanyahu has warned that Iran poses a "threat to the entire world"."""
     text = Text(blob)
+
 We can query all entities mentioned in a text.
 
 .. code:: python
 
     text.entities
+
 
 
 
@@ -86,6 +101,7 @@ Or, we can query entites per sentence
       print(sent, "\n")
       for entity in sent.entities:
         print(entity.tag, entity)
+
 
 .. parsed-literal::
 
@@ -107,6 +123,7 @@ the sentence.
 
 
 
+
 .. parsed-literal::
 
     WordList([u'Benjamin', u'Netanyahu'])
@@ -119,6 +136,7 @@ Command Line Interface
 .. code:: python
 
     !polyglot --lang en tokenize --input testdata/cricket.txt |  polyglot --lang en ner | tail -n 20
+
 
 .. parsed-literal::
 
@@ -146,10 +164,12 @@ Command Line Interface
 
 Demo
 ----
+
 .. raw:: html
    <embed>
    <iframe src="https://entityextractor.appspot.com/" width="100%" height="225" seamless></iframe>
    </embed>
+
 Citation
 ~~~~~~~~
 

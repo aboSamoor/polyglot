@@ -3,6 +3,8 @@
 
 import sys
 
+import numpy as np
+
 from polyglot.base import Sequence, TextFile, TextFiles
 from polyglot.detect import Detector, Language
 from polyglot.decorators import cached_property
@@ -72,7 +74,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     (defaults to :class:`WordTokenizer <textblob.tokenizers.WordTokenizer>`).
     """
     seq = self.word_tokenizer.transform(Sequence(self.raw))
-    return WordList(seq.tokens(), language=self.language.code)
+    return WordList(seq.tokens(), parent=self, language=self.language.code)
 
   def tokenize(self, tokenizer=None):
     """Return a list of tokens, using ``tokenizer``.
@@ -80,7 +82,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
         this blob's default tokenizer.
     """
     t = tokenizer if tokenizer is not None else self.tokenizer
-    return WordList(t.tokenize(self.raw))
+    return WordList(t.tokenize(self.raw), parent=self)
 
   @cached_property
   def polarity(self):
@@ -104,12 +106,12 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
   def transliterate(self, target_language="en"):
     """Transliterate the string to the target language."""
     return WordList([w.transliterate(target_language) for w in self.words],
-                     language=target_language)
+                     language=target_language, parent=self)
 
   @cached_property
   def morphemes(self):
     words, score = self.morpheme_analyzer.viterbi_segment(self.raw)
-    return WordList(words, language=self.language.code)
+    return WordList(words, language=self.language.code, parent=self)
 
 
   @cached_property
@@ -124,10 +126,12 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
         if prev_tag == u'O':
           start = i
         else:
-          chunks.append(Chunk(self.words[start: i], start, i, tag=prev_tag))
+          chunks.append(Chunk(self.words[start: i], start, i, tag=prev_tag,
+                              parent=self))
         prev_tag = tag
     if tag != u'O':
-      chunks.append(Chunk(self.words[start: i+1], start, i+1, tag=tag))
+      chunks.append(Chunk(self.words[start: i+1], start, i+1, tag=tag,
+                          parent=self))
     return chunks
 
   @cached_property
@@ -170,7 +174,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     """
     if n <= 0:
         return []
-    grams = [WordList(self.words[i:i+n])
+    grams = [WordList(self.words[i:i+n], parent=self)
                         for i in range(len(self.words) - n + 1)]
     return grams
 
@@ -228,7 +232,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     WordList.
     :rtype: :class:`WordList <WordList>`
     """
-    return WordList(self._strkey().split(sep, maxsplit))
+    return WordList(self._strkey().split(sep, maxsplit), parent=self)
 
 
 class Word(unicode):
@@ -263,7 +267,7 @@ class Word(unicode):
   @cached_property
   def morphemes(self):
     words, score = self.morpheme_analyzer.viterbi_segment(self.string)
-    return WordList(words, language=self.language)
+    return WordList(words, parent=self, language=self.language)
 
   @cached_property
   def detected_languages(self):
@@ -303,11 +307,12 @@ class Word(unicode):
 class WordList(list):
   """A list-like collection of words."""
 
-  def __init__(self, collection, language="en"):
+  def __init__(self, collection, parent=None, language="en"):
     """Initialize a WordList. Takes a collection of strings as
     its only argument.
     """
     self._collection = [Word(w, language=language) for w in collection]
+    self.parent = parent
     super(WordList, self).__init__(self._collection)
 
   def __str__(self):
@@ -376,10 +381,12 @@ class Chunk(WordList):
   :param end_index: An int, the index where this chunk ends in
                       a WordList. If not given, defaults to the
                       length of the sentence - 1.
+  :param parent: Original Baseblob.
   """
 
-  def __init__(self, subsequence, start_index=0, end_index=None, tag=""):
-    super(Chunk, self).__init__(subsequence)
+  def __init__(self, subsequence, start_index=0, end_index=None, tag="",
+               parent=None):
+    super(Chunk, self).__init__(collection=subsequence, parent=parent)
     #: The start index within a Text
     self.start = start_index
     #: The end index within a Text
@@ -391,6 +398,43 @@ class Chunk(WordList):
   def __repr__(self):
     """Returns a string representation for debugging."""
     return '{tag}({lst})'.format(tag=self.tag, lst=repr(self._collection))
+
+  @cached_property
+  def positive_sentiment(self):
+    """Positive sentiment of the entity."""
+    pos, neg = self._sentiment()
+    return pos
+
+  @cached_property
+  def negative_sentiment(self):
+    """Negative sentiment of the entity."""
+    pos, neg = self._sentiment()
+    return neg
+
+  def _sentiment(self, distance=True):
+    """Calculates the sentiment of an entity as it appears in text."""
+    sum_pos = 0
+    sum_neg = 0
+    text = self.parent
+    entity_positions = range(self.start, self.end)
+    non_entity_positions = set(range(len(text.words))).difference(entity_positions)
+    if not distance:
+      non_entity_polarities = np.array([text.words[i].polarity for i in non_entity_positions])
+      sum_pos = sum(non_entity_polarities == 1)
+      sum_neg = sum(non_entity_polarities == -1)
+    else:
+      polarities = np.array([w.polarity for w in text.words])
+      polarized_positions = np.argwhere(polarities != 0)[0]
+      polarized_non_entity_positions = non_entity_positions.intersection(polarized_positions)
+      sentence_len = len(text.words)
+      for i in polarized_non_entity_positions:
+        min_dist = min(abs(self.start - i), abs(self.end - i))
+        if text.words[i].polarity == 1:
+          sum_pos += 1.0 - (min_dist - 1.0) / (2.0 * sentence_len)
+        else:
+          sum_neg += 1.0 - (min_dist - 1.0) / (2.0 *sentence_len)
+    return (sum_pos, sum_neg)
+
 
 class Sentence(BaseBlob):
   """A sentence within a Text object. Inherits from :class:`BaseBlob <BaseBlob>`.
