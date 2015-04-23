@@ -67,6 +67,10 @@ class Embedding(object):
   def shape(self):
     return self.vectors.shape
 
+  def apply_expansion(self, expansion):
+    """Apply a vocabulary expansion to the current emebddings."""
+    self.vocabulary = expansion(self.vocabulary)
+
   def get(self, k, default=None):
     try:
       return self[k]
@@ -139,7 +143,7 @@ class Embedding(object):
 
   @staticmethod
   def from_gensim(model):
-    word_counts = {}
+    word_count = {}
     vectors = []
     for word, vocab in sorted(iteritems(model.vocab), key=lambda item: -item[1].count):
       vectors.append(model.syn0[vocab.index])

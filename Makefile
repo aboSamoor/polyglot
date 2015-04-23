@@ -40,12 +40,14 @@ coverage:
 	open htmlcov/index.html
 
 docs:
+	./nb2rst.sh
 	rm -f docs/polyglot.rst
 	rm -f docs/modules.rst
 	sphinx-apidoc -o docs/ polyglot
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	open docs/_build/html/index.html
+	rm -f docs/*tests*rst
+	xdg-open docs/_build/html/index.html
 
 release: clean
 	python setup.py sdist upload

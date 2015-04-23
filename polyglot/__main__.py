@@ -16,12 +16,14 @@ from six import iteritems
 from icu import Locale
 
 from polyglot.base import Sequence, TextFile, TextFiles
-from polyglot.mapping import CountedVocabulary
 from polyglot.detect import Detector
-from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.downloader import Downloader
+from polyglot.load import load_morfessor_model
+from polyglot.mapping import CountedVocabulary
+from polyglot.tag import NEChunker, POSTagger
+from polyglot.tokenize import SentenceTokenizer, WordTokenizer
+from polyglot.transliteration import Transliterator
 from polyglot.utils import _print
-from polyglot.chunk.ner import NEChunker
 
 signal(SIGPIPE, SIG_DFL)
 logger = logging.getLogger(__name__)
@@ -45,16 +47,51 @@ def detect(args):
   """ Detect the language of each line."""
   for l in args.input:
     if l.strip():
-      _print(Detector(l).name)
+      _print("{:<20}{}".format(Detector(l).language.name, l.strip()))
+
+
+def tag(tagger, args):
+  """Chunk named entities."""
+  for l in args.input:
+    words = l.strip().split()
+    line_annotations = [u"{:<16}{:<5}".format(w,p) for w, p in tagger.annotate(words)]
+    _print(u"\n".join(line_annotations))
+    _print(u"")
+
+
+def transliterate(args):
+  """Transliterate words according to the target language."""
+  t = Transliterator(source_lang=args.lang,
+                     target_lang=args.target)
+  for l in args.input:
+    words = l.strip().split()
+    line_annotations = [u"{:<16}{:<16}".format(w, t.transliterate(w)) for w in words]
+    _print(u"\n".join(line_annotations))
+    _print(u"")
+
+
+def morphemes(args):
+  """Segment words according to their morphemes."""
+  morfessor = load_morfessor_model(lang=args.lang)
+  for l in args.input:
+    words = l.strip().split()
+    morphemes = [(w, u"_".join(morfessor.viterbi_segment(w)[0])) for w in words]
+    line_annotations = [u"{:<16}{:<5}".format(w,p) for w, p in morphemes]
+    _print(u"\n".join(line_annotations))
+    _print(u"")
 
 
 def ner_chunk(args):
   """Chunk named entities."""
   chunker = NEChunker(lang=args.lang)
-  for l in args.input:
-    words = l.strip().split()
-    line_annotations = [u"{}\t{}".format(w,p) for w, p in chunker.annotate(words)]
-    _print(u"\n".join(line_annotations))
+  tag(chunker, args)
+
+
+def pos_tag(args):
+  """Tag words with their part of speech."""
+  tagger = POSTagger(lang=args.lang)
+  tag(tagger, args)
+
 
 def cat(args):
   """ Concatenate the content of the input file."""
@@ -138,23 +175,15 @@ def main():
   # Language detector
   detector = subparsers.add_parser('detect',
                                    help="Detect the language(s) used in text.")
-  detector.add_argument('--fine', action='store_true', default=False,
-                        dest='fine_grain')
-  detector.add_argument('--input', nargs='*', type=TextFile,
-                        default=[TextFile(sys.stdin.fileno())])
   detector.set_defaults(func=detect)
 
   # Morphological Analyzer
   morph = subparsers.add_parser('morph')
-  morph.add_argument('--input', nargs='*', type=TextFile,
-                     default=[TextFile(sys.stdin.fileno())])
-  morph.set_defaults(func=morph)
+  morph.set_defaults(func=morphemes)
 
   # Tokenizer
   tokenizer = subparsers.add_parser('tokenize',
                                     help="Tokenize text into sentences and words.")
-  tokenizer.add_argument('--input', nargs='*', type=TextFile,
-                         default=[TextFile(sys.stdin.fileno())])
   group1= tokenizer.add_mutually_exclusive_group()
   group1.add_argument("--only-sent", default=False, action="store_true",
                       help="Segment sentences without word tokenization")
@@ -182,8 +211,6 @@ def main():
   # Vocabulary Counter
   counter = subparsers.add_parser('count',
                                   help="Count words frequency in a corpus.")
-  counter.add_argument('--input', nargs='*', type=TextFile,
-                        default=[TextFile(sys.stdin.fileno())])
   group1= counter.add_mutually_exclusive_group()
   group1.add_argument("--min-count", type=int, default=1,
                       help="Ignore all words that appear <= min_freq.")
@@ -194,23 +221,33 @@ def main():
   # Concatenate the input file
   catter = subparsers.add_parser('cat',
                                  help="Print the contents of the input file to the screen.")
-  catter.add_argument('--input', nargs='*', type=TextFile,
-                      default=[TextFile(sys.stdin.fileno())])
   catter.set_defaults(func=cat)
 
   # Named Entity Chunker
   ner = subparsers.add_parser('ner',
                               help="Named entity recognition chunking.")
   ner.set_defaults(func=ner_chunk)
-  ner.add_argument('--input', nargs='*', type=TextFile,
-                   default=[TextFile(sys.stdin.fileno())])
+
+  # Part of Speech Tagger
+  ner = subparsers.add_parser('pos',
+                              help="Part of Speech tagger.")
+  ner.set_defaults(func=pos_tag)
+
+  # Transliteration
+  transliterator = subparsers.add_parser('transliteration',
+                                         help="Rewriting the input in the "
+                                              "target language script.")
+  transliterator.add_argument("--target", default="en",
+                              help="Language code of the target language.")
+  transliterator.set_defaults(func=transliterate)
 
   # Sentiment Analysis
   senti = subparsers.add_parser('sentiment',
                                 help="Classify text to positive and negative polarity.")
-
-  senti.add_argument('--input', nargs='*', type=TextFile,
-                     default=[TextFile(sys.stdin.fileno())])
+  for name, subparser in parser._subparsers._group_actions[0].choices.items():
+    if name == 'download': continue
+    subparser.add_argument('--input', nargs='*', type=TextFile,
+                           default=[TextFile(sys.stdin.fileno())])
 
   args = parser.parse_args()
   numeric_level = getattr(logging, args.log.upper(), None)
@@ -222,16 +259,18 @@ def main():
 
   #parser.set_defaults(func=cat)
 
+  language_agnostic = {detect, vocab_counter}
+
   if args.func != download:
     if len(args.input) > 1:
       args.input = TextFiles(args.input)
     else:
       args.input = args.input[0]
 
-    if args.lang == 'detect':
+    if args.lang == 'detect' and args.func not in language_agnostic:
       header = 4096
       text = args.input.peek(header)
-      lang = Detector(text)
+      lang = Detector(text).language
       args.lang = lang.code
       logger.info("Language {} is detected while reading the first {} bytes"
                   ".".format(lang.name, lang.read_bytes))

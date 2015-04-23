@@ -1,20 +1,20 @@
-polyglot.chunk package
-======================
+polyglot.tag package
+====================
 
 Subpackages
 -----------
 
 .. toctree::
 
-    polyglot.chunk.tests
+    polyglot.tag.tests
 
 Submodules
 ----------
 
-polyglot.chunk.ner module
--------------------------
+polyglot.tag.base module
+------------------------
 
-.. automodule:: polyglot.chunk.ner
+.. automodule:: polyglot.tag.base
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +23,7 @@ polyglot.chunk.ner module
 Module contents
 ---------------
 
-.. automodule:: polyglot.chunk
+.. automodule:: polyglot.tag
     :members:
     :undoc-members:
     :show-inheritance:

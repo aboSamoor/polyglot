@@ -28,8 +28,8 @@ test_requirements = [
 
 setup(
     name='polyglot',
-    version='15.03',
-    description='Polyglot is a natuaral language pipeline that supports massive multilingual applications.',
+    version='15.04.22',
+    description='Polyglot is a natural language pipeline that supports massive multilingual applications.',
     long_description=readme + '\n\n' + history,
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
@@ -38,7 +38,8 @@ setup(
                 'polyglot.detect',
                 'polyglot.tokenize',
                 'polyglot.mapping',
-                'polyglot.chunk'],
+                'polyglot.tag',
+                'polyglot.transliteration'],
     entry_points={
         'console_scripts': [
             'polyglot = polyglot.__main__:main',
@@ -50,7 +51,7 @@ setup(
     zip_safe=False,
     keywords='polyglot',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Education',

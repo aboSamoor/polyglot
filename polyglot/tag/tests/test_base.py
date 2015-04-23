@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Test basic NEChunker."""
+"""Test basic Taggers."""
 
 import unittest
-from .. import NEChunker
+from .. import NEChunker, POSTagger
 
 from io import StringIO
 

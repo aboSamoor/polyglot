@@ -6,14 +6,8 @@
 Welcome to polyglot's documentation!
 ======================================
 
-.. include::
-   README.rst
-
-Contents:
-=========
-
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    Installation
    Detection
@@ -26,5 +20,3 @@ Contents:
    MorphologicalAnalysis
    Transliteration
    Sentiment
-   modules
-

@@ -1,7 +1,10 @@
 from .base import CountedVocabulary, OrderedVocabulary, VocabularyBase
 from .embeddings import Embedding
+from .expansion import CaseExpander, DigitExpander
 
 __all__ = ['CountedVocabulary',
-           'Embedding',
            'OrderedVocabulary',
-           'VocabularyBase']
+           'VocabularyBase',
+           'Embedding',
+           'CaseExpander',
+           'DigitExpander']

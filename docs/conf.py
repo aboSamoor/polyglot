@@ -16,6 +16,8 @@
 import sys
 import os
 
+# on_rtd is whether we are on readthedocs.org
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # Solution to RTD problem suggested by
 # http://blog.rtwilson.com/how-to-make-your-sphinx-documentation-compile-with-readthedocs-when-youre-using-numpy-and-scipy/
@@ -75,6 +77,8 @@ extensions = [
               'sphinx.ext.linkcode',
 #              'sphinx.ext.viewcode',
               'sphinxcontrib.napoleon',
+#              'IPython.sphinxext.ipython_console_highlighting',
+#              'IPython.sphinxext.ipython_directive'
              ]
 
 autosummary_generate = True
@@ -150,7 +154,26 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+  import sphinx_rtd_theme
+  html_theme = 'sphinx_rtd_theme'
+  html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+else:
+  html_theme = 'default'
+
+#import sphinx_bootstrap_theme
+#html_theme = 'bootstrap'
+#html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+
+#import klink
+#html_theme = 'klink'
+#html_theme_path = [klink.get_html_theme_path()]
+
+#import alabaster
+#html_theme = 'alabaster'
+#html_theme_path = [alabaster.get_path()]
+
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -233,6 +256,16 @@ htmlhelp_basename = 'polyglotdoc'
 # -- Options for LaTeX output ------------------------------------------
 
 latex_elements = {
+    'inputenc': '',
+    'utf8extra': '',
+    'preamble': '''
+
+\usepackage{fontspec}
+\setmainfont{Linux Libertine O}
+%\setmonofont{DejaVu Sans Mono}
+\setmonofont{Courier New}
+%\setmonofont{FreeMono}
+''',
     # The paper size ('letterpaper' or 'a4paper').
     #'papersize': 'letterpaper',
 
@@ -247,7 +280,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'polyglot.tex',
+    ('index_latex', 'polyglot.tex',
      u'polyglot Documentation',
      u'Rami Al-Rfou', 'manual'),
 ]
