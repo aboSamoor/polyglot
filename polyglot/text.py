@@ -12,7 +12,7 @@ from polyglot.downloader import Downloader
 from polyglot.load import load_embeddings, load_morfessor_model
 from polyglot.mapping import CountedVocabulary
 from polyglot.mixins import BlobComparableMixin, StringlikeMixin
-from polyglot.tag import NEChunker, POSTagger
+from polyglot.tag import get_pos_tagger, get_ner_tagger
 from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.transliteration import Transliterator
 from polyglot.utils import _print
@@ -93,11 +93,11 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
 
   @cached_property
   def ne_chunker(self):
-    return NEChunker(lang=self.language.code)
+    return get_ner_tagger(lang=self.language.code)
 
   @cached_property
   def pos_tagger(self):
-    return POSTagger(lang=self.language.code)
+    return get_pos_tagger(lang=self.language.code)
 
   @cached_property
   def morpheme_analyzer(self):

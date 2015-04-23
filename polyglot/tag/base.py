@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Named entity chunker.
+"""POS and NER Taggers.
 
-Detect three types of entities: {Person, Location, Organization.}
+Part of speech taggers (POS) classifies words into 17 syntactic category.
+Named entity Recognition extractors (NER) Detect three types of entities: {Person, Location, Organization.}
 
 """
 
 import numpy as np
 from six.moves import range
 
+from ..decorators import memoize
 from ..load import load_embeddings, load_ner_model, load_pos_model
 
 
@@ -138,3 +140,13 @@ class POSTagger(TaggerBase):
       probs = scores/scores.sum()
       return probs
     return predict_proba
+
+@memoize
+def get_pos_tagger(lang='en'):
+  """Return a POS tagger from the models cache."""
+  return POSTagger(lang=lang)
+
+@memoize
+def get_ner_tagger(lang='en'):
+  """Return a NER tagger from the models cache."""
+  return NERTagger(lang=lang)
