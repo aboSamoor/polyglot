@@ -149,4 +149,4 @@ def get_pos_tagger(lang='en'):
 @memoize
 def get_ner_tagger(lang='en'):
   """Return a NER tagger from the models cache."""
-  return NERTagger(lang=lang)
+  return NEChunker(lang=lang)
