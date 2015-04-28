@@ -43,14 +43,13 @@ Developer
 
 -  Rami Al-Rfou @ ``rmyeid gmail com``
 
-Qiuck Tutorial
+Quick Tutorial
 --------------
 
 .. code:: python
 
     import polyglot
-    from polyglot.text import Text
-
+    from polyglot.text import Text, Word
 Language Detection
 ~~~~~~~~~~~~~~~~~~
 
@@ -58,7 +57,6 @@ Language Detection
 
     text = Text("Bonjour, Mesdames.")
     print("Language Detected: Code={}, Name={}\n".format(text.language.code, text.language.name))
-
 
 .. parsed-literal::
 
@@ -76,7 +74,6 @@ Tokenization
                "Simple is better than complex.")
     print(zen.words)
 
-
 .. parsed-literal::
 
     [u'Beautiful', u'is', u'better', u'than', u'ugly', u'.', u'Explicit', u'is', u'better', u'than', u'implicit', u'.', u'Simple', u'is', u'better', u'than', u'complex', u'.']
@@ -85,7 +82,6 @@ Tokenization
 .. code:: python
 
     print(zen.sentences)
-
 
 .. parsed-literal::
 
@@ -102,7 +98,6 @@ Part of Speech Tagging
     print("{:<16}{}".format("Word", "POS Tag")+"\n"+"-"*30)
     for word, tag in text.pos_tags:
         print(u"{:<16}{:>2}".format(word, tag))
-
 
 .. parsed-literal::
 
@@ -132,7 +127,6 @@ Named Entity Recognition
     text = Text(u"In Großbritannien war Gandhi mit dem westlichen Lebensstil vertraut geworden")
     print(text.entities)
 
-
 .. parsed-literal::
 
     [I-LOC([u'Gro\xdfbritannien']), I-PER([u'Gandhi'])]
@@ -146,7 +140,6 @@ Polarity
     print("{:<16}{}".format("Word", "Polarity")+"\n"+"-"*30)
     for w in zen.words[:6]:
         print("{:<16}{:>2}".format(w, w.polarity))
-
 
 .. parsed-literal::
 
@@ -165,23 +158,33 @@ Embeddings
 
 .. code:: python
 
-    word = zen.words[0]
-    print(word.vector)
-
+    word = Word("Obama", language="en")
+    print("Neigbors (Synonms) of {}".format(word)+"\n"+"-"*30)
+    for w in word.neighbors:
+        print("{:<16}".format(w))
+    print("\n\nFirst 10 dimensions out the {} dimensions\n".format(word.vector.shape[0]))
+    print(word.vector[:10])
 
 .. parsed-literal::
 
-    [-0.08001513 -0.35475096  0.27702546 -0.20423636  0.36313248  0.06376412
-      0.0444247  -0.30489922  0.014972    0.13951094  0.07515849 -0.2703914
-      0.04650182  0.58747977  0.5101701  -0.04114699  0.37434807 -0.27707747
-     -0.06124159  0.21493433 -0.23498166  0.07404013 -0.23953673 -0.15044802
-      0.21210277 -0.58776855  0.12014424  0.30591646  0.07079886  0.44168213
-      0.2473582  -0.43409103 -0.25516582  0.45812422  0.33660468  0.61951864
-      0.16038296 -0.12069689 -0.59378242 -0.47525382 -0.03109539  0.28781402
-     -0.51556301 -0.26363477 -0.0820123   0.31425434 -0.10971891  0.53333962
-      0.3446033  -0.62146574 -0.15398794  0.11720303  0.50415224 -0.79616308
-     -0.25548786  0.36809164 -0.26254281  0.11736908 -0.30717522 -0.18103991
-     -0.03320931 -0.15692121 -0.22654058  0.56092978]
+    Neigbors (Synonms) of Obama
+    ------------------------------
+    Bush            
+    Reagan          
+    Clinton         
+    Ahmadinejad     
+    Nixon           
+    Karzai          
+    McCain          
+    Biden           
+    Huckabee        
+    Lula            
+    
+    
+    First 10 dimensions out the 256 dimensions
+    
+    [-2.57382345  1.52175975  0.51070285  1.08678675 -0.74386948 -1.18616164
+      2.92784619 -0.25694436 -1.40958667 -2.39675403]
 
 
 Morphology
@@ -191,7 +194,6 @@ Morphology
 
     word = Text("Preprocessing is an essential step.").words[0]
     print(word.morphemes)
-
 
 .. parsed-literal::
 
@@ -206,7 +208,6 @@ Transliteration
     from polyglot.transliteration import Transliterator
     transliterator = Transliterator(source_lang="en", target_lang="ru")
     print(transliterator.transliterate(u"preprocessing"))
-
 
 .. parsed-literal::
 
