@@ -48,10 +48,10 @@ The models were trained on a combination of:
 
       1. German                     2. Italian                    3. Danish                   
       4. Czech                      5. Slovene                    6. French                   
-      7. English                    8. Finnish                    9. Bulgarian                
-     10. Spanish; Castilian        11. Swedish                   12. Portuguese               
-     13. Irish                     14. Hungarian                 15. Dutch                    
-    
+      7. English                    8. Swedish                    9. Bulgarian                
+     10. Spanish; Castilian        11. Indonesian                12. Portuguese               
+     13. Finnish                   14. Irish                     15. Hungarian                
+     16. Dutch                    
 
 
 Download Necessary Models
