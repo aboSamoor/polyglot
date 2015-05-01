@@ -2,14 +2,6 @@
 polyglot
 ========
 
-.. raw:: html
-
-   <!---
-   [![Supported Python versions](https://pypip.in/py_versions/polyglot/badge.svg "Supported Python versions")]( https://pypi.python.org/pypi/polyglot/)
-   [![Development Status]( https://pypip.in/status/polyglot/badge.svg "Development Status")](https://pypi.python.org/pypi/polyglot/)
-   [![Download Format](https://pypip.in/format/polyglot/badge.svg "Download Format")](https://pypi.python.org/pypi/polyglot)
-   -->
-
 |Downloads| |Latest Version| |Build Status| |Documentation Status|
 
 .. |Downloads| image:: https://img.shields.io/pypi/dm/polyglot.svg

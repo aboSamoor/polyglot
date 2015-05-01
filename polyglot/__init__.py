@@ -2,7 +2,7 @@
 
 __author__ = 'Rami Al-Rfou'
 __email__ = 'rmyeid@gmail.com'
-__version__ = '15.05.01'
+__version__ = '15.05.02'
 
 import types
 
