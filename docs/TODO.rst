@@ -23,7 +23,7 @@ Infrastructure
 ==============
 
 -  [STRIKEOUT:Cache models]
--  Add normalization to the embeddings
+-  [STRIKEOUT:Add normalization to the embeddings]
 -  [STRIKEOUT:Detect supported languages]
 -  [STRIKEOUT:added task/lang as part of the identifier, what is left is
    to iterate over the collections.]
@@ -31,8 +31,8 @@ Infrastructure
    undownloaded one]
 -  [STRIKEOUT:Define NotSupportedLanguage/Task Exception for the
    downloader]
--  Remove noun phrases support.
--  Train more/new POS taggers
+-  [STRIKEOUT:Remove noun phrases support.]
+-  [STRIKEOUT:Train more/new POS taggers]
 
 Documentation
 =============
