@@ -211,21 +211,25 @@ class Package(object):
     # Include any other attributes provided by the XML file.
     self.__dict__.update(kw)
 
+  ##############################################################################
+  #Changed path.sep to "/" it should work on any operative system, at least based on the packaged identification type.
+  #This patch was applied based on the observation of incoming package information and windows type of path separator.      
+  ##############################################################################
   @staticmethod
   def fromcsobj(csobj):
     attrs = csobj
     id_ = attrs["id"]
-    id_ = id_.split(path.sep)
+    id_ = id_.split("/")
     id = ".".join(id_[1:3])
-    name = attrs["name"].replace(path.sep, '.')
+    name = attrs["name"].replace("/", '.')
     subdir = path.dirname(attrs["name"])
     url = attrs["mediaLink"]
     size = attrs["size"]
     checksum = attrs["md5Hash"]
     filename = attrs["name"]
     updated = attrs["updated"]
-    task = subdir.split(path.sep)[0]
-    language = subdir.split(path.sep)[1]
+    task = subdir.split("/")[0]
+    language = subdir.split("/")[1]
     attrs = attrs
     version = attrs["generation"]
     return Package(**locals())
