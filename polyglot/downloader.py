@@ -168,8 +168,7 @@ class Package(object):
   when the package is installed.
   """
   def __init__(self, id, url, name=None, subdir='',
-               size=None, checksum=None, filename='',
-               updated='', version=0, task='', language='',
+               size=None, filename='', task='', language='',
                attrs=None, **kw):
     self.id = id
     """A unique identifier for this package."""
@@ -187,17 +186,8 @@ class Package(object):
     self.size = int(size)
     """The filesize (in bytes) of the package file."""
 
-    self.checksum = checksum
-    """The MD-5 checksum of the package file."""
-
     self.filename = filename
     """The filename that should be used for this package's file."""
-
-    self.updated = updated
-    """Datetime object of the last the package modified."""
-
-    self.version = version
-    """Generation number that tag this specific version of the package."""
 
     self.task = task
     """The task this package is serving."""
@@ -221,13 +211,10 @@ class Package(object):
     subdir = path.dirname(attrs["name"])
     url = attrs["mediaLink"]
     size = attrs["size"]
-    checksum = attrs["md5Hash"]
     filename = attrs["name"]
-    updated = attrs["updated"]
     task = subdir.split(path.sep)[0]
     language = subdir.split(path.sep)[1]
     attrs = attrs
-    version = attrs["generation"]
     return Package(**locals())
 
   def __lt__(self, other):
@@ -360,11 +347,28 @@ class Downloader(object):
      server index will be considered 'stale,' and will be
      re-downloaded."""
 
-  # DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/polyglot_data/index.xml'
-  DEFAULT_URL = 'polyglot-models'
+  DEFAULT_SOURCE = 'mirror'
+  """The source for index and other data files.
+     Two values are supported: 'mirror' or 'google'.
+
+     For 'mirror', the DEFAULT_URL should be set as a prefix of
+     mirrored directory, like 'http://address.of.mirror/dir/',
+     and the downloader expects a file named 'index.json' as index file.
+
+     For 'google', the DEFAULT_URL should be the bucket of google cloud,
+     and the downloader expects index from google api.
+
+     So set the following DEFAULT_URL properly.
+  """
+
+  DEFAULT_URL = 'http://whoisbigger.com/polyglot/'
   """The default URL for the Polyglot data server's index.  An
      alternative URL can be specified when creating a new
-     ``Downloader`` object."""
+     ``Downloader`` object.
+
+     For 'google' as DEFAULT_SOURCE, 'polyglot-models' is the default place.
+     For 'mirror' as DEFAULT_SOURCE, use an proper mirror.
+     """
 
   #/////////////////////////////////////////////////////////////////
   # Status Constants
@@ -395,9 +399,12 @@ class Downloader(object):
   # Cosntructor
   #/////////////////////////////////////////////////////////////////
 
-  def __init__(self, server_index_url=None, download_dir=None):
+  def __init__(self, server_index_url=None, source=None, download_dir=None):
     self._url = server_index_url or self.DEFAULT_URL
     """The URL for the data server's index file."""
+
+    self._source = source or self.DEFAULT_SOURCE
+    """The (type of) source of the index file."""
 
     self._collections = {}
     """Dictionary from collection identifier to ``Collection``"""
@@ -809,12 +816,20 @@ class Downloader(object):
     # If a URL was specified, then update our URL.
     self._url = url or self._url
 
+    source = self._source
+    assert source == 'google' or source == 'mirror'
+
     # Download the index file.
-    host = "www.googleapis.com"
-    conn = HTTPSConnection(host)
-    conn.request("GET", "/storage/v1/b/{}/o".format(self._url))
-    r1 = conn.getresponse()
-    data = r1.read()
+    if source == 'google':
+        host = "www.googleapis.com"
+        conn = HTTPSConnection(host)
+        conn.request("GET", "/storage/v1/b/{}/o".format(self._url))
+        r1 = conn.getresponse()
+        data = r1.read()
+    elif source == 'mirror':
+        index_url = path.join(self._url, 'index.json')
+        data = urlopen(index_url).read()
+
     if six.PY3:
       data = data.decode('utf-8')
     data = loads(data)
@@ -1072,9 +1087,6 @@ class DownloaderShell(object):
     print('-'*75)
     spc = (68 - sum(len(o) for o in options))//(len(options)-1)*' '
     print('  ' + spc.join(options))
-    #w = 76/len(options)
-    #fmt = '  ' + ('%-'+str(w)+'s')*(len(options)-1) + '%s'
-    #print fmt % options
     print('-'*75)
 
   def run(self):
@@ -1329,9 +1341,7 @@ def build_index(root, base_url):
     # Fill in several fields of the package xml with calculated values.
     pkg_xml.set('unzipped_size', '%s' % unzipped_size)
     pkg_xml.set('size', '%s' % zipstat.st_size)
-    #pkg_xml.set('checksum', '%s' % md5_hexdigest(zf.filename))
     pkg_xml.set('subdir', subdir)
-    #pkg_xml.set('svn_revision', _svn_revision(zf.filename))
     pkg_xml.set('url', url)
 
     # Record the package.
