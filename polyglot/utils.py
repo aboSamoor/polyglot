@@ -69,7 +69,8 @@ def pretty_list(items, cols=3):
   width = 24
   col_width = u"{" + u":<" + str(width) + u"} "
   for i, lang in enumerate(items):
-    lang = lang.decode(u"utf-8")
+    if not six.PY3:
+      lang = lang.decode(u"utf-8")
     if len(lang) > width:
       lang = lang[:width-3] + "..."
     text.append(u"{:>3}. ".format(i+1))
