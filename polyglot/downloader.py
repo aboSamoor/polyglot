@@ -361,7 +361,7 @@ class Downloader(object):
      So set the following DEFAULT_URL properly.
   """
 
-  DEFAULT_URL = 'http://whoisbigger.com/polyglot/'
+  DEFAULT_URL = 'http://polyglot.cs.stonybrook.edu/~polyglot/' 
   """The default URL for the Polyglot data server's index.  An
      alternative URL can be specified when creating a new
      ``Downloader`` object.
