@@ -465,10 +465,14 @@ class Sentence(BaseBlob):
     '''The dict representation of this sentence.'''
     return {
         'raw': self.raw,
-        'start_index': self.start_index,
-        'end_index': self.end_index,
-        'entities': self.entities,
-        'polarity': self.polarity,
+        'start': self.start,
+        'end': self.end,
+        'entities': [(e.tag, e) for e in self.entities],
+        'tokens': self.tokens,
+        'words': self.words,
+        'pos_tags': self.pos_tags,
+        'language': self.language.code,
+        # TODO: 'polarity': self.polarity,
     }
 
 
@@ -505,6 +509,10 @@ class Text(BaseBlob):
     Takes the same arguments as json.dumps.
     .. versionadded:: 0.5.1
     '''
+    try:
+      import ujson as json
+    except ImportError:
+      import json
     return json.dumps(self.serialized, *args, **kwargs)
 
   @property
