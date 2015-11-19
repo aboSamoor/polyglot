@@ -49,7 +49,7 @@ class VocabExpander(OrderedVocabulary):
   def approximate_ids(self, key):
     ids = [id_ for w, id_ in self.approximate(key).items()]
     if not ids:
-      raise KeyError("{} not found".format(key))
+      raise KeyError(u"{} not found".format(key))
     else:
       if self.strategy == 'most_frequent':
         return min(ids)
