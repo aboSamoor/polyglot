@@ -60,7 +60,7 @@ class Transliterator(object):
     Enlgish word to the target language.
     """
     encoded_word = self.encoder(word)
-    decoded_word = self.decoder(word)
+    decoded_word = self.decoder(encoded_word)
     return decoded_word
 
   @staticmethod
