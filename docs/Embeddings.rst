@@ -18,6 +18,7 @@ The Embedding class can read word embeddings from different sources:
 
 -  Gensim word2vec objects: (``from_gensim`` method)
 -  Word2vec binary/text models: (``from_word2vec`` method)
+-  GloVe models (``from_glove`` method)
 -  polyglot pickle files: (``load`` method)
 
 .. code:: python
