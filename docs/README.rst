@@ -126,9 +126,9 @@ Named Entity Recognition
     print(text.entities)
 
 
-.. code:: python
+.. parsed-literal::
 
-    [I-LOC([u'Gro\xdfbritannien']), I-PER([u'Gandhi'])]
+    [I-LOC([u'Gro\\xdfbritannien']), I-PER([u'Gandhi'])]
 
 
 Polarity
