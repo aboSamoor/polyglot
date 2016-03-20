@@ -126,7 +126,7 @@ Named Entity Recognition
     print(text.entities)
 
 
-.. parsed-literal::
+.. code:: python
 
     [I-LOC([u'Gro\xdfbritannien']), I-PER([u'Gandhi'])]
 
