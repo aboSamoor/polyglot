@@ -54,18 +54,16 @@ Downloading Necessary Models
 .. code:: python
 
     %%bash
-    polyglot download embeddings2.en pos2.en
-
+    polyglot download embeddings2.en transliteration2.ar
 
 .. parsed-literal::
 
     [polyglot_data] Downloading package embeddings2.en to
     [polyglot_data]     /home/rmyeid/polyglot_data...
     [polyglot_data]   Package embeddings2.en is already up-to-date!
-    [polyglot_data] Downloading package pos2.en to
+    [polyglot_data] Downloading package transliteration2.ar to
     [polyglot_data]     /home/rmyeid/polyglot_data...
-    [polyglot_data]   Package pos2.en is already up-to-date!
-
+    [polyglot_data]   Package transliteration2.ar is already up-to-date!
 
 Example
 -------
