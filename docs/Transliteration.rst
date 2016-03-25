@@ -56,6 +56,7 @@ Downloading Necessary Models
     %%bash
     polyglot download embeddings2.en transliteration2.ar
 
+
 .. parsed-literal::
 
     [polyglot_data] Downloading package embeddings2.en to
@@ -64,6 +65,7 @@ Downloading Necessary Models
     [polyglot_data] Downloading package transliteration2.ar to
     [polyglot_data]     /home/rmyeid/polyglot_data...
     [polyglot_data]   Package transliteration2.ar is already up-to-date!
+
 
 Example
 -------

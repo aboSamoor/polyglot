@@ -1,11 +1,15 @@
 #! /bin/bash
 
+bin='jupyter'
+if ! type "$bin" > /dev/null; then
+  bin='ipython'
+fi
 
 files=`ls notebooks/*ipynb`
 cd docs
 for f in $files
 do
   b=`basename -s .ipynb $f`
-  ipython nbconvert ../notebooks/${b}.ipynb --to rst --output ${b}.rst
+  $bin nbconvert ../notebooks/${b}.ipynb --to rst --output ${b}.rst
 done
 cd -

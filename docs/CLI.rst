@@ -80,9 +80,9 @@ Input formats
 -------------
 
 Polyglot will process the input contents line by line assuming that the
-lines are separated by "``\n``\ ". If the file is formatted differently,
+lines are separated by "``\n``". If the file is formatted differently,
 you can use the polyglot main command option ``delimiter`` to specify
-any string other than "``\n``\ ".
+any string other than "``\n``".
 
 You can pass text to the polyglot subcommands in several ways:
 
