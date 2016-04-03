@@ -18,6 +18,7 @@ multilingual applications.
 
 -  Free software: GPLv3 license
 -  Documentation: http://polyglot.readthedocs.org.
+-  GitHub: https://github.com/aboSamoor/polyglot
 
 Features
 ~~~~~~~~
