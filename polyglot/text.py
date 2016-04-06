@@ -39,6 +39,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
 
     self.string = self.raw
     self.__lang = None
+    self.hint_language_code = None
 
   @cached_property
   def detected_languages(self):
@@ -46,6 +47,9 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
 
   @property
   def language(self):
+    if self.hint_language_code is not None:
+      self.__lang = Language.from_code(self.hint_language_code)
+
     if self.__lang is None:
       self.__lang = self.detected_languages.language
     return self.__lang
@@ -480,8 +484,10 @@ class Text(BaseBlob):
   """.
   """
 
-  def __init__(self, text):
+  def __init__(self, text, hint_language_code=None):
     super(Text, self).__init__(text)
+
+    self.hint_language_code = hint_language_code
 
   def __str__(self):
     if len(self.raw) > 1000:

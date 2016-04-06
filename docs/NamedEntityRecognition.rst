@@ -77,6 +77,9 @@ subsequence within the text.
 
     blob = """The Israeli Prime Minister Benjamin Netanyahu has warned that Iran poses a "threat to the entire world"."""
     text = Text(blob)
+    
+    # We can also specify language of that text by using
+    # text = Text(blob, hint_language_code='en')
 
 We can query all entities mentioned in a text.
 

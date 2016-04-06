@@ -86,6 +86,9 @@ We tag each word in the text with one part of speech.
 
     blob = """We will meet at eight o'clock on Thursday morning."""
     text = Text(blob)
+    
+    # We can also specify language of that text by using
+    # text = Text(blob, hint_language_code='en')
 
 We can query all the tagged words
 
