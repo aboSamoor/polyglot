@@ -87,7 +87,7 @@ from os import path
 from json import loads
 
 
-from polyglot import data_path
+from polyglot import polyglot_path
 from polyglot.detect.langids import isoLangs
 from polyglot.utils import pretty_list
 from icu import Locale
@@ -1030,33 +1030,9 @@ class Downloader(object):
     or on a case-by-case basis using the ``download_dir`` argument when
     calling ``download()``.
 
-    On Windows, the default download directory is
-    ``PYTHONHOME/lib/nltk``, where *PYTHONHOME* is the
-    directory containing Python, e.g. ``C:\\Python25``.
-
-    On all other platforms, the default directory is the first of
-    the following which exists or which can be created with write
-    permission: ``/usr/share/polyglot_data``, ``/usr/local/share/polyglot_data``,
-    ``/usr/lib/polyglot_data``, ``/usr/local/lib/polyglot_data``, ``~/polyglot_data``.
+    On all other platforms, the default directory is ``~/polyglot_data``.
     """
-    # Check if we have sufficient permissions to install in a
-    # variety of system-wide locations.
-    for dir_ in data_path:
-      if (os.path.exists(dir_) and is_writable(dir_)):
-        return dir_
-
-    # On Windows, use %APPDATA%
-    if sys.platform == 'win32' and 'APPDATA' in os.environ:
-      homedir = os.environ['APPDATA']
-
-    # Otherwise, install in the user's home directory.
-    else:
-      homedir = os.path.expanduser('~/')
-      if homedir == '~/':
-        raise ValueError("Could not find a default download directory")
-
-    # append "polyglot_data" to the home directory
-    return os.path.join(homedir, 'polyglot_data')
+    return polyglot_path
 
   def _get_download_dir(self):
     """
