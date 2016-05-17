@@ -11,17 +11,12 @@ import morfessor
 from six import PY2
 from six.moves import cPickle as pickle
 
-from . import data_path
+from . import polyglot_path
 from .decorators import memoize
 from .downloader import downloader
 from .mapping import Embedding, CountedVocabulary, CaseExpander, DigitExpander
 
 from .utils import _open
-
-if "~" in data_path:
-  data_path = path.expanduser(data_path)
-
-polyglot_path = path.join(path.abspath(data_path), "polyglot_data")
 
 
 resource_dir = {
