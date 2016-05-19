@@ -22,6 +22,7 @@ from .utils import _open
 resource_dir = {
   "cw_embeddings":"embeddings2",
   "sgns_embeddings":"sgns2",
+  "ue_embeddings":"uniemb",
   "visualization": "tsne2",
   "wiki_vocab": "counts2",
   "sentiment": "sentiment2",
@@ -62,6 +63,8 @@ def load_embeddings(lang="en", task="embeddings", type="cw"):
     e.apply_expansion(CaseExpander)
     e.apply_expansion(DigitExpander)
   if type == "sgns":
+    e.apply_expansion(CaseExpander)
+  if type == "ue":
     e.apply_expansion(CaseExpander)
   return e
 
@@ -109,6 +112,13 @@ def load_pos_model(lang="en", version="2"):
   p = locate_resource(src_dir, lang)
   fh = _open(p)
   return dict(np.load(fh))
+
+
+@memoize
+def load_unified_pos_model(lang="en"):
+  src_dir = "unipos"
+  p = locate_resource(src_dir, lang)
+  return dict(np.load(p))
 
 
 @memoize

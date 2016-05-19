@@ -121,6 +121,10 @@ class Embedding(object):
     top_ids = distances.argsort()[1:top_k+1]
     return [self.vocabulary.id_word[i] for i in top_ids]
 
+  def zero_vector(self):
+    """Returns a zero vector of embedding dimension. """
+    return np.zeros(self.shape[1], dtype=float32)
+
   def distances(self, word, words):
     """Calculate eucledean pairwise distances between `word` and `words`.
 
