@@ -106,10 +106,10 @@ class NEChunker(TaggerBase):
 
   def _load_network(self):
     """ Building the predictor out of the model."""
-    self.embeddings = load_embeddings(self.lang, type='cw')
-    self.embeddings.normalize_words(inplace=True)
+    self.embeddings = load_embeddings(self.lang, type='cw', normalize=True)
     self.model = load_ner_model(lang=self.lang, version=2)
     first_layer, second_layer = self.model
+
     def predict_proba(input_):
       hidden = np.tanh(np.dot(first_layer, input_))
       hidden = np.hstack((hidden, np.ones((hidden.shape[0], 1))))
@@ -135,7 +135,6 @@ class POSTagger(TaggerBase):
   def _load_network(self):
     """ Building the predictor out of the model."""
     self.embeddings = load_embeddings(self.lang, type='cw')
-    #self.embeddings.normalize_words(inplace=True)
     self.model = load_pos_model(lang=self.lang, version=2)
 
     def predict_proba(input_):

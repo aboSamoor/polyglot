@@ -48,13 +48,14 @@ def locate_resource(name, lang, filter=None):
 
 
 @memoize
-def load_embeddings(lang="en", task="embeddings", type="cw"):
+def load_embeddings(lang="en", task="embeddings", type="cw", normalize=False):
   """Return a word embeddings object for `lang` and of type `type`
 
   Args:
     lang (string): language code.
     task (string): parameters that define task.
     type (string): skipgram, cw, cbow ...
+    noramlized (boolean): returns noramlized word embeddings vectors.
   """
   src_dir = "_".join((type, task)) if type else task
   p = locate_resource(src_dir, lang)
@@ -66,6 +67,8 @@ def load_embeddings(lang="en", task="embeddings", type="cw"):
     e.apply_expansion(CaseExpander)
   if type == "ue":
     e.apply_expansion(CaseExpander)
+  if normalize:
+    e.normalize_words(inplace=True)
   return e
 
 
