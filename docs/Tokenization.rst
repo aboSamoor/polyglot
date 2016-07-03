@@ -2,7 +2,7 @@
 Tokenization
 ============
 
-Toeknization is the process that identifies the text boundaries of words
+Tokenization is the process that identifies the text boundaries of words
 and sentences. We can identify the boundaries of sentences first then
 tokenize each sentence to identify the words that compose the sentence.
 Of course, we can do word tokenization first and then segment the token
