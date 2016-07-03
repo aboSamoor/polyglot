@@ -2,7 +2,7 @@
 
 __author__ = 'Rami Al-Rfou'
 __email__ = 'rmyeid@gmail.com'
-__version__ = '15.10.03'
+__version__ = '16.07.04'
 
 import os
 import sys

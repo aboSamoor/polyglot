@@ -21,15 +21,13 @@ packages = set(open("requirements.txt", "r").read().splitlines())
 
 requirements = filter(lambda x: "http" not in x, packages)
 
-
 test_requirements = [
     # TODO: put package test requirements here
 ]
 
 setup(
     name='polyglot',
-    version='15.10.03',
-    description='Polyglot is a natural language pipeline that supports massive multilingual applications.',
+    version='16.07.04',
     long_description=readme + '\n\n' + history,
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
