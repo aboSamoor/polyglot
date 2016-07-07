@@ -3,6 +3,8 @@
 
 import sys
 
+from collections import defaultdict
+
 import numpy as np
 
 from polyglot.base import Sequence, TextFile, TextFiles
