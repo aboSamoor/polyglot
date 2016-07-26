@@ -19,7 +19,7 @@ with open('HISTORY.rst') as history_file:
 
 packages = set(open("requirements.txt", "r").read().splitlines())
 
-requirements = filter(lambda x: "http" not in x, packages)
+requirements = list(filter(lambda x: "http" not in x, packages))
 
 test_requirements = [
     # TODO: put package test requirements here
