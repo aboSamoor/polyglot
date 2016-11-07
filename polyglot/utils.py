@@ -78,3 +78,9 @@ def pretty_list(items, cols=3):
     if (i+1) % cols  == 0:
       text.append(u"\n")
   return u"".join(text)
+
+def _decode(s, encoding="utf-8"):
+  if six.PY3 and type(s) == str:
+    return s.encode("utf-8").decode(encoding)
+  else:
+    return s.decode(encoding)
