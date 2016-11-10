@@ -14,12 +14,12 @@ from numpy import float32
 from six import PY2
 from six import text_type as unicode
 from six import iteritems
-from six.moves import map
+from six.moves import map, xrange
 from six import string_types
 from six.moves import cPickle as pickle
 
 from .base import CountedVocabulary, OrderedVocabulary
-from ..utils import _open
+from ..utils import _open, _decode
 
 
 logger = logging.getLogger(__name__)
@@ -161,7 +161,7 @@ class Embedding(object):
     counts = {}
     with _open(fvocab) as fin:
       for line in fin:
-        word, count = unicode(line).strip().split()
+        word, count = _decode(line).strip().split()
         counts[word] = int(count)
     return CountedVocabulary(word_count=counts)
 
@@ -169,7 +169,7 @@ class Embedding(object):
   def _from_word2vec_binary(fname):
     with _open(fname, 'rb') as fin:
       words = []
-      header = unicode(fin.readline())
+      header = _decode(fin.readline())
       vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
       vectors = np.zeros((vocab_size, layer1_size), dtype=float32)
       binary_len = np.dtype(float32).itemsize * layer1_size
@@ -182,7 +182,7 @@ class Embedding(object):
             break
           if ch != b'\n': # ignore newlines in front of words (some binary files have newline, some don't)
             word.append(ch)
-        word = b''.join(word)
+        word = _decode(b''.join(word))
         index = line_no
         words.append(word)
         vectors[index, :] = np.fromstring(fin.read(binary_len), dtype=float32)
@@ -192,12 +192,12 @@ class Embedding(object):
   def _from_word2vec_text(fname):
     with _open(fname, 'rb') as fin:
       words = []
-      header = unicode(fin.readline())
+      header = _decode(fin.readline())
       vocab_size, layer1_size = list(map(int, header.split())) # throws for invalid file format
       vectors = []
       for line_no, line in enumerate(fin):
         try:
-          parts = unicode(line, encoding="utf-8").strip().split()
+          parts = _decode(line).strip().split()
         except TypeError as e:
           parts = line.strip().split()
         except Exception as e:
@@ -259,7 +259,7 @@ class Embedding(object):
       vectors = []
       for line_no, line in enumerate(fin):
         try:
-          parts = unicode(line, encoding="utf-8").strip().split()
+          parts = _decode(line).strip().split()
         except TypeError as e:
           parts = line.strip().split()
         except Exception as e:
