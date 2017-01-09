@@ -142,5 +142,21 @@ Command Line Interface
     in              ين              
     Sydney          سيدني           
     .                               
-    
 
+
+Citation
+~~~~~~~~
+
+This work is a direct implementation of the research being described in
+the `False-Friend Detection and Entity Matching via Unsupervised Transliteration
+ <https://arxiv.org/abs/1611.06722>`__ paper. The author of
+this library strongly encourage you to cite the following paper if you
+are using this software.
+
+::
+
+       @article{chen2016false,
+       title={False-Friend Detection and Entity Matching via Unsupervised Transliteration},
+       author={Chen, Yanqing and Skiena, Steven},
+       journal={arXiv preprint arXiv:1611.06722},
+       year={2016}}
