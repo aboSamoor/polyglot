@@ -6,10 +6,8 @@ if ! type "$bin" > /dev/null; then
 fi
 
 files=`ls notebooks/*ipynb`
-cd docs
 for f in $files
 do
   b=`basename -s .ipynb $f`
-  $bin nbconvert ../notebooks/${b}.ipynb --to rst --output ${b}.rst
+  $bin nbconvert notebooks/${b}.ipynb --to rst --output ../docs/${b}.rst
 done
-cd -

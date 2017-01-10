@@ -90,7 +90,7 @@ word is the larger the norm of its own vector.
 
 
 
-.. image:: Embeddings_files/Embeddings_12_0.png
+.. image:: ../docs/Embeddings_files/../docs/Embeddings_12_0.png
 
 
 This could be problematic for some applications and training algorithms.

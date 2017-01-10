@@ -9,6 +9,7 @@ Subpackages
     polyglot.detect
     polyglot.mapping
     polyglot.tag
+    polyglot.tests
     polyglot.tokenize
     polyglot.transliteration
 
