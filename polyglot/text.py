@@ -95,6 +95,8 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
     """Return the polarity score as a float within the range [-1.0, 1.0]
     """
     scores = [w.polarity for w in self.words if w.polarity != 0]
+    if not scores:
+      return 0.0
     return sum(scores) / float(len(scores))
 
   @cached_property
