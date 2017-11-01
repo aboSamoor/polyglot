@@ -3,7 +3,7 @@
 
 import os
 import sys
-
+import io
 
 try:
     from setuptools import setup
@@ -11,13 +11,14 @@ except ImportError:
     from distutils.core import setup
 
 
-with open('README.rst', encoding="utf-8") as readme_file:
+with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst', encoding="utf-8") as history_file:
+with io.open('HISTORY.rst', 'r', encoding='utf-8') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-packages = set(open("requirements.txt", "r").read().splitlines())
+with io.open('requirements.txt', 'r') as f:
+    packages = set(f.read().splitlines())
 
 requirements = list(filter(lambda x: "http" not in x, packages))
 
