@@ -67,8 +67,7 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
 
   @property
   def words(self):
-    """Return a list of word tokens. This excludes punctuation characters.
-    If you want to include punctuation characters, access the ``tokens``
+    """Return a list of word tokens. This is an alias for the ``tokens``
     property.
     :returns: A :class:`WordList <WordList>` of word tokens.
     """
