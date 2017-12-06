@@ -6,7 +6,7 @@ Tokenization is the process that identifies the text boundaries of words
 and sentences. We can identify the boundaries of sentences first then
 tokenize each sentence to identify the words that compose the sentence.
 Of course, we can do word tokenization first and then segment the token
-sequence into sentneces. Tokenization in polyglot relies on the `Unicode
+sequence into sentences. Tokenization in polyglot relies on the `Unicode
 Text Segmentation <http://www.unicode.org/reports/tr29/>`__ algorithm as
 implemented by the `ICU Project <http://site.icu-project.org/>`__.
 
@@ -63,7 +63,7 @@ detect the language used first before calling the tokenizer
     name:             code: zh       confidence:  99.0 read bytes:  1920
 
 
-Sentence Segementation
+Sentence Segmentation
 ----------------------
 
 If we are interested in segmenting the text first into sentences, we can

@@ -3,14 +3,14 @@ Named Entity Extraction
 =======================
 
 Named entity extraction task aims to extract phrases from plain text
-that correpond to entities. Polyglot recognizes 3 categories of
+that correspond to entities. Polyglot recognizes 3 categories of
 entities:
 
 -  Locations (Tag: ``I-LOC``): cities, countries, regions, continents,
    neighborhoods, administrative divisions ...
 -  Organizations (Tag: ``I-ORG``): sports teams, newspapers, banks,
    universities, schools, non-profits, companies, ...
--  Persons (Tag: ``I-PER``): politicians, scientists, artists, atheletes
+-  Persons (Tag: ``I-PER``): politicians, scientists, artists, athletes
    ...
 
 Languages Coverage
@@ -96,7 +96,7 @@ We can query all entities mentioned in a text.
 
 
 
-Or, we can query entites per sentence
+Or, we can query entities per sentence
 
 .. code:: python
 

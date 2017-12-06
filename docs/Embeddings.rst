@@ -29,7 +29,7 @@ Nearest Neighbors
 -----------------
 
 A common way to investigate the space capture by the embeddings is to
-query for the nearest neightbors of any word.
+query for the nearest neighbors of any word.
 
 .. code:: python
 
@@ -54,7 +54,7 @@ query for the nearest neightbors of any word.
 
 
 
-to calculate the distance between a word and the nieghbors, we can call
+to calculate the distance between a word and the neighbors, we can call
 the ``distances`` method
 
 .. code:: python

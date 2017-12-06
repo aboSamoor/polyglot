@@ -85,11 +85,11 @@ its name and the target language.
 
 Package name format is ``task_name.language_code``
 
-Langauge Collections
+Language Collections
 ^^^^^^^^^^^^^^^^^^^^
 
 Packages are grouped by language. For example, if we want to download
-all the models that are specific to Arabic, the arabic collection of
+all the models that are specific to Arabic, the Arabic collection of
 models name is **LANG:** followed by the language code of Arabic which
 is ``ar``.
 
@@ -152,7 +152,7 @@ Therefore, we can just run:
 
 
 
-Langauge & Task Support
+Language & Task Support
 -----------------------
 
 We can query our download manager for which tasks are supported by

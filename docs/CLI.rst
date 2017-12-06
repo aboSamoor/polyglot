@@ -21,7 +21,7 @@ command ``polyglot``
       -h, --help            show this help message and exit
       --lang LANG           Language to be processed
       --delimiter DELIMITER
-                            Delimiter that seperates documents, records or even sentences.
+                            Delimiter that separates documents, records or even sentences.
       --workers WORKERS     Number of parallel processes.
       -l LOG, --log LOG     log verbosity level
       --debug               drop a debugger if an exception is raised.
@@ -43,7 +43,7 @@ command ``polyglot``
 
 Notice that most of the operations are language specific. For example,
 tokenization rules and part of speech taggers differ between languages.
-Therefore, it is important that the lanaguage of the input is detected
+Therefore, it is important that the language of the input is detected
 or given. The ``--lang`` option allows you to tell polyglot which
 language the input is written in.
 
@@ -59,7 +59,7 @@ language the input is written in.
     Afghanistan were then dismissed for 142 , with Mitchell Johnson and Mitchell Starc taking six wickets between them .
 
 
-In case the user did not supply the the language code, polyglot will
+In case the user did not supply the language code, polyglot will
 peek ahead and read the first 1KB of data to detect the language used in
 the input.
 
@@ -186,7 +186,7 @@ option ``workers``.
 Building Pipelines
 ------------------
 
-The previous subcommand ``count`` assumed that the words are separted by
+The previous subcommand ``count`` assumed that the words are separated by
 spaces. Given that we never tokenized the text file, that may result in
 suboptimal word counting. Let us take a closer look at the tail of the
 word counts

@@ -164,7 +164,7 @@ def main():
                                      description='multilingual tools for all languages')
   parser.add_argument('--lang', default='detect', help='Language to be processed')
   parser.add_argument('--delimiter', default=u'\n', help='Delimiter that '
-                      'seperates documents, records or even sentences.')
+                      'separates documents, records or even sentences.')
   parser.add_argument('--workers', default=1, type=int,
                       help='Number of parallel processes.')
   parser.add_argument("-l", "--log", dest="log", help="log verbosity level",
