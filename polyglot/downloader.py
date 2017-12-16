@@ -205,15 +205,15 @@ class Package(object):
   def fromcsobj(csobj):
     attrs = csobj
     id_ = attrs["id"]
-    id_ = id_.split(path.sep)
+    id_ = id_.split('/')
     id = ".".join(id_[1:3])
-    name = attrs["name"].replace(path.sep, '.')
+    name = attrs["name"].replace('/', '.')
     subdir = path.dirname(attrs["name"])
     url = attrs["mediaLink"]
     size = attrs["size"]
     filename = attrs["name"]
-    task = subdir.split(path.sep)[0]
-    language = subdir.split(path.sep)[1]
+    task = subdir.split('/')[0]
+    language = subdir.split('/')[1]
     attrs = attrs
     return Package(**locals())
 

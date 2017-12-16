@@ -6,7 +6,10 @@ import sys
 from io import open
 from argparse import ArgumentParser, FileType
 from collections import Counter
-from signal import signal, SIGPIPE, SIG_DFL
+if sys.platform == 'win32':
+  from signal import signal, SIGABRT, SIG_DFL
+else:
+  from signal import signal, SIGPIPE, SIG_DFL
 import logging
 
 import six
@@ -25,7 +28,10 @@ from polyglot.tokenize import SentenceTokenizer, WordTokenizer
 from polyglot.transliteration import Transliterator
 from polyglot.utils import _print
 
-signal(SIGPIPE, SIG_DFL)
+if sys.platform == 'win32':
+  signal(SIGABRT, SIG_DFL)
+else:
+  signal(SIGPIPE, SIG_DFL)
 logger = logging.getLogger(__name__)
 LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
