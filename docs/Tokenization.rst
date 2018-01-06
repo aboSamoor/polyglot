@@ -63,7 +63,7 @@ detect the language used first before calling the tokenizer
     name:             code: zh       confidence:  99.0 read bytes:  1920
 
 
-Sentence Segementation
+Sentence Segmentation
 ----------------------
 
 If we are interested in segmenting the text first into sentences, we can
