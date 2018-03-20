@@ -86,11 +86,12 @@ class Detector(object):
     if not reliable:
       self.reliable = False
       reliable, index, top_3_choices = cld2.detect(t, bestEffort=True)
-
-      if not reliable and not self.quiet:
-        raise UnknownLanguage("Try passing a longer snippet of text")
-      else:
-        logger.warning("Detector is not able to detect the language reliably.")
+      
+      if not self.quiet:
+        if not reliable:
+          raise UnknownLanguage("Try passing a longer snippet of text")
+        else:
+          logger.warning("Detector is not able to detect the language reliably.")
 
     self.languages = [Language(x) for x in top_3_choices]
     self.language = self.languages[0]
