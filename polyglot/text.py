@@ -140,9 +140,9 @@ class BaseBlob(StringlikeMixin, BlobComparableMixin):
           chunks.append(Chunk(self.words[start: i], start, i, tag=prev_tag,
                               parent=self))
         prev_tag = tag
-      if tag != u'O':
-        chunks.append(Chunk(self.words[start: i+1], start, i+1, tag=tag,
-                            parent=self))
+    if tag != u'O':
+      chunks.append(Chunk(self.words[start: i+1], start, i+1, tag=tag,
+                          parent=self))
     return chunks
 
   @cached_property
