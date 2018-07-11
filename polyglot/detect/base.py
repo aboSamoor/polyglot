@@ -9,7 +9,7 @@ import logging
 
 
 from icu import Locale
-import pycld2 as cld2
+import cld2
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ class Detector(object):
     if not reliable:
       self.reliable = False
       reliable, index, top_3_choices = cld2.detect(t, bestEffort=True)
-      
+
       if not self.quiet:
         if not reliable:
           raise UnknownLanguage("Try passing a longer snippet of text")
