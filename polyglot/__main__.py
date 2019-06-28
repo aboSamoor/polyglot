@@ -267,13 +267,19 @@ def main():
 
   language_agnostic = {detect, vocab_counter}
 
-  if args.func != download:
+  # Catch bug https://bugs.python.org/issue16308 in Python 3
+  try:
+      func = args.func
+  except AttributeError:
+      parser.error('Too few arguments')
+
+  if func != download:
     if len(args.input) > 1:
       args.input = TextFiles(args.input)
     else:
       args.input = args.input[0]
 
-    if args.lang == 'detect' and args.func not in language_agnostic:
+    if args.lang == 'detect' and func not in language_agnostic:
       header = 4096
       text = args.input.peek(header)
       lang = Detector(text).language
