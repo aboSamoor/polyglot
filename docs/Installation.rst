@@ -12,14 +12,25 @@ Installing/Upgrading From the PyPI
 Dependencies
 ~~~~~~~~~~~~
 
-polyglot depends on `numpy <http://www.numpy.org/>`__ and
-`libicu-dev <https://packages.debian.org/sid/libicu-dev>`__, on
-ubuntu/debian linux distribution you can install such packages by
-executing the following command:
+polyglot depends on `numpy <http://www.numpy.org/>`__, `icu
+<http://site.icu-project.org/home>`__ and `pyicu
+<https://github.com/ovalhub/pyicu>`.
+
+Ubuntu/Debian Linux distribution you can install such packages by executing the
+following command:
 
 .. code:: python
 
-    sudo apt-get install python-numpy libicu-dev
+    sudo apt-get install python-numpy libicu-dev python-icu
+
+Or if you're using Python 3:
+
+.. code:: python
+
+    sudo apt-get install python3-numpy libicu-dev python3-icu
+
+Note: If you try to load ``polyglot`` and it tells you ``ImportError: No module
+named 'icu'``, then it's ``pyicu`` that you're missing.
 
 From Source
 -----------
