@@ -17,7 +17,7 @@ with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
 with io.open('HISTORY.rst', 'r', encoding='utf-8') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-with io.open('requirements.txt', 'r') as f:
+with io.open('requirements.txt', 'r', encoding='utf-8') as f:
     packages = set(f.read().splitlines())
 
 requirements = list(filter(lambda x: "http" not in x, packages))
