@@ -10,7 +10,7 @@ Tests for `polyglot` module.
 
 import unittest
 
-from polyglot import polyglot
+import polyglot
 
 
 class TestPolyglot(unittest.TestCase):
