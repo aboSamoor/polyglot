@@ -10,10 +10,27 @@ python:
   - "2.7"
 #  - "pypy"
 
+cache: "pip"
+
+# Enable newer 3.7 without globally enabling sudo and dist: xenial for other build jobs
+matrix:
+  allow_failures:
+    - python: "3.4"
+    - python: "3.5"
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+before_install:
+  - sudo apt-get install -y gcc-4.7 g++-4.7 libicu-dev
 install:
-  - sudo apt-get install gcc-4.7 g++-4.7 python-numpy libicu-dev
-  - pip install -r requirements.txt
+  - pip install -r dev-requirements.txt
+  - pip install polyglot
 
 # command to run tests, e.g. python setup.py test
-script: nosetests
+script: py.test -rfs --cov=polyglot --cov-report term-missing --cov-report xml
+after_success:
+  - ls
+  - coveralls

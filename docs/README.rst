@@ -2,7 +2,7 @@
 polyglot
 ========
 
-|Downloads| |Latest Version| |Build Status| |Documentation Status|
+|Downloads| |Latest Version| |Build Status| |Documentation Status| |Code Coverage Status|
 
 .. |Downloads| image:: https://img.shields.io/pypi/dm/polyglot.svg
    :target: https://pypi.python.org/pypi/polyglot
@@ -12,6 +12,8 @@ polyglot
    :target: https://travis-ci.org/aboSamoor/polyglot
 .. |Documentation Status| image:: https://readthedocs.org/projects/polyglot/badge/?version=latest
    :target: https://readthedocs.org/builds/polyglot/
+.. |Code Coverage Status| image:: https://coveralls.io/repos/github/aboSamoor/polyglot/badge.svg?branch=master
+   :target: https://coveralls.io/github/aboSamoor/polyglot?branch=master
 
 Polyglot is a natural language pipeline that supports massive
 multilingual applications.
