@@ -1,4 +1,6 @@
 # Config file for automatic testing at travis-ci.org
+os: linux
+
 dist: focal
 
 language: python
@@ -12,17 +14,12 @@ python:
   - "2.7"
 # - "pypy3"
 
-jobs:
-  allow_failures:
-    - python: "3.9-dev"
-
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
   - sudo apt-get install gcc-10 g++-10 python-numpy libicu-dev
-  - pip install -r requirements.txt
+  - pip install pytest -r requirements.txt
 
 # command to run tests, e.g. python setup.py test
 script:
   - nosetests
-  # - python setup.py install
-  - pip install polyglot  # from PyPI
+  - pytest
