@@ -91,7 +91,7 @@ class Transliterator(object):
                   tmp_string_cost = best_string_cost[i - j]
                   # Final cost value.
                   # Things need to be considered:
-                  # 1) Individual cost of tranliterating from piece to tar
+                  # 1) Individual cost of transliterating from piece to tar
                   # 2) Length of piece and tar
                   # 3) Prefix of piece
                   # 4) Prefix of tar
