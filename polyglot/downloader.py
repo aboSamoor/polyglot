@@ -948,7 +948,7 @@ class Downloader(object):
       if lang: raise LanguageNotSupported("Language {} is not supported".format(id))
       if task: raise TaskNotSupported("Task {} is not supported".format(id))
 
-  def supported_language(lang):
+  def supported_language(self, lang):
     """Return True if polyglot supports the language.
 
     Args:
