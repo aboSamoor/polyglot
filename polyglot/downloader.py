@@ -947,7 +947,8 @@ class Downloader(object):
     except ValueError as e:
       if lang: raise LanguageNotSupported("Language {} is not supported".format(id))
       if task: raise TaskNotSupported("Task {} is not supported".format(id))
-
+        
+  @staticmethod
   def supported_language(lang):
     """Return True if polyglot supports the language.
 
