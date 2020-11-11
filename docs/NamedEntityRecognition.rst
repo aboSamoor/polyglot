@@ -178,7 +178,7 @@ Citation
 
 This work is a direct implementation of the research being described in
 the `Polyglot-NER: Multilingual Named Entity
-Recognition <https://sites.google.com/site/rmyeid/papers/polyglot-ner.pdf?attredirects=0&d=1>`__
+Recognition <https://sites.google.com/site/rmyeid/projects/polylgot-ner>`__
 paper. The author of this library strongly encourage you to cite the
 following paper if you are using this software.
 
