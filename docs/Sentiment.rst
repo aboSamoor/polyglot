@@ -101,7 +101,7 @@ To inquiry the polarity of a word, we can just call its own attribute
 Entity Sentiment
 ----------------
 
-We can calculate a more sphosticated sentiment score for an entity that
+We can calculate a more sophisticated sentiment score for an entity that
 is mentioned in text as the following:
 
 .. code:: python
@@ -110,9 +110,9 @@ is mentioned in text as the following:
             "Reports indicate he will move next to New Hampshire.")
     text = Text(blob)
 
-First, we need split the text into sentneces, this will limit the words
-tha affect the sentiment of an entity to the words mentioned in the
-sentnece.
+First, we need split the text into sentences, this will limit the words
+that affect the sentiment of an entity to the words mentioned in the
+sentence.
 
 .. code:: python
 
