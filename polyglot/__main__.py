@@ -129,12 +129,12 @@ def segment(args):
   if args.only_sent:
     for l in args.input:
       seq = Sequence(l)
-      if not seq.empty(): _print(s_tokenizer.transform(seq))
+      if not seq.empty(): _print(u'\n'.join(s_tokenizer.transform(seq)))
 
   elif args.only_word:
     for l in args.input:
       seq = Sequence(l)
-      if not seq.empty(): _print(w_tokenizer.transform(seq))
+      if not seq.empty(): _print(u' '.join(w_tokenizer.transform(seq)))
 
   else:
     for l in args.input:
