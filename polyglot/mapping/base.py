@@ -18,7 +18,7 @@ from ..base import TextFile
 from ..utils import _open
 
 def count(lines):
-  """ Counts the word frequences in a list of sentences.
+  """ Counts the word frequencies in a list of sentences.
 
   Note:
     This is a helper function for parallel execution of `Vocabulary.from_text`

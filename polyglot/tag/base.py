@@ -60,7 +60,7 @@ class TaggerBase(object):
     raise NotImplementedError()
 
   def annotate(self, sent):
-    """Annotate a squence of words with entity tags.
+    """Annotate a sequence of words with entity tags.
 
     Args:
       sent: sequence of strings/words.

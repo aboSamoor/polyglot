@@ -46,7 +46,7 @@ Mixed Text
     """
 
 If the text contains snippets from different languages, the detector is
-able to find the most probable langauges used in the text. For each
+able to find the most probable languages used in the text. For each
 language, we can query the model confidence level:
 
 .. code:: python

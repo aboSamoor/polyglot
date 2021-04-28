@@ -19,8 +19,8 @@ class Transliterator(object):
   def __init__(self, source_lang="en", target_lang="en"):
     """
     Args:
-      source_lang (string): language code of the input langauge.
-      target_lang (string): language code of the generated output langauge.
+      source_lang (string): language code of the input language.
+      target_lang (string): language code of the generated output language.
     """
     self.source_lang = source_lang
     self.target_lang = target_lang
