@@ -201,7 +201,7 @@ class Embedding(object):
         except TypeError as e:
           parts = line.strip().split()
         except Exception as e:
-          logger.warning("We ignored line number {} because of erros in parsing"
+          logger.warning("We ignored line number {} because of errors in parsing"
                           "\n{}".format(line_no, e))
           continue
         # We differ from Gensim implementation.
@@ -263,7 +263,7 @@ class Embedding(object):
         except TypeError as e:
           parts = line.strip().split()
         except Exception as e:
-          logger.warning("We ignored line number {} because of erros in parsing"
+          logger.warning("We ignored line number {} because of errors in parsing"
                           "\n{}".format(line_no, e))
           continue
         # We deduce layer1_size because GloVe files have no header.

@@ -96,7 +96,7 @@ We can query all entities mentioned in a text.
 
 
 
-Or, we can query entites per sentence
+Or, we can query entities per sentence
 
 .. code:: python
 

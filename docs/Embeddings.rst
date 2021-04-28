@@ -29,7 +29,7 @@ Nearest Neighbors
 -----------------
 
 A common way to investigate the space capture by the embeddings is to
-query for the nearest neightbors of any word.
+query for the nearest neighbors of any word.
 
 .. code:: python
 

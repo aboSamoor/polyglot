@@ -119,7 +119,7 @@ class StringlikeMixin(object):
 
     def rfind(self, sub, start=0, end=sys.maxsize):
         '''Behaves like the built-in str.rfind() method. Returns an integer,
-        the index of he last (right-most) occurence of the substring argument
+        the index of he last (right-most) occurrence of the substring argument
         sub in the sub-sequence given by [start:end].
         '''
         return self._strkey().rfind(sub, start, end)
@@ -189,7 +189,7 @@ class StringlikeMixin(object):
         return self.__class__(self._strkey().join(iterable))
 
     def replace(self, old, new, count=sys.maxsize):
-        """Return a new blob object with all the occurence of `old` replaced
+        """Return a new blob object with all the occurrence of `old` replaced
         by `new`.
         """
         return self.__class__(self._strkey().replace(old, new, count))

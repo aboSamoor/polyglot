@@ -111,7 +111,7 @@ is mentioned in text as the following:
     text = Text(blob)
 
 First, we need split the text into sentneces, this will limit the words
-tha affect the sentiment of an entity to the words mentioned in the
+that affect the sentiment of an entity to the words mentioned in the
 sentnece.
 
 .. code:: python
