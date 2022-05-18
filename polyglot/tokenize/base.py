@@ -11,7 +11,7 @@ class Breaker(object):
   """ Base class to segment text."""
 
   def __init__(self, locale):
-    self.locale = Locale('locale')
+    self.locale = Locale(locale)
     self.breaker = None
 
   def transform(self, sequence):
@@ -23,7 +23,7 @@ class Breaker(object):
       seq.idx.extend([offset+x for x in self.breaker])
     return seq
 
- 
+
 class SentenceTokenizer(Breaker):
   """ Segment text to sentences. """
 
