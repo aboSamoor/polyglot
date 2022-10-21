@@ -1,29 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import io
-
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
 
-with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
+with open('README.rst', 'r', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
-with io.open('HISTORY.rst', 'r', encoding='utf-8') as history_file:
+with open('HISTORY.rst', 'r', encoding='utf-8') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-with io.open('requirements.txt', 'r', encoding='utf-8') as f:
-    packages = set(f.read().splitlines())
 
-requirements = list(filter(lambda x: "http" not in x, packages))
-
-test_requirements = [
-    # TODO: put package test requirements here
+requirements = [
+    "wheel >= 0.23.0",
+    "PyICU >= 1.8",
+    "pycld2 >= 0.3",
+    "six >= 1.7.3",
+    "futures >= 2.1.6",
+    "morfessor >= 2.0.2a1",
+    "numpy >= 1.6.1",
 ]
 
 setup(
@@ -34,7 +32,7 @@ setup(
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
     url='https://github.com/aboSamoor/polyglot',
-    packages = ['polyglot',
+    packages=['polyglot',
                 'polyglot.detect',
                 'polyglot.tokenize',
                 'polyglot.mapping',
@@ -119,5 +117,5 @@ setup(
         'Topic :: Text Processing :: Linguistic',
     ],
     test_suite='tests',
-    tests_require=test_requirements,
+    tests_require=[],
 )
