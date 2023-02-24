@@ -20,7 +20,7 @@ jobs:
     - name: Testing the code
       run: pytest tests_set_1.py
 
-  formatting and linting:
+  formatting-and-linting:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
