@@ -1,6 +1,11 @@
 name: workflow on push
-on: push
+
+on: 
+  push:
+    branches: [ i191905-dev ]
+
 jobs:
+
   testing:
     runs-on: ubuntu-latest
     steps:
@@ -12,6 +17,7 @@ jobs:
       run: pip install pytest
     - name: Testing the code
       run: pytest ./tests/tests_set_1.py
+
   linting:
     runs-on: ubuntu-latest
     steps:
@@ -21,6 +27,7 @@ jobs:
       run: pip install pylint
     - name: Linting the code
       run: pylint ./polyglot/
+
   formatting:
     runs-on: ubuntu-latest
     steps:
