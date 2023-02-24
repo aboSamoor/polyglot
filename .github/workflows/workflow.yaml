@@ -18,7 +18,7 @@ jobs:
     - name: Installing runtime dependencies
       run: sudo apt install libicu-dev -y
     - name: Testing the code
-      run: pytest tests_set_1.py
+      run: pytest test.py
 
   formatting-and-linting:
     runs-on: ubuntu-latest
