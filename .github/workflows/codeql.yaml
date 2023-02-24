@@ -1,0 +1,19 @@
+name: codeql on push
+
+on: 
+  push:
+    branches: [ i191905-dev ]
+
+jobs:
+
+  codeQL:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@main
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@main
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@main
