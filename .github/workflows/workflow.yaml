@@ -20,7 +20,7 @@ jobs:
     - name: Install linting libraries
       run: pip install pylint
     - name: Linting the code
-      run: pylint ./
+      run: pylint ./polyglot/
   formatting:
     runs-on: ubuntu-latest
     steps:
@@ -29,6 +29,6 @@ jobs:
     - name: Install formatting libraries
       run: pip install black
     - name: Formatting the code
-      run: black ./
+      run: black ./polyglot/
 
   
