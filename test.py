@@ -17,4 +17,4 @@ def test_Text_words():
 
 def test_Text_sentences():
     text = Text("Hello and hi. What and why.")
-    assert(list(text.sentences[1].words) == ['What', 'and', 'why'])
+    assert(list(text.sentences[1].words) == ['What', 'and', 'why', '.'])
