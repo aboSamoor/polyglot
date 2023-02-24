@@ -16,7 +16,7 @@ jobs:
     - name: Install testing libraries
       run: pip install pytest icu
     - name: Installing runtime dependencies
-      run: sudo apt install libicu-dev -y
+      run: sudo apt install libicu-dev python3-tk -y
     - name: Testing the code
       run: pytest test.py
 
