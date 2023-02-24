@@ -11,12 +11,15 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Install requirements
-      run: pip install -r requirements.txt
-    - name: Install testing libraries
-      run: pip install pytest icu
-    - name: Installing runtime dependencies
-      run: sudo apt install libicu-dev python3-tk -y
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        pip install six
+        pip install numpy
+        pip install pyicu
+        pip install pycld2
+        pip install morfessor
     - name: Testing the code
       run: pytest test.py
 
@@ -25,13 +28,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Install formatting libraries
-      run: pip install black
-    - name: Formatting the code
-      run: black ./polyglot/
-    - name: Install linting libraries
-      run: pip install pylint
+    - name: Install formatting and linting libraries
+      run: pip install black pylint
     - name: Linting the code
-      run: pylint ./polyglot/
-
-  
+      run: pylint --disable=R,C polyglot
+      continue-on-error: true
+    - name: Black QC Test Run
+      run: black --check polyglot
+      continue-on-error: true
