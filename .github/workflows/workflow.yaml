@@ -20,17 +20,7 @@ jobs:
     - name: Testing the code
       run: pytest tests_set_1.py
 
-  linting:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Install linting libraries
-      run: pip install pylint
-    - name: Linting the code
-      run: pylint ./polyglot/
-
-  formatting:
+  formatting and linting:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -39,5 +29,9 @@ jobs:
       run: pip install black
     - name: Formatting the code
       run: black ./polyglot/
+    - name: Install linting libraries
+      run: pip install pylint
+    - name: Linting the code
+      run: pylint ./polyglot/
 
   

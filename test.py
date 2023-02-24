@@ -12,6 +12,4 @@ from polyglot.text import Text
 
 def test_Text_words():
     text = Text("Hello and hi")
-    print(text.words)
-
-test_Text_words()
+    assert(list(text.words) == ['Hello', 'and', 'hi'])
