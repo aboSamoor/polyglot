@@ -1,26 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 import io
+from setuptools import setup
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+# Conditional dependency for futures
+conditional_requirements = []
+if sys.version_info < (3, 5):
+    conditional_requirements.append('futures>=2.1.6')
 
-
+# Read the contents of README file
 with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
+# Read the contents of HISTORY file
 with io.open('HISTORY.rst', 'r', encoding='utf-8') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
+# Read the contents of requirements file and filter out 'http' based requirements
 with io.open('requirements.txt', 'r', encoding='utf-8') as f:
     packages = set(f.read().splitlines())
 
-requirements = list(filter(lambda x: "http" not in x, packages))
+requirements = list(filter(lambda x: "http" not in x, packages)) + conditional_requirements
 
 test_requirements = [
     # TODO: put package test requirements here
@@ -34,12 +36,14 @@ setup(
     author='Rami Al-Rfou',
     author_email='rmyeid@gmail.com',
     url='https://github.com/aboSamoor/polyglot',
-    packages = ['polyglot',
-                'polyglot.detect',
-                'polyglot.tokenize',
-                'polyglot.mapping',
-                'polyglot.tag',
-                'polyglot.transliteration'],
+    packages=[
+        'polyglot',
+        'polyglot.detect',
+        'polyglot.tokenize',
+        'polyglot.mapping',
+        'polyglot.tag',
+        'polyglot.transliteration',
+    ],
     entry_points={
         'console_scripts': [
             'polyglot = polyglot.__main__:main',
